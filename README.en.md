@@ -2,7 +2,22 @@
 
 [Türkçe ana sayfa](README.md)
 
-Extra Settings brings everyday NVDA features together in one settings category. Main options are unchecked on first installation and can be enabled as needed.
+This add-on:  
+
+Web navigation cycling,  
+Skipping blank lines on web pages,  
+Clipboard announcements,  
+Speech history,  
+Assigning a shortcut in place of the Applications key,  
+Appending text to the clipboard,  
+Word and character counting,  
+Inspecting clipboard text/table/file information,  
+Folder and web page bookmarks,  
+Using Quick find to navigate to saved text locations with document-specific shortcuts,  
+Numeric keypad navigation,  
+Brings these and other frequently needed features, including translation, to NVDA.  
+You can enable the feature you want in Extra Settings under NVDA menu / Preferences / Settings;  
+To request additional features, you can contact m.aykurt38@gmail.com.  
 
 ## Version and compatibility
 

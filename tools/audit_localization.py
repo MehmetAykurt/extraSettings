@@ -6,6 +6,7 @@ from pathlib import Path
 from string import Formatter
 import json
 import re
+from manifest import readManifest
 
 ROOT = Path(__file__).resolve().parents[1] / 'addon'
 
@@ -70,8 +71,7 @@ class Help(HTMLParser):
 def audit(requireEnglish=True):
     source = messages()
     result = {}
-    manifest = dict(line.split('=', 1) for line in (ROOT / 'manifest.ini').read_text(encoding='utf-8-sig').splitlines() if '=' in line)
-    manifest = {key.strip(): ast.literal_eval(value.strip()) for key, value in manifest.items()}
+    manifest = readManifest(ROOT / 'manifest.ini')
     for language in (('tr','en') if requireEnglish else ('tr',)):
         po = ROOT / f'locale/{language}/LC_MESSAGES/nvda.po'
         catalog = readCatalog(po)
@@ -156,8 +156,11 @@ def audit(requireEnglish=True):
         for key, target in navKeys.items():
             assert key[-1] + ': ' + labels[target] in text, (language, 'wrong keypad mapping', key, target)
         localized = (ROOT / f'locale/{language}/manifest.ini').read_text(encoding='utf-8-sig')
-        description = 'automatic line translation' if language == 'en' else 'otomatik satır çevirisi'
+        description = 'translation' if language == 'en' else 'Çeviri'
         assert description in localized
+        localizedDescription = readManifest(ROOT / f'locale/{language}/manifest.ini')['description']
+        assert '\n' in localizedDescription and 'm.aykurt38@gmail.com' in localizedDescription
+        assert localizedDescription.startswith('Bu eklenti:' if language == 'tr' else 'This add-on:')
         assert help.sectionCount == 20, (language, 'missing help section', help.sectionCount)
         headings = re.findall(r'<h2 id="[^"]+">(.*?)</h2>', markup)
         assert len(headings) == 20

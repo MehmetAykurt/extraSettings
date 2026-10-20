@@ -2,7 +2,22 @@
 
 [English documentation](README.en.md)
 
-Ek Ayarlar, NVDA ekran okuyucusunun günlük kullanımını kolaylaştıran özellikleri tek bir ayar kategorisinde bir araya getirir. Her özellik ihtiyaç doğrultusunda etkinleştirilebilir. Ana seçenekler ilk kurulumda işaretsizdir.
+Bu eklenti:  
+
+Web gezinme döngüsü,  
+Web sayfalarında boş satırları atlama,  
+Pano bildirimleri,  
+Konuşma geçmişi,  
+Uygulama tuşu yerine kısayol atama,  
+Panoya metin ekleme,  
+Sözcük karakter sayımı,  
+Panodaki metin/tablo/dosya bilgilerini inceleme,  
+Klasör ve web sayfası yer imleri,  
+Hızlı bul ile belgeye özel kısayollarla kayıtlı metin konumlarına gitme,  
+Sayısal tuş takımıyla gezinme,  
+Çeviri gibi en çok ihtiyaç duyulan özellikleri NVDA'ya kazandırmaktadır.  
+NVDA menüsü / Tercihler / Ayarlar altında yer alan Ek ayarlar bölümünden istediğiniz özelliği aktif edebilir;  
+Eklenmesini istediğiniz özellikler için m.aykurt38@gmail.com adresine bildiride bulunabilirsiniz.  
 
 ## Sürüm ve uyumluluk
 

@@ -1,0 +1,1 @@
+Ek Ayarlar; web gezinmesi, boş satırları atlama, pano araçları, konuşma geçmişi, kısayol atama, metin sayımı, yer imleri, Hızlı bul, sayısal tuş takımıyla gezinme ve çeviri gibi ihtiyaç duyulan özellikleri NVDA’ya kazandırır. Özellikler NVDA / Tercihler / Ayarlar / Ek Ayarlar bölümünden etkinleştirilebilir.

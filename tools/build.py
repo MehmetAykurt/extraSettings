@@ -9,6 +9,7 @@ import re
 import struct
 import zipfile
 from audit_localization import readCatalog, audit
+from manifest import readManifest
 
 ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / 'addon'
@@ -40,8 +41,7 @@ def compile_catalog(language):
 def build(repository, description):
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
         raise ValueError('Repository must have the form owner/name')
-    manifest = dict(line.split('=', 1) for line in (ADDON / 'manifest.ini').read_text(encoding='utf-8-sig').splitlines() if '=' in line)
-    manifest = {key.strip(): ast.literal_eval(value.strip()) for key, value in manifest.items()}
+    manifest = readManifest(ADDON / 'manifest.ini')
     version = manifest.get('version')
     if not isinstance(version, str) or not re.fullmatch(r'\d+\.\d+(?:\.\d+)?', version):
         raise ValueError('Invalid manifest version')
@@ -71,7 +71,7 @@ def build(repository, description):
         'surum': version,
         'link': f'https://github.com/{repository}/releases/download/v{version}/{output.name}',
         'sha256': hashlib.sha256(output.read_bytes()).hexdigest(),
-        'aciklama': description,
+        'aciklama': description if description is not None else readManifest(ADDON / 'locale/tr/manifest.ini')['description'],
     }
     (ROOT / 'update.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(output)
@@ -82,6 +82,6 @@ def build(repository, description):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repository', default='MehmetAykurt/extraSettings')
-    parser.add_argument('--description', default='Ek Ayarlar: web gezinmesi, pano araçları, konuşma geçmişi, metin sayımı, yer imleri, Hızlı bul, sayısal tuş takımı ve satır çevirisi.')
+    parser.add_argument('--description', help='Optional release summary; defaults to the complete Turkish manifest description.')
     args = parser.parse_args()
     build(args.repository, args.description)

@@ -73,8 +73,10 @@ class PreviewTests(unittest.TestCase):
                 self.assertEqual(uninitialize.called,shouldUninitialize)
 
     def test_real_files_folder_missing_file_and_priority_over_text(self):
-        root=base.ROOT/('clipboard-fixtures-'+uuid.uuid4().hex)
-        root.mkdir()
+        import tempfile
+        temporary = tempfile.TemporaryDirectory(dir=base.ROOT, prefix='clipboard-fixtures-')
+        self.addCleanup(temporary.cleanup)
+        root=Path(temporary.name)
         file=root/'Örnek.txt';file.write_bytes(b'12345')
         folder=root/'Klasor';folder.mkdir()
         missing=root/'Moved.txt'

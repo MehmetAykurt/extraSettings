@@ -1,6 +1,6 @@
 {
   "surum": "2026.10.20",
   "link": "https://github.com/MehmetAykurt/extraSettings/releases/download/v2026.10.20/extraSettings-2026.10.20.nvda-addon",
-  "sha256": "c0a86599c5ecd8863fed0d1a90e7791634ba593876a3fca1b4fbdc8c0167f2fd",
-  "aciklama": "Ek Ayarlar: web gezinmesi, pano araçları, konuşma geçmişi, metin sayımı, yer imleri, Hızlı bul, sayısal tuş takımı ve satır çevirisi."
+  "sha256": "e55b82b9f9e083b558bd4cd5dc512884a1097448853a2bcd953e05bb095f2eb9",
+  "aciklama": "Bu eklenti:\n\nWeb gezinme döngüsü,\nWeb sayfalarında boş satırları atlama,\nPano bildirimleri,\nKonuşma geçmişi,\nUygulama tuşu yerine kısayol atama,\nPanoya metin ekleme,\nSözcük karakter sayımı,\nPanodaki metin/tablo/dosya bilgilerini inceleme,\nKlasör ve web sayfası yer imleri,\nHızlı bul ile belgeye özel kısayollarla kayıtlı metin konumlarına gitme,\nSayısal tuş takımıyla gezinme,\nÇeviri gibi en çok ihtiyaç duyulan özellikleri NVDA'ya kazandırmaktadır.\nNVDA menüsü / Tercihler / Ayarlar altında yer alan Ek ayarlar bölümünden istediğiniz özelliği aktif edebilir;\nEklenmesini istediğiniz özellikler için m.aykurt38@gmail.com adresine bildiride bulunabilirsiniz."
 }

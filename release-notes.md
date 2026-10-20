@@ -1,0 +1,16 @@
+Bu eklenti:  
+
+Web gezinme döngüsü,  
+Web sayfalarında boş satırları atlama,  
+Pano bildirimleri,  
+Konuşma geçmişi,  
+Uygulama tuşu yerine kısayol atama,  
+Panoya metin ekleme,  
+Sözcük karakter sayımı,  
+Panodaki metin/tablo/dosya bilgilerini inceleme,  
+Klasör ve web sayfası yer imleri,  
+Hızlı bul ile belgeye özel kısayollarla kayıtlı metin konumlarına gitme,  
+Sayısal tuş takımıyla gezinme,  
+Çeviri gibi en çok ihtiyaç duyulan özellikleri NVDA'ya kazandırmaktadır.  
+NVDA menüsü / Tercihler / Ayarlar altında yer alan Ek ayarlar bölümünden istediğiniz özelliği aktif edebilir;  
+Eklenmesini istediğiniz özellikler için m.aykurt38@gmail.com adresine bildiride bulunabilirsiniz.  
