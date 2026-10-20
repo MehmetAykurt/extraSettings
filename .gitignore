@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+*.nvda-addon
+*.tmp
+*.bak
+data-migration-*/
+bookmarks-*/
+quickFind-*/
+clipboard-fixtures-*/
+# Kullanıcı verileri kaynak kod deposuna eklenmez.
+extraSettingsBookmarks.json
+extraSettingsQuickFind.json
+targets.json
+.DS_Store
+Thumbs.db

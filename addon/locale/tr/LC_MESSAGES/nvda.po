@@ -1,0 +1,580 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: extraSettings 2026.10.20\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Extra Settings"
+msgstr "Ek Ayarlar"
+
+msgid "Enable cycling on web pages"
+msgstr "Web sayfalarında döngüyü etkinleştir"
+
+msgid "Wrapped to beginning."
+msgstr "Başa dönüldü."
+
+msgid "Wrapped to end."
+msgstr "Sona dönüldü."
+
+msgid "Announce cut, copy and paste operations"
+msgstr "Kesme, kopyalama ve yapıştırma işlemlerini duyur"
+
+msgid "Cut."
+msgstr "Kesildi."
+
+msgid "Copied."
+msgstr "Kopyalandı."
+
+msgid "Pasted."
+msgstr "Yapıştırıldı."
+
+msgid "No selected data was found to cut."
+msgstr "Kesmek için seçili veri bulunamadı."
+
+msgid "No selected data was found to copy."
+msgstr "Kopyalamak için seçili veri bulunamadı."
+
+msgid "No data was found to paste."
+msgstr "Yapıştırılacak veri bulunamadı."
+
+msgid "The clipboard could not be checked right now."
+msgstr "Pano şu anda denetlenemiyor."
+
+msgid "The selection could not be checked."
+msgstr "Seçili veri denetlenemedi."
+
+msgid "No shortcut assigned"
+msgstr "Kısayol atanmamış"
+
+msgid "Enable speech history — {shortcut}"
+msgstr "Konuşma geçmişini etkinleştir — {shortcut}"
+
+msgid "Line count"
+msgstr "Satır sayısı"
+
+msgid "Display order"
+msgstr "Gösterim şekli"
+
+msgid "Beginning to end"
+msgstr "Baştan sona"
+
+msgid "End to beginning"
+msgstr "Sondan başa"
+
+msgid "Enter a whole number from 1 to 1000."
+msgstr "1 ile 1000 arasında bir tam sayı girin."
+
+msgid "Show speech history"
+msgstr "Konuşma geçmişini göster"
+
+msgid "NVDA Extra Settings"
+msgstr "NVDA Ek Ayarları"
+
+msgid "Enable speech history in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden konuşma geçmişini etkinleştirin."
+
+msgid "Speech history"
+msgstr "Konuşma geçmişi"
+
+msgid "History entries"
+msgstr "Geçmiş kayıtları"
+
+msgid "There are no history entries yet."
+msgstr "Henüz konuşma geçmişi kaydı yok."
+
+msgid "Copy selected entry"
+msgstr "Seçili kaydı kopyala"
+
+msgid "Copy all"
+msgstr "Tümünü kopyala"
+
+msgid "Clear history"
+msgstr "Geçmişi temizle"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Could not copy to the clipboard."
+msgstr "Panoya kopyalanamadı."
+
+msgid "Speech history cleared."
+msgstr "Konuşma geçmişi temizlendi."
+
+msgid "Use instead of the Applications key"
+msgstr "Uygulama tuşu yerine kullan"
+
+msgid "Set key"
+msgstr "Tuş belirle"
+
+msgid "Set key — {shortcut}"
+msgstr "Tuş belirle — {shortcut}"
+
+msgid "Please press the shortcut you want to use instead of the Applications key. Press Escape to cancel."
+msgstr "Lütfen uygulama tuşu yerine kullanmak istediğiniz kısayola basın. İptal etmek için Escape tuşuna basın."
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Another key capture is already in progress."
+msgstr "Başka bir tuş belirleme işlemi zaten sürüyor."
+
+msgid "Selected shortcut: {shortcut}. Choose OK or Apply to activate it."
+msgstr "Seçilen kısayol: {shortcut}. Etkinleştirmek için Tamam veya Uygula düğmesine basın."
+
+msgid "Key selection canceled."
+msgstr "Tuş belirleme iptal edildi."
+
+msgid "Choose a shortcut using Set key first."
+msgstr "Önce Tuş belirle düğmesiyle bir kısayol seçin."
+
+msgid "Open the context menu"
+msgstr "İçerik menüsünü aç"
+
+msgid "Release the shortcut keys and try again."
+msgstr "Kısayol tuşlarını bırakıp yeniden deneyin."
+
+msgid "Append to clipboard"
+msgstr "Panoya ekle"
+
+msgid "Append to clipboard — {shortcut}"
+msgstr "Panoya ekle — {shortcut}"
+
+msgid "The selected text could not be read."
+msgstr "Seçili metin okunamadı."
+
+msgid "No selected text was found to append."
+msgstr "Panoya eklemek için seçili metin bulunamadı."
+
+msgid "The clipboard contains non-text data. Copy text first."
+msgstr "Panoda metin dışı veri var. Önce bir metin kopyalayın."
+
+msgid "Could not append to the clipboard."
+msgstr "Panoya eklenemedi."
+
+msgid "Added to clipboard."
+msgstr "Panoya eklendi."
+
+msgid "Use the numeric keypad as navigation keys"
+msgstr "Sayısal tuş takımını gezinme tuşları olarak kullan"
+
+msgid "Emulates pressing {key} on the system keyboard"
+msgstr "Sistem klavyesinde {key} tuşuna basmayı taklit eder"
+
+msgid "Target language"
+msgstr "Hedef dil"
+
+msgid "Choose a target language."
+msgstr "Bir hedef dil seçin."
+
+msgid "Translate the current line"
+msgstr "Bulunulan satırı çevir"
+
+msgid "Enable translation in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden çeviri özelliğini etkinleştirin."
+
+msgid "Protected fields cannot be translated."
+msgstr "Korumalı alanlarda çeviri yapılamaz."
+
+msgid "The line at the caret could not be read."
+msgstr "İmlecin bulunduğu satır okunamadı."
+
+msgid "There is no text on this line to translate."
+msgstr "Bu satırda çevrilecek metin yok."
+
+msgid "This line is too long to translate. The limit is 5000 characters."
+msgstr "Bu satır çeviri için çok uzun. Sınır 5000 karakterdir."
+
+msgid "Choose a supported target language in Extra Settings."
+msgstr "Ek Ayarlar bölümünden desteklenen bir hedef dil seçin."
+
+msgid "The translation service is limiting access. Try again later."
+msgstr "Çeviri hizmeti erişimi sınırlandırıyor. Daha sonra yeniden deneyin."
+
+msgid "The translation service did not respond in time."
+msgstr "Çeviri hizmeti zamanında yanıt vermedi."
+
+msgid "The translation service returned an unreadable response."
+msgstr "Çeviri hizmetinden okunamayan bir yanıt geldi."
+
+msgid "The translation request could not be completed. Please try again."
+msgstr "Çeviri isteği tamamlanamadı. Lütfen yeniden deneyin."
+
+msgid "Translation is already in progress."
+msgstr "Çeviri zaten sürüyor."
+
+msgid "Translating..."
+msgstr "Çevriliyor..."
+
+msgid "Automatic translation — {shortcut}"
+msgstr "Otomatik çeviri — {shortcut}"
+
+msgid "Automatic translation"
+msgstr "Otomatik çeviri"
+
+msgid "Automatic translation on."
+msgstr "Otomatik çeviri açık."
+
+msgid "Automatic translation off."
+msgstr "Otomatik çeviri kapalı."
+
+msgid "The automatic translation queue is full."
+msgstr "Otomatik çeviri sırası doldu."
+
+msgid "Automatic translation paused. Turn it off and on to start a new session."
+msgstr "Otomatik çeviri duraklatıldı. Yeni bir oturum başlatmak için kapatıp yeniden açın."
+
+msgid "Translation"
+msgstr "Çeviri"
+
+msgid "Line translation — {shortcut}"
+msgstr "Satır çevirisi — {shortcut}"
+
+msgid "Enable line translation in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden satır çevirisini etkinleştirin."
+
+msgid "Enable automatic translation in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden otomatik çeviriyi etkinleştirin."
+
+msgid "Skip blank lines on web pages"
+msgstr "Web sayfalarında boş satırları atla"
+
+msgid "No more non-blank lines in this direction."
+msgstr "Bu yönde başka dolu satır yok."
+
+msgid "Announce word and character counts"
+msgstr "Sözcük ve karakter sayısını duyur"
+
+msgid "Announce word and character counts — {shortcut}"
+msgstr "Sözcük ve karakter sayısını duyur — {shortcut}"
+
+msgid "Sentence count: {count}"
+msgstr "Cümle sayısı: {count}"
+
+msgid "Word count: {count}"
+msgstr "Sözcük sayısı: {count}"
+
+msgid "Character count: {count}"
+msgstr "Karakter sayısı: {count}"
+
+msgid "Blank line count: {count}"
+msgstr "Boş satır sayısı: {count}"
+
+msgid "Enable word and character counts in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünde sözcük ve karakter sayımını etkinleştirin."
+
+msgid "Text counting is already in progress."
+msgstr "Metin sayımı zaten devam ediyor."
+
+msgid "Select some text first."
+msgstr "Önce bir metin seçin."
+
+msgid "The selected text could not be counted."
+msgstr "Seçili metin sayılamadı."
+
+msgid "Inspect clipboard"
+msgstr "Panoyu incele"
+
+msgid "Inspect clipboard — {shortcut}"
+msgstr "Panoyu incele — {shortcut}"
+
+msgid "Folder"
+msgstr "Klasör"
+
+msgid "File"
+msgstr "Dosya"
+
+msgid "{extension} file"
+msgstr "{extension} dosyası"
+
+msgid "{size} bytes"
+msgstr "{size} bayt"
+
+msgid "{amount} {unit} ({size} bytes)"
+msgstr "{amount} {unit} ({size} bayt)"
+
+msgid "Files on clipboard: {count}"
+msgstr "Panodaki dosya sayısı: {count}"
+
+msgid "File {number}"
+msgstr "Dosya {number}"
+
+msgid "Name: {name}"
+msgstr "Adı: {name}"
+
+msgid "Type: {type}"
+msgstr "Türü: {type}"
+
+msgid "Size: {size}"
+msgstr "Boyutu: {size}"
+
+msgid "Path: {path}"
+msgstr "Yolu: {path}"
+
+msgid "Not calculated for folders."
+msgstr "Klasörler için hesaplanmaz."
+
+msgid "Unavailable"
+msgstr "Bilgi alınamadı"
+
+msgid "The file could not be accessed. It may have been moved or deleted."
+msgstr "Dosyaya erişilemedi. Taşınmış veya silinmiş olabilir."
+
+msgid "The clipboard is empty."
+msgstr "Pano boş."
+
+msgid "The clipboard does not contain supported text, a table or files."
+msgstr "Panoda desteklenen metin, tablo veya dosya bulunmuyor."
+
+msgid "Enable clipboard inspection in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünde panoyu inceleme özelliğini etkinleştirin."
+
+msgid "Clipboard inspection is already in progress."
+msgstr "Pano incelemesi zaten devam ediyor."
+
+msgid "The clipboard content is too large to inspect."
+msgstr "Pano içeriği incelenemeyecek kadar büyük."
+
+msgid "The clipboard could not be read. Please try again."
+msgstr "Pano okunamadı. Lütfen yeniden deneyin."
+
+msgid "Bookmarks"
+msgstr "Yer imleri"
+
+msgid "Bookmarks — {shortcut}"
+msgstr "Yer imleri — {shortcut}"
+
+msgid "Enable bookmarks in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden yer imlerini etkinleştirin."
+
+msgid "Enter a bookmark name."
+msgstr "Yer imi için bir ad girin."
+
+msgid "Enter a complete http or https web address."
+msgstr "http veya https ile başlayan tam bir web adresi girin."
+
+msgid "Enter a folder path or web address."
+msgstr "Bir klasör yolu veya web adresi girin."
+
+msgid "Enter an absolute folder path, such as C:\\Documents."
+msgstr "C:\\Belgeler gibi tam bir klasör yolu girin."
+
+msgid "This location is already bookmarked."
+msgstr "Bu konum zaten yer imlerine eklenmiş."
+
+msgid "Bookmarks changed elsewhere. Close and reopen the list."
+msgstr "Yer imleri başka bir yerde değiştirildi. Listeyi kapatıp yeniden açın."
+
+msgid "The bookmarks file is damaged or unsupported. It has not been changed."
+msgstr "Yer imleri dosyası bozuk veya desteklenmeyen bir biçimde. Dosya değiştirilmedi."
+
+msgid "Bookmarks could not be read."
+msgstr "Yer imleri okunamadı."
+
+msgid "Bookmarks could not be saved. Your previous records have been kept."
+msgstr "Yer imleri kaydedilemedi. Önceki kayıtlarınız korundu."
+
+msgid "The bookmark could not be opened. Check its address or folder path."
+msgstr "Yer imi açılamadı. Adresini veya klasör yolunu kontrol edin."
+
+msgid "Edit bookmark"
+msgstr "Yer imini düzenle"
+
+msgid "Add bookmark"
+msgstr "Yer imi ekle"
+
+msgid "Bookmark name"
+msgstr "Yer imi adı"
+
+msgid "Location type"
+msgstr "Konum türü"
+
+msgid "Web page"
+msgstr "Web sayfası"
+
+msgid "Browse for folder"
+msgstr "Klasör seç"
+
+msgid "Save bookmark"
+msgstr "Yer imini kaydet"
+
+msgid "Choose a folder"
+msgstr "Bir klasör seçin"
+
+msgid "Search bookmarks"
+msgstr "Yer imlerinde ara"
+
+msgid "Saved bookmarks"
+msgstr "Kayıtlı yer imleri"
+
+msgid "Selected location"
+msgstr "Seçili konum"
+
+msgid "There are no matching bookmarks."
+msgstr "Eşleşen yer imi yok."
+
+msgid "Open bookmark"
+msgstr "Yer imini aç"
+
+msgid "Add current location"
+msgstr "Geçerli konumu ekle"
+
+msgid "Remove bookmark"
+msgstr "Yer imini kaldır"
+
+msgid "Bookmark saved."
+msgstr "Yer imi kaydedildi."
+
+msgid "The current location could not be detected. Enter its name and address manually."
+msgstr "Geçerli konum algılanamadı. Adını ve adresini kendiniz girin."
+
+msgid "Bookmark removed."
+msgstr "Yer imi kaldırıldı."
+
+msgid "The folder is unavailable. It may have been moved, deleted or disconnected."
+msgstr "Klasöre ulaşılamıyor. Taşınmış, silinmiş veya bağlantısı kesilmiş olabilir."
+
+msgid "Folder path"
+msgstr "Klasör yolu"
+
+msgid "Web address"
+msgstr "Web adresi"
+
+msgid "Quick find"
+msgstr "Hızlı bul"
+
+msgid "Quick find — {shortcut}"
+msgstr "Hızlı bul — {shortcut}"
+
+msgid "Protected fields cannot be saved in Quick find."
+msgstr "Korumalı alanlar Hızlı bul ile kaydedilemez."
+
+msgid "Quick find is not available in this document or view."
+msgstr "Hızlı bul bu belgede veya görünümde kullanılamıyor."
+
+msgid "Move to a non-blank text line first."
+msgstr "Önce metin içeren bir satıra gidin."
+
+msgid "Quick find supports documents up to 1000000 characters and lines up to 1000 characters."
+msgstr "Hızlı bul en fazla 1000000 karakterlik belgeleri ve 1000 karakterlik satırları destekler."
+
+msgid "The current line could not be saved. Return to the document and try again."
+msgstr "Bulunduğunuz satır kaydedilemedi. Belgeye dönüp yeniden deneyin."
+
+msgid "There are too many matching locations. Use a more distinctive line."
+msgstr "Çok fazla eşleşen konum var. Daha ayırt edici bir satır kullanın."
+
+msgid "The saved location was not found in this document."
+msgstr "Kaydedilen konum bu belgede bulunamadı."
+
+msgid "Enter a name and a valid shortcut, or leave the shortcut unassigned."
+msgstr "Bir ad ve geçerli bir kısayol girin veya kısayolu atanmamış bırakın."
+
+msgid "This shortcut is already assigned in this document."
+msgstr "Bu kısayol bu belgede zaten atanmış."
+
+msgid "This shortcut is already used by NVDA or another add-on. Choose another shortcut."
+msgstr "Bu kısayol NVDA veya başka bir eklenti tarafından kullanılıyor. Başka bir kısayol seçin."
+
+msgid "This location is already saved in Quick find."
+msgstr "Bu konum Hızlı bul içinde zaten kayıtlı."
+
+msgid "Quick find records changed elsewhere. Close and reopen the list."
+msgstr "Hızlı bul kayıtları başka bir yerde değiştirildi. Listeyi kapatıp yeniden açın."
+
+msgid "The Quick find file is damaged or unsupported. It has not been changed."
+msgstr "Hızlı bul dosyası bozuk veya desteklenmeyen bir biçimde. Dosya değiştirilmedi."
+
+msgid "Quick find records could not be read."
+msgstr "Hızlı bul kayıtları okunamadı."
+
+msgid "Quick find records could not be saved. Your previous records have been kept."
+msgstr "Hızlı bul kayıtları kaydedilemedi. Önceki kayıtlarınız korundu."
+
+msgid "The document or caret changed. Run Quick find again."
+msgstr "Belge veya imleç konumu değişti. Hızlı bul komutunu yeniden çalıştırın."
+
+msgid "Quick find could not complete the operation."
+msgstr "Hızlı bul işlemi tamamlayamadı."
+
+msgid "Enable Quick find in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden Hızlı bul özelliğini etkinleştirin."
+
+msgid "Quick find is already searching."
+msgstr "Hızlı bul zaten arama yapıyor."
+
+msgid "Edit saved location"
+msgstr "Kayıtlı konumu düzenle"
+
+msgid "Add current line"
+msgstr "Bulunduğum satırı ekle"
+
+msgid "Location name"
+msgstr "Konum adı"
+
+msgid "Saved line"
+msgstr "Kayıtlı satır"
+
+msgid "Remove assigned shortcut"
+msgstr "Atanmış kısayolu kaldır"
+
+msgid "Save location"
+msgstr "Konumu kaydet"
+
+msgid "Press the shortcut for this saved location. Press Escape to cancel."
+msgstr "Bu kayıtlı konum için kullanmak istediğiniz kısayola basın. İptal etmek için Escape tuşuna basın."
+
+msgid "Use a letter, number or function key with NVDA, Alt or Control. Standard editing and navigation keys cannot be assigned."
+msgstr "NVDA, Alt veya Control ile birlikte bir harf, rakam veya işlev tuşu kullanın. Standart düzenleme ve gezinme tuşları atanamaz."
+
+msgid "Current document: {document}"
+msgstr "Geçerli belge: {document}"
+
+msgid "This document is identified by its title and text sample because its full path is unavailable."
+msgstr "Tam yolu alınamadığı için bu belge başlığı ve metin örneğiyle tanınıyor."
+
+msgid "Search saved locations"
+msgstr "Kayıtlı konumlarda ara"
+
+msgid "Saved locations in this document"
+msgstr "Bu belgedeki kayıtlı konumlar"
+
+msgid "There are no matching saved locations in this document."
+msgstr "Bu belgede eşleşen kayıtlı konum yok."
+
+msgid "Go to location"
+msgstr "Konuma git"
+
+msgid "Remove saved location"
+msgstr "Kayıtlı konumu kaldır"
+
+msgid "{name} — line {line} — {shortcut}"
+msgstr "{name} — satır {line} — {shortcut}"
+
+msgid "Quick find location saved."
+msgstr "Hızlı bul konumu kaydedildi."
+
+msgid "Quick find location removed."
+msgstr "Hızlı bul konumu kaldırıldı."
+
+msgid "Match {number}, line {line}: {before} [{text}] {after}"
+msgstr "{number}. eşleşme, satır {line}: {before} [{text}] {after}"
+
+msgid "Several locations match. Choose the intended location; no movement has been made."
+msgstr "Birden fazla konum eşleşiyor. Gitmek istediğiniz konumu seçin; imleç henüz taşınmadı."
+
+msgid "Choose matching location"
+msgstr "Eşleşen konumu seçin"
+
+msgid "Assigned shortcut"
+msgstr "Atanmış kısayol"
+
+msgid "Assign shortcut"
+msgstr "Kısayol ekle"
+
+msgid "Change shortcut"
+msgstr "Kısayolu değiştir"
+
+msgid "Go to a saved location in the current document"
+msgstr "Geçerli belgede kayıtlı konuma git"

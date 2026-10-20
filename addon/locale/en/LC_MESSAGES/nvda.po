@@ -1,0 +1,575 @@
+msgid ""
+msgstr "Project-Id-Version: extraSettings 2026.10.20\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+
+msgid "Extra Settings"
+msgstr "Extra Settings"
+
+msgid "Enable cycling on web pages"
+msgstr "Enable cycling on web pages"
+
+msgid "Wrapped to beginning."
+msgstr "Wrapped to beginning."
+
+msgid "Wrapped to end."
+msgstr "Wrapped to end."
+
+msgid "Announce cut, copy and paste operations"
+msgstr "Announce cut, copy and paste operations"
+
+msgid "Cut."
+msgstr "Cut."
+
+msgid "Copied."
+msgstr "Copied."
+
+msgid "Pasted."
+msgstr "Pasted."
+
+msgid "No selected data was found to cut."
+msgstr "No selected data was found to cut."
+
+msgid "No selected data was found to copy."
+msgstr "No selected data was found to copy."
+
+msgid "No data was found to paste."
+msgstr "No data was found to paste."
+
+msgid "The clipboard could not be checked right now."
+msgstr "The clipboard could not be checked right now."
+
+msgid "The selection could not be checked."
+msgstr "The selection could not be checked."
+
+msgid "No shortcut assigned"
+msgstr "No shortcut assigned"
+
+msgid "Enable speech history — {shortcut}"
+msgstr "Enable speech history — {shortcut}"
+
+msgid "Line count"
+msgstr "Line count"
+
+msgid "Display order"
+msgstr "Display order"
+
+msgid "Beginning to end"
+msgstr "Beginning to end"
+
+msgid "End to beginning"
+msgstr "End to beginning"
+
+msgid "Enter a whole number from 1 to 1000."
+msgstr "Enter a whole number from 1 to 1000."
+
+msgid "Show speech history"
+msgstr "Show speech history"
+
+msgid "NVDA Extra Settings"
+msgstr "NVDA Extra Settings"
+
+msgid "Enable speech history in Extra Settings first."
+msgstr "Enable speech history in Extra Settings first."
+
+msgid "Speech history"
+msgstr "Speech history"
+
+msgid "History entries"
+msgstr "History entries"
+
+msgid "There are no history entries yet."
+msgstr "There are no history entries yet."
+
+msgid "Copy selected entry"
+msgstr "Copy selected entry"
+
+msgid "Copy all"
+msgstr "Copy all"
+
+msgid "Clear history"
+msgstr "Clear history"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Could not copy to the clipboard."
+msgstr "Could not copy to the clipboard."
+
+msgid "Speech history cleared."
+msgstr "Speech history cleared."
+
+msgid "Use instead of the Applications key"
+msgstr "Use instead of the Applications key"
+
+msgid "Set key"
+msgstr "Set key"
+
+msgid "Set key — {shortcut}"
+msgstr "Set key — {shortcut}"
+
+msgid "Please press the shortcut you want to use instead of the Applications key. Press Escape to cancel."
+msgstr "Please press the shortcut you want to use instead of the Applications key. Press Escape to cancel."
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Another key capture is already in progress."
+msgstr "Another key capture is already in progress."
+
+msgid "Selected shortcut: {shortcut}. Choose OK or Apply to activate it."
+msgstr "Selected shortcut: {shortcut}. Choose OK or Apply to activate it."
+
+msgid "Key selection canceled."
+msgstr "Key selection canceled."
+
+msgid "Choose a shortcut using Set key first."
+msgstr "Choose a shortcut using Set key first."
+
+msgid "Open the context menu"
+msgstr "Open the context menu"
+
+msgid "Release the shortcut keys and try again."
+msgstr "Release the shortcut keys and try again."
+
+msgid "Append to clipboard"
+msgstr "Append to clipboard"
+
+msgid "Append to clipboard — {shortcut}"
+msgstr "Append to clipboard — {shortcut}"
+
+msgid "The selected text could not be read."
+msgstr "The selected text could not be read."
+
+msgid "No selected text was found to append."
+msgstr "No selected text was found to append."
+
+msgid "The clipboard contains non-text data. Copy text first."
+msgstr "The clipboard contains non-text data. Copy text first."
+
+msgid "Could not append to the clipboard."
+msgstr "Could not append to the clipboard."
+
+msgid "Added to clipboard."
+msgstr "Added to clipboard."
+
+msgid "Use the numeric keypad as navigation keys"
+msgstr "Use the numeric keypad as navigation keys"
+
+msgid "Emulates pressing {key} on the system keyboard"
+msgstr "Emulates pressing {key} on the system keyboard"
+
+msgid "Target language"
+msgstr "Target language"
+
+msgid "Choose a target language."
+msgstr "Choose a target language."
+
+msgid "Translate the current line"
+msgstr "Translate the current line"
+
+msgid "Enable translation in Extra Settings first."
+msgstr "Enable translation in Extra Settings first."
+
+msgid "Protected fields cannot be translated."
+msgstr "Protected fields cannot be translated."
+
+msgid "The line at the caret could not be read."
+msgstr "The line at the caret could not be read."
+
+msgid "There is no text on this line to translate."
+msgstr "There is no text on this line to translate."
+
+msgid "This line is too long to translate. The limit is 5000 characters."
+msgstr "This line is too long to translate. The limit is 5000 characters."
+
+msgid "Choose a supported target language in Extra Settings."
+msgstr "Choose a supported target language in Extra Settings."
+
+msgid "The translation service is limiting access. Try again later."
+msgstr "The translation service is limiting access. Try again later."
+
+msgid "The translation service did not respond in time."
+msgstr "The translation service did not respond in time."
+
+msgid "The translation service returned an unreadable response."
+msgstr "The translation service returned an unreadable response."
+
+msgid "The translation request could not be completed. Please try again."
+msgstr "The translation request could not be completed. Please try again."
+
+msgid "Translation is already in progress."
+msgstr "Translation is already in progress."
+
+msgid "Translating..."
+msgstr "Translating..."
+
+msgid "Automatic translation — {shortcut}"
+msgstr "Automatic translation — {shortcut}"
+
+msgid "Automatic translation"
+msgstr "Automatic translation"
+
+msgid "Automatic translation on."
+msgstr "Automatic translation on."
+
+msgid "Automatic translation off."
+msgstr "Automatic translation off."
+
+msgid "The automatic translation queue is full."
+msgstr "The automatic translation queue is full."
+
+msgid "Automatic translation paused. Turn it off and on to start a new session."
+msgstr "Automatic translation paused. Turn it off and on to start a new session."
+
+msgid "Translation"
+msgstr "Translation"
+
+msgid "Line translation — {shortcut}"
+msgstr "Line translation — {shortcut}"
+
+msgid "Enable line translation in Extra Settings first."
+msgstr "Enable line translation in Extra Settings first."
+
+msgid "Enable automatic translation in Extra Settings first."
+msgstr "Enable automatic translation in Extra Settings first."
+
+msgid "Skip blank lines on web pages"
+msgstr "Skip blank lines on web pages"
+
+msgid "No more non-blank lines in this direction."
+msgstr "No more non-blank lines in this direction."
+
+msgid "Announce word and character counts"
+msgstr "Announce word and character counts"
+
+msgid "Announce word and character counts — {shortcut}"
+msgstr "Announce word and character counts — {shortcut}"
+
+msgid "Sentence count: {count}"
+msgstr "Sentence count: {count}"
+
+msgid "Word count: {count}"
+msgstr "Word count: {count}"
+
+msgid "Character count: {count}"
+msgstr "Character count: {count}"
+
+msgid "Blank line count: {count}"
+msgstr "Blank line count: {count}"
+
+msgid "Enable word and character counts in Extra Settings first."
+msgstr "Enable word and character counts in Extra Settings first."
+
+msgid "Text counting is already in progress."
+msgstr "Text counting is already in progress."
+
+msgid "Select some text first."
+msgstr "Select some text first."
+
+msgid "The selected text could not be counted."
+msgstr "The selected text could not be counted."
+
+msgid "Inspect clipboard"
+msgstr "Inspect clipboard"
+
+msgid "Inspect clipboard — {shortcut}"
+msgstr "Inspect clipboard — {shortcut}"
+
+msgid "Folder"
+msgstr "Folder"
+
+msgid "File"
+msgstr "File"
+
+msgid "{extension} file"
+msgstr "{extension} file"
+
+msgid "{size} bytes"
+msgstr "{size} bytes"
+
+msgid "{amount} {unit} ({size} bytes)"
+msgstr "{amount} {unit} ({size} bytes)"
+
+msgid "Files on clipboard: {count}"
+msgstr "Files on clipboard: {count}"
+
+msgid "File {number}"
+msgstr "File {number}"
+
+msgid "Name: {name}"
+msgstr "Name: {name}"
+
+msgid "Type: {type}"
+msgstr "Type: {type}"
+
+msgid "Size: {size}"
+msgstr "Size: {size}"
+
+msgid "Path: {path}"
+msgstr "Path: {path}"
+
+msgid "Not calculated for folders."
+msgstr "Not calculated for folders."
+
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgid "The file could not be accessed. It may have been moved or deleted."
+msgstr "The file could not be accessed. It may have been moved or deleted."
+
+msgid "The clipboard is empty."
+msgstr "The clipboard is empty."
+
+msgid "The clipboard does not contain supported text, a table or files."
+msgstr "The clipboard does not contain supported text, a table or files."
+
+msgid "Enable clipboard inspection in Extra Settings first."
+msgstr "Enable clipboard inspection in Extra Settings first."
+
+msgid "Clipboard inspection is already in progress."
+msgstr "Clipboard inspection is already in progress."
+
+msgid "The clipboard content is too large to inspect."
+msgstr "The clipboard content is too large to inspect."
+
+msgid "The clipboard could not be read. Please try again."
+msgstr "The clipboard could not be read. Please try again."
+
+msgid "Bookmarks"
+msgstr "Bookmarks"
+
+msgid "Bookmarks — {shortcut}"
+msgstr "Bookmarks — {shortcut}"
+
+msgid "Enable bookmarks in Extra Settings first."
+msgstr "Enable bookmarks in Extra Settings first."
+
+msgid "Enter a bookmark name."
+msgstr "Enter a bookmark name."
+
+msgid "Enter a complete http or https web address."
+msgstr "Enter a complete http or https web address."
+
+msgid "Enter a folder path or web address."
+msgstr "Enter a folder path or web address."
+
+msgid "Enter an absolute folder path, such as C:\\Documents."
+msgstr "Enter an absolute folder path, such as C:\\Documents."
+
+msgid "This location is already bookmarked."
+msgstr "This location is already bookmarked."
+
+msgid "Bookmarks changed elsewhere. Close and reopen the list."
+msgstr "Bookmarks changed elsewhere. Close and reopen the list."
+
+msgid "The bookmarks file is damaged or unsupported. It has not been changed."
+msgstr "The bookmarks file is damaged or unsupported. It has not been changed."
+
+msgid "Bookmarks could not be read."
+msgstr "Bookmarks could not be read."
+
+msgid "Bookmarks could not be saved. Your previous records have been kept."
+msgstr "Bookmarks could not be saved. Your previous records have been kept."
+
+msgid "The bookmark could not be opened. Check its address or folder path."
+msgstr "The bookmark could not be opened. Check its address or folder path."
+
+msgid "Edit bookmark"
+msgstr "Edit bookmark"
+
+msgid "Add bookmark"
+msgstr "Add bookmark"
+
+msgid "Bookmark name"
+msgstr "Bookmark name"
+
+msgid "Location type"
+msgstr "Location type"
+
+msgid "Web page"
+msgstr "Web page"
+
+msgid "Browse for folder"
+msgstr "Browse for folder"
+
+msgid "Save bookmark"
+msgstr "Save bookmark"
+
+msgid "Choose a folder"
+msgstr "Choose a folder"
+
+msgid "Search bookmarks"
+msgstr "Search bookmarks"
+
+msgid "Saved bookmarks"
+msgstr "Saved bookmarks"
+
+msgid "Selected location"
+msgstr "Selected location"
+
+msgid "There are no matching bookmarks."
+msgstr "There are no matching bookmarks."
+
+msgid "Open bookmark"
+msgstr "Open bookmark"
+
+msgid "Add current location"
+msgstr "Add current location"
+
+msgid "Remove bookmark"
+msgstr "Remove bookmark"
+
+msgid "Bookmark saved."
+msgstr "Bookmark saved."
+
+msgid "The current location could not be detected. Enter its name and address manually."
+msgstr "The current location could not be detected. Enter its name and address manually."
+
+msgid "Bookmark removed."
+msgstr "Bookmark removed."
+
+msgid "The folder is unavailable. It may have been moved, deleted or disconnected."
+msgstr "The folder is unavailable. It may have been moved, deleted or disconnected."
+
+msgid "Folder path"
+msgstr "Folder path"
+
+msgid "Web address"
+msgstr "Web address"
+
+msgid "Quick find"
+msgstr "Quick find"
+
+msgid "Quick find — {shortcut}"
+msgstr "Quick find — {shortcut}"
+
+msgid "Protected fields cannot be saved in Quick find."
+msgstr "Protected fields cannot be saved in Quick find."
+
+msgid "Quick find is not available in this document or view."
+msgstr "Quick find is not available in this document or view."
+
+msgid "Move to a non-blank text line first."
+msgstr "Move to a non-blank text line first."
+
+msgid "Quick find supports documents up to 1000000 characters and lines up to 1000 characters."
+msgstr "Quick find supports documents up to 1000000 characters and lines up to 1000 characters."
+
+msgid "The current line could not be saved. Return to the document and try again."
+msgstr "The current line could not be saved. Return to the document and try again."
+
+msgid "There are too many matching locations. Use a more distinctive line."
+msgstr "There are too many matching locations. Use a more distinctive line."
+
+msgid "The saved location was not found in this document."
+msgstr "The saved location was not found in this document."
+
+msgid "Enter a name and a valid shortcut, or leave the shortcut unassigned."
+msgstr "Enter a name and a valid shortcut, or leave the shortcut unassigned."
+
+msgid "This shortcut is already assigned in this document."
+msgstr "This shortcut is already assigned in this document."
+
+msgid "This shortcut is already used by NVDA or another add-on. Choose another shortcut."
+msgstr "This shortcut is already used by NVDA or another add-on. Choose another shortcut."
+
+msgid "This location is already saved in Quick find."
+msgstr "This location is already saved in Quick find."
+
+msgid "Quick find records changed elsewhere. Close and reopen the list."
+msgstr "Quick find records changed elsewhere. Close and reopen the list."
+
+msgid "The Quick find file is damaged or unsupported. It has not been changed."
+msgstr "The Quick find file is damaged or unsupported. It has not been changed."
+
+msgid "Quick find records could not be read."
+msgstr "Quick find records could not be read."
+
+msgid "Quick find records could not be saved. Your previous records have been kept."
+msgstr "Quick find records could not be saved. Your previous records have been kept."
+
+msgid "The document or caret changed. Run Quick find again."
+msgstr "The document or caret changed. Run Quick find again."
+
+msgid "Quick find could not complete the operation."
+msgstr "Quick find could not complete the operation."
+
+msgid "Enable Quick find in Extra Settings first."
+msgstr "Enable Quick find in Extra Settings first."
+
+msgid "Quick find is already searching."
+msgstr "Quick find is already searching."
+
+msgid "Edit saved location"
+msgstr "Edit saved location"
+
+msgid "Add current line"
+msgstr "Add current line"
+
+msgid "Location name"
+msgstr "Location name"
+
+msgid "Saved line"
+msgstr "Saved line"
+
+msgid "Remove assigned shortcut"
+msgstr "Remove assigned shortcut"
+
+msgid "Save location"
+msgstr "Save location"
+
+msgid "Press the shortcut for this saved location. Press Escape to cancel."
+msgstr "Press the shortcut for this saved location. Press Escape to cancel."
+
+msgid "Use a letter, number or function key with NVDA, Alt or Control. Standard editing and navigation keys cannot be assigned."
+msgstr "Use a letter, number or function key with NVDA, Alt or Control. Standard editing and navigation keys cannot be assigned."
+
+msgid "Current document: {document}"
+msgstr "Current document: {document}"
+
+msgid "This document is identified by its title and text sample because its full path is unavailable."
+msgstr "This document is identified by its title and text sample because its full path is unavailable."
+
+msgid "Search saved locations"
+msgstr "Search saved locations"
+
+msgid "Saved locations in this document"
+msgstr "Saved locations in this document"
+
+msgid "There are no matching saved locations in this document."
+msgstr "There are no matching saved locations in this document."
+
+msgid "Go to location"
+msgstr "Go to location"
+
+msgid "Remove saved location"
+msgstr "Remove saved location"
+
+msgid "{name} — line {line} — {shortcut}"
+msgstr "{name} — line {line} — {shortcut}"
+
+msgid "Quick find location saved."
+msgstr "Quick find location saved."
+
+msgid "Quick find location removed."
+msgstr "Quick find location removed."
+
+msgid "Match {number}, line {line}: {before} [{text}] {after}"
+msgstr "Match {number}, line {line}: {before} [{text}] {after}"
+
+msgid "Several locations match. Choose the intended location; no movement has been made."
+msgstr "Several locations match. Choose the intended location; no movement has been made."
+
+msgid "Choose matching location"
+msgstr "Choose matching location"
+
+msgid "Assigned shortcut"
+msgstr "Assigned shortcut"
+
+msgid "Assign shortcut"
+msgstr "Assign shortcut"
+
+msgid "Change shortcut"
+msgstr "Change shortcut"
+
+msgid "Go to a saved location in the current document"
+msgstr "Go to a saved location in the current document"

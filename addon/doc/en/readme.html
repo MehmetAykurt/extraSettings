@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extra Settings User Manual</title>
+<style>
+body { max-width: 52rem; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.7; color: #202020; background: #fff; }
+h1, h2, h3 { line-height: 1.35; } h2 { margin-top: 2rem; }
+a { color: #00478f; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid #202020; outline-offset: 4px; }
+li { margin-bottom: .6rem; } kbd { font-family: inherit; font-weight: bold; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+caption { text-align: left; font-weight: bold; margin-bottom: .6rem; }
+th, td { text-align: left; vertical-align: top; padding: .65rem; border: 1px solid #777; }
+th { background: #f1f1f1; } section { scroll-margin-top: 1rem; }
+@media print { body { max-width: none; margin: 0; color: #000; } h2, h3 { break-after: avoid; } }
+</style>
+</head>
+<body>
+<header>
+<h1>Extra Settings User Manual</h1>
+<p>Add-on version: 2026.10.20<br>NVDA Version: 2026.2</p>
+<p><strong>Developer</strong><br>Mehmet Aykurt<br><a href="https://mehmetaykurt.com.tr">Mehmet Aykurt</a></p>
+<p>For suggestions, feedback and comments:<br><a href="mailto:m.aykurt38@gmail.com">m.aykurt38@gmail.com</a></p>
+<h2>About</h2>
+<p>Extra Settings brings web navigation, text and clipboard operations, access to saved locations, and line translation together in a single NVDA settings category. This manual covers installation, configuration, everyday operation, keyboard commands, and the scope and limitations of each feature.</p>
+<p><a href="../tr/readme.html" lang="tr" hreflang="tr">Türkçe kullanım kılavuzu</a></p>
+</header>
+<nav aria-label="Contents">
+<h2>Contents</h2>
+<ul>
+<li><a href="#installation">1. Installation and first use</a></li>
+<li><a href="#getting-started">2. Finding the settings and applying changes</a></li>
+<li><a href="#keyboard-commands">3. Keyboard commands and shortcut management</a></li>
+<li><a href="#web">4. Enable cycling on web pages</a></li>
+<li><a href="#bos-satirlar">5. Skip blank lines on web pages</a></li>
+<li><a href="#clipboard">6. Announce cut, copy and paste operations</a></li>
+<li><a href="#speech-history">7. Enable speech history</a></li>
+<li><a href="#applications-key">8. Use instead of the Applications key</a></li>
+<li><a href="#append-clipboard">9. Append to clipboard — Windows+C</a></li>
+<li><a href="#metin-sayimi">10. Announce word and character counts</a></li>
+<li><a href="#panoyu-incele">11. Inspect clipboard</a></li>
+<li><a href="#bookmarks">12. Bookmarks</a></li>
+<li><a href="#quick-find">13. Quick find</a></li>
+<li><a href="#numpad-navigation">14. Use the numeric keypad as navigation keys</a></li>
+<li><a href="#translation">15. Translation</a></li>
+<li><a href="#automatic-translation">16. Automatic translation</a></li>
+<li><a href="#stored-data">17. Settings and user data</a></li>
+<li><a href="#troubleshooting">18. Troubleshooting and support</a></li>
+<li><a href="#questions">19. Frequently asked questions</a></li>
+<li><a href="#about">20. Languages and add-on information</a></li>
+</ul>
+</nav>
+<main>
+<section aria-labelledby="installation">
+<h2 id="installation">1. Installation and first use</h2>
+<h3>1.1. System requirements</h3>
+<p>This release targets NVDA 2026.2. The add-on manifest specifies 2026.2 as both the minimum and last tested NVDA version. Features other than translation do not require an internet connection. Translation requires access to Google’s online service.</p>
+<h3>1.2. Installation procedure</h3>
+<ol><li>Open the Extra Settings <code>.nvda-addon</code> package while NVDA is running.</li><li>Review the add-on name and version in NVDA’s installation dialog, then complete installation.</li><li>Restart NVDA when prompted.</li><li>Open Preferences, Settings, Extra Settings. Enable the required features and apply the changes.</li></ol>
+<p>After an update, compare the version shown in this manual with the installed add-on version. Reinstallation is not required to change preferences. Existing bookmarks and Quick find records are stored separately from the add-on files in the <code>extraSettings</code> subdirectory of NVDA’s user configuration directory.</p>
+</section>
+<section aria-labelledby="getting-started">
+<h2 id="getting-started">2. Finding the settings and applying changes</h2>
+<ol>
+<li>Open the NVDA menu, then choose <strong>Preferences</strong> and <strong>Settings</strong>.</li>
+<li>Select <strong>Extra Settings</strong>, the last category in the list. Press <kbd>End</kbd> while the categories list has focus to reach its last entry.</li>
+<li>Use <kbd>Tab</kbd> to move through the options. Press <kbd>Space</kbd> to check or uncheck a checkbox.</li>
+<li><strong>Apply</strong> applies changes and leaves the dialog open. <strong>OK</strong> applies changes and closes it. <strong>Cancel</strong> discards unapplied changes; it does not undo an earlier Apply.</li>
+</ol>
+<p>No NVDA restart is required after changing these options. Preferences use NVDA’s configuration system and its normal saving rules. If necessary, use NVDA’s Save Configuration command to keep your choices after a restart.</p>
+<h3>2.1. Using this manual and understanding the terminology</h3>
+<p>After initial configuration, the feature chapters follow the order used in the Extra Settings category. Use the contents links to open a chapter directly. Headings and lists provide a consistent structure for screen reader navigation.</p>
+<p>The <strong>NVDA key</strong> is the Insert or Caps Lock key configured as an NVDA modifier. A plus sign indicates that the keys are pressed together. For example, <kbd>NVDA+Shift+H</kbd> means holding NVDA and Shift while pressing H. Commands shown in this manual are default assignments; assignments changed in Input Gestures take precedence.</p>
+<p><strong>Browse mode</strong> supports navigation through the text and elements of a web page. <strong>Focus mode</strong> passes keys to application controls, such as edit fields. Features restricted to browse mode identify that requirement in their respective chapters.</p>
+<p>All added features are unchecked on first installation and work independently. Line translation and Automatic translation are child options of the master Translation setting. Automatic translation also requires a running session, as described in the relevant chapters.</p>
+</section>
+<section aria-labelledby="keyboard-commands">
+<h2 id="keyboard-commands">3. Keyboard commands and shortcut management</h2>
+<p>The table below lists the default commands. Each command requires its corresponding feature to be enabled in Extra Settings. Changing a shortcut does not enable the feature.</p>
+<table>
+<caption>Default keyboard commands</caption>
+<thead><tr><th scope="col">Feature or action</th><th scope="col">Default shortcut</th><th scope="col">Requirement</th></tr></thead>
+<tbody>
+<tr><th scope="row">Show speech history</th><td><kbd>NVDA+G</kbd></td><td>Speech history must be enabled.</td></tr>
+<tr><th scope="row">Append to clipboard</th><td><kbd>Windows+C</kbd></td><td>Append to clipboard must be enabled and text selected.</td></tr>
+<tr><th scope="row">Announce word and character counts</th><td><kbd>NVDA+Shift+K</kbd></td><td>Text counting must be enabled and text selected.</td></tr>
+<tr><th scope="row">Inspect clipboard</th><td><kbd>NVDA+Shift+C</kbd></td><td>Clipboard inspection must be enabled.</td></tr>
+<tr><th scope="row">Bookmarks</th><td><kbd>NVDA+Shift+Y</kbd></td><td>Bookmarks must be enabled.</td></tr>
+<tr><th scope="row">Quick find</th><td><kbd>NVDA+Shift+H</kbd></td><td>Quick find must be enabled and a supported document open.</td></tr>
+<tr><th scope="row">Translate the current line</th><td><kbd>NVDA+Shift+T</kbd></td><td>Translation and Line translation must be enabled.</td></tr>
+<tr><th scope="row">Start or stop automatic translation</th><td><kbd>NVDA+Shift+O</kbd></td><td>Translation and Automatic translation must be enabled.</td></tr>
+</tbody>
+</table>
+<h3>3.1. Changing assignments</h3><p>Open Preferences, Input Gestures in the NVDA menu. Locate the command under NVDA Extra Settings and add or remove the required assignment. The displayed shortcut is refreshed when the Extra Settings category opens or the corresponding checkbox receives focus. No shortcut assigned is displayed when no assignment exists.</p>
+<p>The Applications key substitute is assigned using Set key in its settings. Shortcuts specific to Quick find records are assigned in the record creation or editing dialog and apply only to the matching page or document. Web cycling and blank-line skipping have no separate activation shortcut.</p>
+<p>Assigning a combination used by an application or another NVDA command can affect the expected action. In particular, NVDA+Shift+C is also used to define column headers in Word and Excel. If that command is required, assign a different shortcut to Inspect clipboard.</p>
+</section>
+<section aria-labelledby="web">
+<h2 id="web">4. Enable cycling on web pages</h2>
+<h3>4.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> When enabled, browse mode quick navigation cycles through matching elements.</p>
+<h3>4.2. Forward and backward wrapping</h3>
+<ul>
+<li>Moving forward beyond the last match returns to the first match. NVDA says <strong>“Wrapped to beginning.”</strong> before reading the element.</li>
+<li>Moving backward with <kbd>Shift</kbd> before the first match returns to the last match. NVDA says <strong>“Wrapped to end.”</strong> before reading the element.</li>
+</ul>
+<h3>4.3. Examples</h3>
+<p>Press <kbd>H</kbd> at the last heading to return to the first heading. Press <kbd>Shift+B</kbd> at the beginning of the page to move to its last button. The same behavior applies to heading levels, links, tables, form fields and other element types using NVDA’s shared quick navigation. Text paragraph and non-link text block navigation are also supported.</p>
+<h3>4.4. Scope and special cases</h3>
+<ul>
+<li>If the page contains no matching element, NVDA keeps its normal not-found message. No wrap message is announced.</li>
+<li>If there is only one matching element, cycling returns to that same element.</li>
+<li>The feature supports browsers and embedded web views using web accessibility backends. Existing NVDA navigation commands are used, including any custom keys assigned to those commands.</li>
+<li>Typing in focus mode, <kbd>Tab</kbd> navigation and table cell navigation are outside this option’s scope.</li>
+<li>Native Word and Acrobat document views are excluded. The same/different text style commands, which have no default key assignments in NVDA, do not wrap in this release.</li>
+</ul>
+</section>
+<section aria-labelledby="bos-satirlar">
+<h2 id="bos-satirlar">5. Skip blank lines on web pages</h2>
+<h3>5.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> There is no shortcut for this option. In web browse mode, ordinary Up arrow and Down arrow movements skip empty lines and move the caret to the next non-blank line in the same direction, which is then read. Lines containing only spaces, tabs or non-breaking spaces also count as blank.</p>
+<h3>5.2. Enabling and using the feature</h3>
+<p>When numeric keypad navigation is enabled, the navigation functions of keypad 8 and 2 use the same behavior. Shift selection, Ctrl paragraph movement, quick navigation, say all, focus-mode editing and native editors such as Notepad keep their normal behavior. Existing selections also use NVDA’s normal movement.</p>
+<p>Buttons, editable controls, links, images and real table cells are preserved even when their text appears empty. Visual margins that NVDA does not expose as blank lines are outside this feature. At an empty document boundary, the caret stays in place and NVDA says <strong>“No more non-blank lines in this direction.”</strong></p>
+<p>Searching happens only on the relevant movement key; there is no continuous scan or whole-page cache. Long runs of blank lines are examined in short chunks. A new key, focus change or disabling the option cancels a pending search. The document is never edited. When automatic translation is running, only the reached non-blank line enters its queue. Ineligible documents and unsupported text operations use NVDA’s normal navigation.</p>
+</section>
+<section aria-labelledby="clipboard">
+<h2 id="clipboard">6. Announce cut, copy and paste operations</h2>
+<h3>6.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> When enabled, standard editing shortcuts produce brief announcements. The add-on first checks for a selection or available clipboard data.</p>
+<h3>6.2. Copy: Ctrl+C</h3>
+<p>If selected text or a selected item is detected, NVDA says <strong>“Copied.”</strong> A single selected character is sufficient. Without a selection, it says <strong>“No selected data was found to copy.”</strong></p>
+<h3>6.3. Cut: Ctrl+X</h3>
+<p>If selected data is detected, NVDA says <strong>“Cut.”</strong> Without a selection, it says <strong>“No selected data was found to cut.”</strong> The selection is checked before cutting can remove it.</p>
+<h3>6.4. Paste: Ctrl+V</h3>
+<p>If the clipboard contains data, NVDA says <strong>“Pasted.”</strong> If it is empty, it says <strong>“No data was found to paste.”</strong> Files, images and application-specific clipboard formats also count as data; the check is not limited to text.</p>
+<h3>6.5. When a check cannot be completed</h3>
+<ul>
+<li><strong>“The selection could not be checked.”</strong> means the editable control’s selection information could not be read. It does not necessarily mean nothing is selected.</li>
+<li><strong>“The clipboard could not be checked right now.”</strong> means the clipboard could not be inspected. It is not assumed to be empty.</li>
+</ul>
+<h3>6.6. Important details</h3>
+<ul>
+<li>These checks establish whether prerequisite data is available. They do not separately confirm that the application completed the operation. For example, selected text in a read-only field may not be cut.</li>
+<li>Even when no data is found, the shortcut is passed through NVDA’s normal handling to the application. The operation is not blocked.</li>
+<li>Only <kbd>Ctrl+C</kbd>, <kbd>Ctrl+X</kbd> and <kbd>Ctrl+V</kbd> are covered. Plain C, X and V keys and application menu commands do not trigger announcements.</li>
+<li>Announcements are suppressed in input help, during gesture capture for key assignments, and in NVDA sleep mode.</li>
+<li>The clipboard is not modified. Text is read transiently only to determine whether it is empty; it is never retained or logged. Selection checks inspect the range rather than reading its text content.</li>
+</ul>
+</section>
+<section aria-labelledby="speech-history">
+<h2 id="speech-history">7. Enable speech history</h2>
+<h3>7.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> When enabled, NVDA speech text is retained only in memory. History is never saved to disk. Closing or restarting NVDA clears previous entries. Unchecking this option and applying the change also clears the cache. The option itself and the following preferences use NVDA’s normal configuration storage.</p>
+<h3>7.2. Line count</h3>
+<p>Checking the option reveals the <strong>Line count</strong> text field at the next Tab stop. Enter a whole number from 1 to 1000. The default is 100. Each speech announcement is one entry; a long announcement is not split into multiple entries. When the limit is reached, the oldest entries are discarded so the newest speech is retained.</p>
+<p>An invalid count reports “Enter a whole number from 1 to 1000.” The settings cannot be applied until it is corrected.</p>
+<h3>7.3. Display order</h3>
+<p>The next Tab stop is <strong>Display order</strong>. Use the up and down arrows to choose:</p>
+<ul>
+<li><strong>Beginning to end:</strong> The newest announcement appears on the first line, with older entries below it. This is the default.</li>
+<li><strong>End to beginning:</strong> The newest announcement appears on the last line, with older entries above it.</li>
+</ul>
+<p>These names use the meanings stated above in this add-on. Both additional controls are hidden and removed from the Tab order when the checkbox is unchecked. Apply your choices with OK or Apply.</p>
+<h3>7.4. Viewing history with NVDA+G</h3>
+<p>When disabled, the command reports “Enable speech history in Extra Settings first.” An empty history displays “There are no history entries yet.” Clearing it announces “Speech history cleared.” A failed copy reports “Could not copy to the clipboard.”</p>
+<p><kbd>NVDA+G</kbd> opens the history window; it does not toggle recording. If history is disabled, a message explains how to enable it. The window focuses the newest entry at the position appropriate to the display order. Use up and down arrows to move between entries.</p>
+<p><kbd>Ctrl+C</kbd> or <strong>Copy selected entry</strong> copies just the selected row. <strong>Copy all</strong> copies entries in their displayed order. <strong>Clear history</strong> clears the in-memory entries. <kbd>Escape</kbd> or <strong>Close</strong> closes the window. Closing the window alone does not erase history.</p>
+<p>While the history window is active, speech used to read its interface and entries is not recorded again. Recording resumes when you switch to another application; returning to the viewer refreshes the list. Protected input fields suppress recording.</p>
+<h3>7.5. Changing the shortcut</h3>
+<p>Open Preferences, Input Gestures from the NVDA menu. In the <strong>NVDA Extra Settings</strong> category, change the assignment for <strong>Show speech history</strong>. You can add a new key and remove the old one.</p>
+<p>The shortcut shown in the checkbox label updates when Extra Settings is reopened or the history checkbox receives focus. Multiple assignments are all listed. If every assignment is removed, the label says <strong>No shortcut assigned</strong>.</p>
+<p>The history window’s list is labelled <strong>History entries</strong>.</p>
+</section>
+<section aria-labelledby="applications-key">
+<h2 id="applications-key">8. Use instead of the Applications key</h2>
+<h3>8.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked, with no shortcut assigned.</strong> If your keyboard has no Applications key, choose a convenient substitute to open the focused item's context menu.</p>
+<h3>8.2. Enabling and using the feature</h3>
+<ol>
+<li>Check <strong>Use instead of the Applications key</strong>. The next Tab stop is the <strong>Set key</strong> button.</li>
+<li>Activate it. NVDA asks you to press the shortcut you want to use instead of the Applications key, or Escape to cancel.</li>
+<li>Press a single key or a key combination, such as F9 or Ctrl+F9. A modifier such as Ctrl, Alt or Shift alone does not complete the selection.</li>
+<li>The shortcut is detected automatically, the capture dialog closes, and the selection is announced. The Set key button also shows your selected shortcut.</li>
+<li>Choose <strong>OK</strong> or <strong>Apply</strong> to activate it. Press the shortcut and release any modifier keys to open the menu.</li>
+</ol>
+<p>Escape cancels capture and keeps the previous selection. Leaving the capture window also cancels it. The captured shortcut is consumed during selection and is not sent to the application.</p>
+<p>While enabled, the selected shortcut opens the context menu instead of performing its previous task. Selecting a letter affects typing that letter, so choose a key you do not need for other tasks. Windows-reserved combinations such as Ctrl+Alt+Delete cannot be captured. Fn is only detected through the resulting key that the keyboard sends to Windows.</p>
+<p>Use Set key again to change the assignment. Uncheck the option and apply to restore the shortcut's usual task; the last assignment is retained. Cancel in the settings dialog discards unapplied changes. A control that does not respond to the Applications key might not open a menu.</p>
+<p>If another shortcut capture is active, you hear “Another key capture is already in progress.” Applying without choosing a shortcut reports “Choose a shortcut using Set key first.” Holding modifier keys too long reports “Release the shortcut keys and try again.” Switching foreground windows while waiting for modifiers to be released cancels the pending context-menu action.</p>
+<h3>8.3. Command and key capture messages</h3>
+<p>The command description in input help is <strong>Open the context menu</strong>. The key capture prompt is <strong>“Please press the shortcut you want to use instead of the Applications key. Press Escape to cancel.”</strong> Cancelling reports <strong>“Key selection canceled.”</strong> After choosing a key, the confirmation for F9, for example, is <strong>“Selected shortcut: F9. Choose OK or Apply to activate it.”</strong></p>
+</section>
+<section aria-labelledby="append-clipboard">
+<h2 id="append-clipboard">9. Append to clipboard — Windows+C</h2>
+<h3>9.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> Check this option and choose OK or Apply. Select text in an editor or a browse-mode web page, then press <kbd>Windows+C</kbd>. The selected text is added after the clipboard's existing text, and NVDA says <strong>“Added to clipboard.”</strong> A single selected character is enough.</p>
+<h3>9.2. Enabling and using the feature</h3>
+<p>If the clipboard is empty, the first selection is copied directly. Subsequent selections are separated by a new line. No additional separator is inserted if the previous text already ends with a line ending or the new selection starts with one. Existing line endings and spaces in the selection are preserved. Paste the accumulated text with normal <kbd>Ctrl+V</kbd>. Normal Ctrl+C replaces clipboard contents.</p>
+<p>If nothing is selected, NVDA says <strong>“No selected text was found to append.”</strong> Inaccessible selections are reported as <strong>“The selected text could not be read.”</strong> Password fields are excluded. A locked clipboard or write failure produces <strong>“Could not append to the clipboard.”</strong></p>
+<p>This feature accumulates plain text. Font, color and other rich formatting are not retained. A clipboard containing only files, images or other non-text data is preserved; copy text first. The add-on does not save the collected text to a file or log. It resides in the Windows clipboard and is subject to your Windows clipboard preferences.</p>
+<p>A clipboard containing only non-text data reports “The clipboard contains non-text data. Copy text first.” Existing clipboard data is not overwritten in this case.</p>
+<h3>9.3. Changing the shortcut</h3>
+<p>In Preferences, Input Gestures, find <strong>Append to clipboard</strong> under <strong>NVDA Extra Settings</strong>. Change the default Windows+C assignment or add another shortcut. When Extra Settings is reopened or the checkbox receives focus, its label shows the current assignments. If none remain, it says <strong>No shortcut assigned</strong>.</p>
+<p>While enabled, the assigned shortcut performs this action. Uncheck and apply to return the key to its usual task. If you also assign the same key as an Applications key substitute, that option takes precedence.</p>
+</section>
+<section aria-labelledby="metin-sayimi">
+<h2 id="metin-sayimi">10. Announce word and character counts</h2>
+<h3>10.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> The default shortcut is <kbd>NVDA+Shift+K</kbd>. When enabled, this command counts only the selected text. NVDA’s browseable results window lists <strong>Sentence count</strong>, <strong>Word count</strong>, <strong>Character count</strong> and <strong>Blank line count</strong> on separate lines. Read using the arrow keys, then press <kbd>Escape</kbd> or activate <strong>Close</strong> to dismiss the window.</p>
+<h3>10.2. Displaying statistics for a selection</h3>
+<ol><li>Enable Announce word and character counts in Extra Settings.</li><li>Select the text to count in a document or web page.</li><li>Press <kbd>NVDA+Shift+K</kbd> and review the four counts in the results window.</li><li>Press <kbd>Esc</kbd> to return to the document.</li></ol>
+<p>Change the shortcut in <strong>Input Gestures</strong>, under <strong>NVDA Extra Settings</strong>, using <strong>Announce word and character counts</strong>. The settings label refreshes when the category is activated or the checkbox gains focus. If all assignments are removed, it shows <strong>No shortcut assigned</strong>.</p>
+<h3>10.3. Counting rules</h3>
+<ul>
+<li>Only the selection is counted. The command never edits text or changes the clipboard and does not emulate Ctrl+C. Accessible selections in supported editors and web browse mode are supported. Protected text is not read.</li>
+<li>Words are groups of letters and numbers. Internal apostrophes and hyphens stay in the same word; Ankara’da and e-posta each count as one word. Decimal numbers count as one group.</li>
+<li>Spaces and tabs are included in the character count; line separators are excluded. Unicode code points are counted, so some combined marks and emoji can count as multiple characters.</li>
+<li>A blank line is a line within the selection with no text or only whitespace such as spaces and tabs. Visual wrapping does not add blank lines. A single terminal newline does not invent an additional blank line.</li>
+<li>Sentence counting uses full stops, question marks, exclamation marks and ellipses, with exceptions for common Turkish and English abbreviations, decimal numbers and links. A final unfinished text fragment counts as a sentence. Newlines alone do not end sentences. This is not a grammar parser; unusual abbreviations, lists and other languages can affect results.</li>
+</ul>
+<p>Counting starts only when invoked. Large selections are counted in the background. No network connection or language download is needed. Repeated presses while counting do not start additional jobs. Disabling the option or restarting NVDA discards pending results.</p>
+<h3>10.4. Messages</h3>
+<ul>
+<li>Enable word and character counts in Extra Settings first.</li>
+<li>Select some text first.</li>
+<li>The selected text could not be read.</li>
+<li>Text counting is already in progress.</li>
+<li>The selected text could not be counted.</li>
+</ul>
+</section>
+<section aria-labelledby="panoyu-incele">
+<h2 id="panoyu-incele">11. Inspect clipboard</h2>
+<h3>11.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> The default shortcut is <kbd>NVDA+Shift+C</kbd>. The command reads a snapshot of the current clipboard and presents it in NVDA’s browseable window. Close it using <kbd>Escape</kbd> or <strong>Close</strong>. Clipboard contents and copy/cut state are never modified.</p>
+<h3>11.2. Displaying clipboard contents</h3>
+<ol><li>Enable Inspect clipboard in Extra Settings.</li><li>Copy the text, table, files, or folders from the relevant application.</li><li>Press <kbd>NVDA+Shift+C</kbd>. Text, a table, or file information is displayed according to the available content.</li><li>When finished, press <kbd>Esc</kbd> to close the window. Run the command again to inspect content copied later.</li></ol>
+<p>Change the shortcut in <strong>Input Gestures</strong>, under <strong>NVDA Extra Settings</strong>, using <strong>Inspect clipboard</strong>. The settings label refreshes on focus or category activation; it shows <strong>No shortcut assigned</strong> if all assignments are removed. <kbd>NVDA+Shift+C</kbd> conflicts with setting column headers in Word and Excel; choose another clipboard inspection shortcut if you use that command.</p>
+<h3>11.3. Text and tables</h3>
+<p>Plain text is displayed in full for reading, selection and copying. If HTML table data is also available, rows, columns and cells are preserved for NVDA table navigation. Plain text alone is not used to guess the original table structure. Malformed HTML falls back to plain text when available. RTF-only content, images and other special formats may not be supported.</p>
+<p>Only table text and basic structure are retained; visual styling, scripts and external resources are removed. Only the copied fragment is used, not unselected surrounding HTML content. No external browser opens and no internet request is sent to retrieve content.</p>
+<h3>11.4. Files and folders</h3>
+<p>Existing files copied from applications such as File Explorer take priority over text. The window starts with <strong>Files on clipboard</strong>; folders are included in this count. Each item then shows a <strong>File</strong> number, <strong>Name</strong>, <strong>Type</strong>, <strong>Size</strong> and full <strong>Path</strong> for each item. Type descriptions come from Windows. Sizes show bytes, with a KiB, MiB, GiB or TiB equivalent where appropriate.</p>
+<p>Folders have type <strong>Folder</strong> and size <strong>Not calculated for folders.</strong> No directory contents are scanned. If a file is inaccessible, other items still appear; its type and size show <strong>Unavailable</strong> and <strong>The file could not be accessed. It may have been moved or deleted.</strong> File contents are not opened. Virtual files without an existing filesystem path, such as some email attachments, are outside this feature.</p>
+<h3>11.5. Operation and messages</h3>
+<p>There is no clipboard monitoring. Reading and metadata queries run in the background only when invoked; network file metadata may take longer. The window shows the captured snapshot, not later clipboard changes. Run the command again to refresh. Repeated presses do not queue additional jobs. Disabling the option or restarting NVDA discards pending results. Each text/HTML format is limited to 16 MiB, and file lists to 10,000 items; exceeding a limit produces a message instead of silent truncation.</p>
+<ul>
+<li>Enable clipboard inspection in Extra Settings first.</li>
+<li>The clipboard is empty.</li>
+<li>The clipboard does not contain supported text, a table or files.</li>
+<li>Clipboard inspection is already in progress.</li>
+<li>The clipboard content is too large to inspect.</li>
+<li>The clipboard could not be read. Please try again.</li>
+</ul>
+</section>
+<section aria-labelledby="bookmarks">
+<h2 id="bookmarks">12. Bookmarks</h2>
+<h3>12.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> Enable Bookmarks in Extra Settings and apply, then press <kbd>NVDA+Shift+Y</kbd> to open the shared list. If disabled, “Enable bookmarks in Extra Settings first.” is announced. Reassign the shortcut in Input Gestures under <strong>NVDA Extra Settings</strong>; the settings label follows the current assignment.</p>
+<h3>12.2. Creating and opening a first bookmark</h3>
+<ol><li>Enable Bookmarks in Extra Settings.</li><li>Return to the web page or File Explorer folder to save and press <kbd>NVDA+Shift+Y</kbd>.</li><li>Choose Add current location and review the suggested name, location type, and address.</li><li>Make any required corrections and choose Save bookmark.</li><li>Select the record in the list and press <kbd>Enter</kbd>. Folders open in File Explorer; web pages open in the default browser.</li></ol>
+<h3>12.3. Creating a bookmark from the current location</h3>
+<p><strong>Add current location:</strong> The add-on captures the web page or File Explorer folder that was active before opening the list. When detected, its name and address are filled in for review. Otherwise, “The current location could not be detected. Enter its name and address manually.” is announced and an empty editor opens. Some Explorer tabs, virtual Windows locations and browser views may not support automatic detection.</p>
+<h3>12.4. Creating a bookmark manually</h3>
+<p><strong>Add bookmark:</strong> Enter a Bookmark name and Location type. Choose Folder or Web page. The address field is labeled Folder path or Web address according to the selected type. Browse for folder opens the Choose a folder dialog. Web addresses must begin with http:// or https://; folders require an absolute path such as C:\Documents. Network folders are supported. Save bookmark stores the record; Cancel or Esc discards the edit. Duplicate locations are rejected. An unavailable folder can be saved; access is checked when opening it.</p>
+<h3>12.5. Using the list and opening a location</h3>
+<p><strong>Saved bookmarks:</strong> Each row contains a name and type. Search bookmarks filters by name or address; clearing the search restores all entries. Selected location shows the full address. Enter on the list or Open bookmark opens folders in File Explorer and web pages in your default browser, then closes the list. An unavailable folder produces a message and keeps its record.</p>
+<p><strong>Edit bookmark</strong> changes its name, type or address. <strong>Remove bookmark</strong> or Delete on the list removes only the selected saved record; it never deletes a folder or its contents. Close or Esc closes the list. Disabling the feature and applying also closes the list while retaining its records.</p>
+<p>Changes are saved immediately to <code>extraSettings/extraSettingsBookmarks.json</code> in NVDA’s user configuration folder. Records survive NVDA restarts and add-on updates. Previous valid contents are kept in <code>extraSettingsBookmarks.json.bak</code>. A damaged file produces a warning and is not overwritten. Records contain plain text names and addresses; folder paths must also be valid on any computer to which you transfer them. There is no continuous monitoring, downloading page contents or sending bookmarks to a service. A website address is passed to the browser only when opening a bookmark.</p>
+<h3>12.6. Notifications and warnings</h3>
+<ul>
+<li>Bookmark removed.</li>
+<li>Bookmark saved.</li>
+<li>Bookmarks changed elsewhere. Close and reopen the list.</li>
+<li>Bookmarks could not be read.</li>
+<li>Bookmarks could not be saved. Your previous records have been kept.</li>
+<li>Enter a bookmark name.</li>
+<li>Enter a complete http or https web address.</li>
+<li>Enter a folder path or web address.</li>
+<li>Enter an absolute folder path, such as C:\Documents.</li>
+<li>The bookmark could not be opened. Check its address or folder path.</li>
+<li>The bookmarks file is damaged or unsupported. It has not been changed.</li>
+<li>The folder is unavailable. It may have been moved, deleted or disconnected.</li>
+<li>There are no matching bookmarks.</li>
+<li>This location is already bookmarked.</li>
+</ul>
+</section>
+<section aria-labelledby="quick-find">
+<h2 id="quick-find">13. Quick find</h2>
+<h3>13.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> Enable Quick find in Extra Settings and apply. Press <kbd>NVDA+Shift+H</kbd> to open saved locations for the current page or document. Reassign this main shortcut in Input Gestures under <strong>NVDA Extra Settings</strong>; the settings label follows the assignment. When disabled, “Enable Quick find in Extra Settings first.” is announced.</p>
+<h3>13.2. Creating and revisiting a text location</h3>
+<ol><li>Enable Quick find in Extra Settings.</li><li>In a supported page or document, move to the non-blank text line to save.</li><li>Press <kbd>NVDA+Shift+H</kbd> and choose Add current line.</li><li>Review the Location name. Optionally use Assign shortcut to assign a combination for direct access.</li><li>Choose Save location and close the list.</li><li>Move elsewhere in the same page or document, then use the record shortcut or select the record in the Quick find list and press <kbd>Enter</kbd>.</li></ol>
+<h3>13.3. Saving the current line</h3>
+<p><strong>Add current line:</strong> The line at the caret is captured before opening the list. Its text becomes the initial Location name, which you can edit. Saved line is read-only. Save location commits the record; Cancel or Esc discards the edit. Duplicate locations are rejected. To save another line, close the list, move to that line, then reopen Quick find.</p>
+<h3>13.4. Assigning a record-specific shortcut</h3>
+<p><strong>Assign shortcut:</strong> Each saved location may have an optional shortcut. The button reads Assign shortcut when unassigned and Change shortcut when assigned. Assigned shortcut is a read-only field showing the current key or No shortcut assigned. Remove assigned shortcut appears only when a key is assigned. Activate Assign shortcut with Enter or Space, then press the intended combination. The captured key appears in Assigned shortcut; use Save location to apply it. Use a letter, digit or function key with NVDA, Alt or Control. Unmodified typing/navigation keys and standard editing combinations are rejected. Visible existing NVDA and add-on assignments are checked; the same shortcut cannot be assigned twice in one document. Native application shortcuts not reported to NVDA cannot all be detected. Remove assigned shortcut clears the assignment; use Save location to apply it.</p>
+<p>Input Help describes a record shortcut as “Go to a saved location in the current document”. A record shortcut works only while its document or page is active and Quick find is enabled. Different documents may reuse the same record shortcut. On other pages, in protected fields or while the list is open, the normal key action is preserved. Disabling the option and applying closes the list and cancels pending navigation while preserving records.</p>
+<h3>13.5. Listing, editing, and removing records</h3>
+<p><strong>Saved locations in this document:</strong> Rows show the name, captured text line number and shortcut. Line numbers count line endings in the text exposed to NVDA; they may differ from visual wrapping or Word’s printed lines. Search saved locations filters names and saved line text. Enter or Go to location closes the list, moves the caret and reads the destination line. Edit saved location changes the name and shortcut. The editor initially focuses Location name. Tab reaches the read-only Assigned shortcut field, where the stored combination can be read; Shift+Tab goes back. This field participates in keyboard tab traversal and cannot be edited directly. Remove saved location or Delete on the list removes only the saved record. Esc or Close closes the list.</p>
+<h3>13.6. Verifying locations with repeated text</h3>
+<p><strong>Repeated text:</strong> Records contain target text, short surrounding text, position, occurrence index and a document digest. An unchanged document allows the original position to be verified. After edits, target text and context are compared rather than blindly using the old line number. If ambiguity remains, Choose matching location lists occurrences with current text line numbers and surrounding text. Enter chooses a match; Esc cancels without moving. If missing, “The saved location was not found in this document.” is announced.</p>
+<h3>13.7. Supported documents and matching rules</h3>
+<p><strong>Scope:</strong> The shared text adapter supports web pages, TXT documents in Notepad, Microsoft Word and supported PDF views where NVDA exposes text and caret navigation. Image-only PDFs and views without accessible text positions are unsupported. Not every PDF reader or document view offers the same access. Web records retain the complete page URL, including path, query and fragment. The document must already be open; Quick find does not open closed files or navigate to another page.</p>
+<p>The full file path identifies a document when available. Otherwise its title and short samples from both ends of its text are used, with “This document is identified by its title and text sample because its full path is unavailable.” shown in the dialog. Renaming the document or changing its beginning/end may then hide previous records. Unsaved documents do not have guaranteed persistent identities.</p>
+<p><strong>Operation and storage:</strong> No continuous monitoring is used. Accessible document text is read on demand; matching runs in the background and native searches yield between short steps. A changed document or caret cancels pending movement. Limits are 1000000 document characters, 1000 characters per target line and 1000 matches, with a message when exceeded. Records are stored in <code>extraSettings/extraSettingsQuickFind.json</code> in NVDA’s user configuration folder; previous valid contents are kept in <code>extraSettingsQuickFind.json.bak</code>. Records contain the target line and short surrounding text, not a complete document copy. Nothing is sent to a translation service. Records survive add-on updates and NVDA restarts. Damaged files are not overwritten.</p>
+<h3>13.8. Notifications and warnings</h3>
+<ul>
+<li>Enter a name and a valid shortcut, or leave the shortcut unassigned.</li>
+<li>Move to a non-blank text line first.</li>
+<li>Press the shortcut for this saved location. Press Escape to cancel.</li>
+<li>Protected fields cannot be saved in Quick find.</li>
+<li>Quick find could not complete the operation.</li>
+<li>Quick find is already searching.</li>
+<li>Quick find is not available in this document or view.</li>
+<li>Quick find location removed.</li>
+<li>Quick find location saved.</li>
+<li>Quick find records changed elsewhere. Close and reopen the list.</li>
+<li>Quick find records could not be read.</li>
+<li>Quick find records could not be saved. Your previous records have been kept.</li>
+<li>Quick find supports documents up to 1000000 characters and lines up to 1000 characters.</li>
+<li>Several locations match. Choose the intended location; no movement has been made.</li>
+<li>The Quick find file is damaged or unsupported. It has not been changed.</li>
+<li>The current line could not be saved. Return to the document and try again.</li>
+<li>The document or caret changed. Run Quick find again.</li>
+<li>There are no matching saved locations in this document.</li>
+<li>There are too many matching locations. Use a more distinctive line.</li>
+<li>This location is already saved in Quick find.</li>
+<li>This shortcut is already assigned in this document.</li>
+<li>This shortcut is already used by NVDA or another add-on. Choose another shortcut.</li>
+<li>Use a letter, number or function key with NVDA, Alt or Control. Standard editing and navigation keys cannot be assigned.</li>
+</ul>
+</section>
+<section aria-labelledby="numpad-navigation">
+<h2 id="numpad-navigation">14. Use the numeric keypad as navigation keys</h2>
+<h3>14.1. Purpose and scope</h3>
+<p><strong>Default: Unchecked.</strong> NVDA normally uses some keypad keys for text review and object navigation. With <strong>Num Lock off</strong>, this option makes eight keypad keys work as Home, End, Page Up, Page Down and the arrow keys. No separate add-on or mode-switch shortcut is needed.</p>
+<h3>14.2. Enabling and using the feature</h3>
+<ol>
+<li>In Extra Settings, check <strong>Use the numeric keypad as navigation keys</strong>.</li>
+<li>Choose <strong>OK</strong> or <strong>Apply</strong>. No NVDA restart is required.</li>
+<li>Turn Num Lock off and use the following keypad keys.</li>
+</ol>
+<ul>
+<li><strong>7: Home.</strong> Moves to the beginning of the line in an editor.</li>
+<li><strong>1: End.</strong> Moves to the end of the line in an editor.</li>
+<li><strong>9: Page Up.</strong> Moves up one page.</li>
+<li><strong>3: Page Down.</strong> Moves down one page.</li>
+<li><strong>8: Up arrow.</strong></li>
+<li><strong>2: Down arrow.</strong></li>
+<li><strong>4: Left arrow.</strong></li>
+<li><strong>6: Right arrow.</strong></li>
+</ul>
+<p>These keys use the same handling as the actual navigation keys in the current application. Combinations with <kbd>Ctrl</kbd>, <kbd>Shift</kbd>, <kbd>Alt</kbd> and <kbd>Windows</kbd> are preserved. For example, in an editor, <kbd>Ctrl+numpad 7</kbd> moves to the beginning of the document; <kbd>Ctrl+numpad 1</kbd> moves to its end. <kbd>Shift+numpad 7</kbd> selects to the start of the line; <kbd>Ctrl+Shift+numpad 1</kbd> selects to the end of the document. Results depend on the application and NVDA’s active mode.</p>
+<p><strong>Combinations containing the NVDA modifier are unchanged.</strong> Numpad 0 remains an NVDA modifier if configured as one. Numpad 5, decimal separator, plus, minus, multiply, divide and Enter keep their existing functions. Number entry with Num Lock on and the number row above the letters are unaffected. Keyboards without a numeric keypad do not need this option; an external keypad can be connected later.</p>
+<p>Uncheck the option and choose OK or Apply to restore NVDA’s previous handling of the eight keys. Personal gesture assignments are not deleted, and Windows and Num Lock settings are not changed. Cancel discards unapplied changes.</p>
+<p>Input help describes the emulated key without navigating. If a keypad key is also assigned as the Applications key substitute, that option takes precedence. Other add-ons that reassign the same keys may conflict.</p>
+<p>Input help includes the effective navigation key name. For Home, for example, its description is <strong>“Emulates pressing Home on the system keyboard”</strong>.</p>
+</section>
+<section aria-labelledby="translation">
+<h2 id="translation">15. Translation</h2>
+<h3>15.1. Purpose and scope</h3>
+<p><strong>The master Translation checkbox defaults to unchecked. The target defaults to Turkish.</strong> Uses Google online translation without an account, API key, Chrome or another browser. No web page opens. An internet connection is required.</p>
+<ol>
+<li>Check <strong>Translation</strong> in Extra Settings to reveal its options.</li>
+<li>Tab through <strong>Target language</strong>, <strong>Line translation — NVDA+Shift+T</strong>, and <strong>Automatic translation — NVDA+Shift+O</strong>.</li>
+<li>Select manual line translation, automatic translation, or both. They share the target language. Line translation defaults to checked and automatic translation to unchecked; neither runs with the master switch off.</li>
+<li>Apply or confirm your settings. Disabling the master switch stops both modes, clears pending work and caches, and hides their controls. Child choices and the target are preserved when the master is re-enabled. Start a new automatic session with its shortcut.</li>
+</ol>
+<h3>15.2. Line translation — NVDA+Shift+T</h3>
+<p>With both <strong>Translation</strong> and <strong>Line translation</strong> checked, press <kbd>NVDA+Shift+T</kbd> to translate and speak the current caret line. The shortcut does not toggle the option. If manual line translation is off, an announcement asks you to enable it; automatic translation remains independent.</p>
+<p>Uses the writing caret in editable fields and NVDA's browse-mode caret in web documents. Does not move the caret, edit the document, or use the clipboard. Images and controls without an accessible caret line may report an unreadable line; no OCR is performed.</p>
+<p>The bundled list contains 249 supported target languages as of 19 October 2026. Source language is detected automatically. Language names follow the Turkish or English interface; opening settings does not fetch the list over the network.</p>
+<p>Change the shortcut under <strong>Input Gestures → NVDA Extra Settings → Translate the current line</strong>. The line translation checkbox reflects the effective assignments, including multiple gestures or no assignment.</p>
+<p>Requests run in the background. A delayed result triggers one “Translating...” notice. Repeating the same pending manual request does not duplicate it. A new manual request replaces an earlier pending request and stale results are ignored; this is separate from the automatic queue.</p>
+<p>The last 32 manual results are cached in memory. A result can be reused for 120 seconds; expired entries are removed on the next manual request. Turning off manual line translation or the master option, changing the target, or closing NVDA clears this cache. Results are not automatically copied to the clipboard.</p>
+<h3>15.3. Messages and limits</h3>
+<ul>
+<li>When the master option is off: <strong>“Enable translation in Extra Settings first.”</strong> If only manual line translation is off: <strong>“Enable line translation in Extra Settings first.”</strong></li>
+<li>Empty lines: <strong>“There is no text on this line to translate.”</strong> No network request is made.</li>
+<li>Protected fields such as passwords are not translated. If focus moves to a protected field while waiting, the result is not spoken.</li>
+<li>The maximum input is 5000 characters. Longer lines are reported instead of being silently truncated.</li>
+<li>Connection failures, timeouts and unreadable responses produce brief messages. Other NVDA functions continue working.</li>
+<li>When access is limited, the add-on says <strong>“The translation service is limiting access. Try again later.”</strong> and briefly pauses new requests.</li>
+</ul>
+<h3>15.4. Connection messages</h3>
+<p>A failed request reports “The translation request could not be completed. Please try again.” A timeout reports “The translation service did not respond in time.” An invalid response reports “The translation service returned an unreadable response.” These messages alone do not establish that the internet connection is offline.</p>
+<h3>15.5. Text transmission and disabling</h3>
+<p>In manual mode, only the requested line is sent to Google over HTTPS when a translation is needed. Automatic mode also sends eligible lines as you navigate. The whole document and surrounding lines are not sent. The text is not included in a URL or written to a separate add-on log. Spoken results may appear in speech history if enabled; NVDA debug logging can also record spoken text.</p>
+<p>The connection uses Google’s keyless web translation endpoint, rather than its official paid developer service. Endpoint or response changes may require an add-on update. Continuous availability is not guaranteed.</p>
+<p>Uncheck the master Translation option and choose OK or Apply to stop both modes. The target list and child controls are hidden, pending results are not announced, and new translation requests are stopped. An already running network operation ends when it responds or times out. Cancel discards unapplied changes.</p>
+<h3>15.6. Other translation messages</h3>
+<ul>
+<li>Choose a supported target language in Extra Settings.</li>
+<li>Choose a target language.</li>
+<li>Protected fields cannot be translated.</li>
+<li>The line at the caret could not be read.</li>
+<li>This line is too long to translate. The limit is 5000 characters.</li>
+<li>Translation is already in progress.</li>
+</ul>
+</section>
+<section aria-labelledby="automatic-translation">
+<h2 id="automatic-translation">16. Automatic translation</h2>
+<h3>16.1. Purpose and scope</h3>
+<p>Starting a session announces “Automatic translation on.” Stopping announces “Automatic translation off.” A full queue reports “The automatic translation queue is full.” The pause message is “Automatic translation paused. Turn it off and on to start a new session.”</p>
+<h3>16.2. Enabling and using the feature</h3>
+<p><strong>Default: unchecked.</strong> With the master <strong>Translation</strong> option enabled, an <strong>Automatic translation</strong> checkbox appears after the target language and Line translation control. Manual line translation need not be checked. This checkbox permits use of the shortcut. Check it and apply settings, then press <kbd>NVDA+Shift+O</kbd> to start or stop an automatic session. The shortcut never changes the saved checkbox. Starting captures the current line. If the master option is off, you are asked to enable translation first; if only the automatic checkbox is off, you hear “Enable automatic translation in Extra Settings first.” No session starts and no line is sent. Checking the box alone does not start translation.</p>
+<p>Change the shortcut under <strong>Input Gestures → NVDA Extra Settings → Automatic translation</strong>. The settings label reflects the effective gesture, including a removed assignment.</p>
+<p>Captures NVDA caret announcements made in line units, such as Up/Down in text fields and web browse mode. Captures each line immediately and replaces its original announcement with the translation in the selected target language. Does not translate all menus or buttons; character and word navigation work normally.</p>
+<p>Lines 1, 2, 3 and 4 are translated and spoken in capture order even when navigated rapidly. New lines never replace earlier queued lines. The next translation is spoken after the preceding one finishes. Later lines can continue being translated in the background. If navigation cancels speech, the interrupted translation is retained and read again. Repeated announcements of the same position are deduplicated. Returning to a line after another line reads it again; identical text on distinct lines remains distinct.</p>
+<p>The last 256 translations are cached in memory for the automatic session. Repeated text reuses these results; new text still requires translation. Blank lines are not translated. Protected fields are not sent, and queued translations are held while focus is protected.</p>
+<p>Stopping the session with its shortcut, or unchecking Automatic translation and applying, clears captured lines, unread results and the automatic cache, and stops its current speech. In-flight network results are ignored after closing a session. Starting again with the shortcut creates a fresh session; checking the box alone does not start one. Changing the target or disabling the main translation feature also clears the automatic session. The manual translation cache is separate.</p>
+<p>A failed translation holds that row and subsequent rows, reports the problem and pauses capture. Toggle off and on to start a new session, clearing the old queue. Lines over 5000 characters or a queue reaching 1000 rows or 1,000,000 source characters also pause capture with an announcement; already accepted successful rows continue reading.</p>
+<p><strong>Text transmission:</strong> While automatic translation is on, eligible lines are sent to Google as you navigate, without another translation shortcut for each line. The add-on does not save text or results to disk. NVDA speech history and debug logs may record spoken translations according to their settings. The checkbox permission follows normal NVDA configuration saving. The running session is not saved: after restarting NVDA, use the shortcut to start it even if the checkbox remains checked. Queued lines and cached translations never survive a restart.</p>
+</section>
+<section aria-labelledby="stored-data">
+<h2 id="stored-data">17. Settings and user data</h2>
+<h3>17.1. Configuration preferences</h3>
+<p>Checkbox states, the target language, and other persistent preferences use NVDA’s configuration system and its normal saving rules. The functions of Apply and OK are described in the settings chapter.</p>
+<h3>17.2. Bookmarks and Quick find records</h3>
+<p>Bookmarks are stored in <code>extraSettingsBookmarks.json</code>; Quick find locations are stored in <code>extraSettingsQuickFind.json</code>. Both files and their backups reside in the <code>extraSettings</code> subdirectory of NVDA’s user configuration directory. The preceding valid contents are retained in a file with the same name followed by <code>.bak</code>. Disabling a feature does not remove its records. Use the removal command in the relevant feature dialog to delete a record.</p>
+<p><strong>Migration from earlier releases:</strong> When the add-on starts, legacy bookmark and Quick find files and their <code>.bak</code> backups are automatically moved from the root of NVDA’s user configuration directory into <code>extraSettings</code>. Record contents and assigned shortcuts remain unchanged. If a different file with the same name already exists at the new location, that file remains active; the legacy file is preserved under <code>extraSettings/legacy</code> with a name distinguished by its content hash. Identical copies are consolidated. If migration cannot finish, files not yet moved remain in place and are retried on a subsequent start. Checkbox states and other preferences managed by NVDA continue to use NVDA’s normal configuration.</p>
+<p>Records contain names, addresses, or document identities. Quick find records also contain the target line and short surrounding text. Consider this content when backing up or transferring these files. If a folder path or document identity changes, verify that the corresponding records still work in the new location.</p>
+<h3>17.3. Temporary data and the clipboard</h3>
+<p>Speech history and translation caches are held in memory and do not survive an NVDA restart. A running automatic translation session and its queued lines also end at restart. Text collected with Append to clipboard resides in the Windows clipboard and follows Windows clipboard storage preferences.</p>
+<h3>17.4. Online translation</h3>
+<p>A line is sent to Google when translation is required. During an automatic translation session, eligible lines are sent as you navigate. The Translation and Automatic translation chapters explain transmission scope, memory use, protected fields, and service limits.</p>
+</section>
+<section aria-labelledby="troubleshooting">
+<h2 id="troubleshooting">18. Troubleshooting and support</h2>
+<h3>18.1. When a command does not respond</h3>
+<ol><li>Verify that the corresponding feature is checked in Extra Settings and that Apply or OK has been used.</li><li>Check the current assignment in Input Gestures. The shortcut may have been changed or removed.</li><li>Confirm that the active field is within the feature’s supported scope. Text counting requires a selection; line translation requires a readable text line.</li><li>Compare NVDA’s announcement with the explanation in the relevant feature chapter.</li></ol>
+<h3>18.2. When a Quick find shortcut is used on another page</h3>
+<p>Saved locations are matched to their page or document. Pressing a saved shortcut on another page does not navigate to the original page’s record; the key performs its normal action. Separate locations can be saved for different pages, and those pages may reuse the same shortcut. A change to the saved page’s address can also affect matching.</p>
+<h3>18.3. When translation does not return a result</h3>
+<p>Check the master Translation setting, the required child option, and the target language. For automatic translation, start a session using its shortcut. Follow the specific explanation for connection, timeout, or service limit messages; these messages do not all indicate the same condition.</p>
+<h3>18.4. Requesting support</h3>
+<p>Include the add-on and NVDA versions, application name, enabled feature, shortcut, steps taken, and announcement received. Do not include passwords or personal document contents. Send suggestions, comments, or issue reports to <a href="mailto:m.aykurt38@gmail.com">m.aykurt38@gmail.com</a>.</p>
+</section>
+<section aria-labelledby="questions">
+<h2 id="questions">19. Frequently asked questions</h2>
+<h3>19.1. Automatic translation is checked but nothing starts. What should I do?</h3>
+<p>The checkbox is permission to use the feature. Apply it, then press the assigned automatic translation shortcut, NVDA+Shift+O by default. The same shortcut stops a running session without unchecking the box. After restarting NVDA, start the session with the shortcut again.</p>
+<h3>19.2. How do I turn off a feature?</h3>
+<p>Return to Extra Settings, uncheck the relevant checkbox, then press OK or Apply. You can leave other options enabled.</p>
+<h3>19.3. Letters are being typed instead of navigating a page. What should I check?</h3>
+<p>Web cycling uses NVDA’s browse mode quick navigation. In focus mode, letters are normally passed to the application. To navigate the page, check that browse mode and single-letter navigation are enabled.</p>
+<h3>19.4. How can I open this help again?</h3>
+<p>Open the help for Extra Settings in NVDA’s add-on management interface. The English file is <code>doc/en/readme.html</code>; the Turkish file is <code>doc/tr/readme.html</code>.</p>
+</section>
+<section aria-labelledby="about">
+<h2 id="about">20. Languages and add-on information</h2>
+<p>The interface follows NVDA’s language setting. Turkish and English are supported; other languages use the English source strings. Restart NVDA after changing its language so the add-on can load the corresponding translations.</p>
+<p>Developer: Mehmet Aykurt. <a href="https://mehmetaykurt.com.tr">Mehmet Aykurt’s website</a>.</p>
+<p>The add-on is designed to accept additional options. This guide describes the options in the current release.</p>
+</section>
+</main>
+</body>
+</html>
