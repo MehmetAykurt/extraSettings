@@ -19,10 +19,19 @@ Brings these and other frequently needed features, including translation, to NVD
 You can enable the feature you want in Extra Settings under NVDA menu / Preferences / Settings;  
 To request additional features, you can contact m.aykurt38@gmail.com.  
 
+## Improvements in this release
+
+- Translate clipboard text with NVDA+Ctrl+Shift+T without modifying the clipboard. Clipboard translation is an independent child option under Translation.
+
+- At a blank-line navigation boundary, the current line is repeated without an extra message.
+- Manual and automatic translation now include accessible application items.
+- Append to clipboard keeps Windows+C; its assignment can be changed in Input Gestures.
+
 ## Version and compatibility
 
-- Add-on version: 2026.10.20
-- Minimum and last tested NVDA version: 2026.2
+- Add-on version: 2026.10.26
+- Minimum NVDA version: 2026.2
+- Last tested NVDA version: 2026.3
 - Interface and documentation: Turkish and English
 
 ## Developer
@@ -35,7 +44,7 @@ Contact: [m.aykurt38@gmail.com](mailto:m.aykurt38@gmail.com)
 
 ## Features
 
-Web quick navigation cycling; skipping blank web lines; cut/copy/paste announcements; memory-only speech history; an Applications key substitute; appending selected text to the clipboard; sentence, word, character and blank-line counts; inspection of clipboard text, HTML tables and file information; folder and website bookmarks; Quick find locations with document-specific shortcuts; numeric keypad navigation; manual and automatic line translation.
+Web quick navigation cycling; skipping blank web lines; cut/copy/paste announcements; memory-only speech history; an Applications key substitute; appending selected text to the clipboard; sentence, word, character and blank-line counts; inspection of clipboard text, HTML tables and file information; folder and website bookmarks; Quick find locations with document-specific shortcuts; numeric keypad navigation; manual and automatic text translation.
 
 ## Installation
 
@@ -53,7 +62,8 @@ Open a released `.nvda-addon` package while NVDA is running, follow the installa
 | Inspect clipboard | NVDA+Shift+C |
 | Bookmarks | NVDA+Shift+Y |
 | Quick find | NVDA+Shift+H |
-| Translate current line | NVDA+Shift+T |
+| Translate clipboard text | NVDA+Ctrl+Shift+T |
+| Translate current text | NVDA+Shift+T |
 | Start or stop automatic translation | NVDA+Shift+O |
 
 Enable the corresponding feature first. Change commands under Preferences, Input Gestures, NVDA Extra Settings. Record-specific Quick find shortcuts are assigned in the record editor. NVDA+Shift+C can conflict with the column-header command in Word and Excel; reassign it when necessary.
@@ -71,7 +81,7 @@ GitHub may display HTML as source. Read the rendered manual through NVDA’s ins
 
 Bookmarks, Quick find records and backups reside in the `extraSettings` subdirectory of NVDA’s user configuration directory. Legacy files migrate automatically. NVDA manages checkbox preferences and Input Gestures assignments. Speech history and translation caches remain in memory.
 
-Translation requires an internet connection and sends the requested line to Google. No account or API key is required. The service uses an unofficial web endpoint and may require adaptation if the service changes. Automatic translation requires both permission in settings and a session started with its shortcut.
+Translation requires an internet connection and sends the requested line or the focused item's accessible name, value and description to Google. Role and state information remains in NVDA's language and is not added to the translation request. No account or API key is required. The service uses an unofficial web endpoint and may require adaptation if the service changes. Automatic translation requires both permission in settings and a session started with its shortcut.
 
 `update.json` follows the developer’s existing release metadata format. The add-on does not read it to download its own updates. Each release must be submitted separately for Add-on Store distribution.
 

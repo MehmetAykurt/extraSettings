@@ -178,8 +178,16 @@ class SkipTests(unittest.TestCase):
             self.move(doc,direction); self.drain()
             self.assertEqual(doc.caret,caret)
             self.assertEqual(doc.commits,[])
-        self.assertEqual(len(base.messages),2)
-        self.assertFalse(spoken)
+        self.assertFalse(base.messages)
+        self.assertEqual([row[1] for row in spoken], ['one', 'one'])
+    def test_first_and_last_line_repeat_without_message_or_caret_commit(self):
+        for direction in (-1, 1):
+            doc = Document(['only line'])
+            self.move(doc, direction)
+            self.assertEqual(doc.caret, 0)
+            self.assertEqual(doc.commits, [])
+        self.assertEqual([row[1] for row in spoken], ['only line', 'only line'])
+        self.assertFalse(base.messages)
     def test_controls_images_links_and_real_empty_table_cells_are_not_skipped(self):
         for name in ('BUTTON','EDITABLETEXT','GRAPHIC','LINK','TABLECELL','SEPARATOR'):
             doc = Document(['start','','finish'])
@@ -206,7 +214,7 @@ class SkipTests(unittest.TestCase):
         self.move(doc); self.assertEqual(doc.originalCalls,1)
     def test_no_progress_provider_cannot_loop(self):
         doc = Document(['start','','finish']); doc.lieMove = True
-        self.move(doc); self.assertEqual(doc.originalCalls,1)
+        self.move(doc); self.assertEqual(doc.originalCalls,0)
         self.assertEqual(doc.moves,1)
     def test_disabled_native_focus_mode_modifiers_selection_and_other_units_use_original(self):
         for action in ('disabled','native','focus','modifier','selection','paragraph','page','home','sayAll','waiting','protected'):

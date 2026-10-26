@@ -30,7 +30,7 @@ from .clipboardInspector import ClipboardInspector
 from .bookmarks import Bookmarks
 from .quickFind import QuickFind
 from .numpadNavigation import NumpadNavigation
-from .lineTranslation import LineTranslation
+from .lineTranslation import LineTranslation, ClipboardTranslation
 from .automaticTranslation import AutomaticTranslation
 from .translationService import languageChoices
 from .storage import prepareDataDirectory
@@ -54,6 +54,7 @@ CONFIG_SPEC = {
     "numpadNavigation": "boolean(default=False)",
     "lineTranslation": "boolean(default=False)",
     "manualTranslation": "boolean(default=True)",
+    "clipboardTranslation": "boolean(default=True)",
     "automaticTranslation": "boolean(default=False)",
     "translationTarget": "string(default='tr')",
 }
@@ -182,6 +183,10 @@ class ExtraSettingsPanel(SettingsPanel):
             self.translationOptions, label=self._translationLabel()))
         self.lineTranslation.SetValue(config.conf[CONFIG_SECTION]["manualTranslation"])
         self.lineTranslation.Bind(wx.EVT_SET_FOCUS, self.onTranslationFocus)
+        self.clipboardTranslation = translationHelper.addItem(wx.CheckBox(
+            self.translationOptions, label=self._clipboardTranslationLabel()))
+        self.clipboardTranslation.SetValue(config.conf[CONFIG_SECTION]["clipboardTranslation"])
+        self.clipboardTranslation.Bind(wx.EVT_SET_FOCUS, self.onClipboardTranslationFocus)
         self.automaticTranslation = translationHelper.addItem(wx.CheckBox(
             self.translationOptions, label=self._automaticTranslationLabel()))
         self.automaticTranslation.SetValue(config.conf[CONFIG_SECTION]["automaticTranslation"])
@@ -190,10 +195,17 @@ class ExtraSettingsPanel(SettingsPanel):
         self.translationOptions.Show(self.translation.GetValue())
 
     def _translationLabel(self):
-        return _("Line translation — {shortcut}").format(shortcut=commandShortcutLabel("translateCurrentLine"))
+        return _("Text translation — {shortcut}").format(shortcut=commandShortcutLabel("translateCurrentLine"))
 
     def _automaticTranslationLabel(self):
         return _("Automatic translation — {shortcut}").format(shortcut=commandShortcutLabel("toggleAutomaticTranslation"))
+
+    def _clipboardTranslationLabel(self):
+        return _("Clipboard translation — {shortcut}").format(shortcut=commandShortcutLabel("translateClipboard"))
+
+    def onClipboardTranslationFocus(self, event):
+        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
+        event.Skip()
 
     def onAutomaticTranslationFocus(self, event):
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
@@ -201,6 +213,7 @@ class ExtraSettingsPanel(SettingsPanel):
 
     def onTranslationFocus(self, event):
         self.lineTranslation.SetLabel(self._translationLabel())
+        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         event.Skip()
 
@@ -290,6 +303,7 @@ class ExtraSettingsPanel(SettingsPanel):
         self.bookmarks.SetLabel(self._bookmarksLabel())
         self.quickFind.SetLabel(self._quickFindLabel())
         self.lineTranslation.SetLabel(self._translationLabel())
+        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         super().onPanelActivated()
 
@@ -344,6 +358,7 @@ class ExtraSettingsPanel(SettingsPanel):
         config.conf[CONFIG_SECTION]["numpadNavigation"] = self.numpadNavigation.GetValue()
         config.conf[CONFIG_SECTION]["lineTranslation"] = self.translation.GetValue()
         config.conf[CONFIG_SECTION]["manualTranslation"] = self.lineTranslation.GetValue()
+        config.conf[CONFIG_SECTION]["clipboardTranslation"] = self.clipboardTranslation.GetValue()
         config.conf[CONFIG_SECTION]["automaticTranslation"] = self.automaticTranslation.GetValue()
         config.conf[CONFIG_SECTION]["translationTarget"] = self._targetCodes[targetIndex]
         if _speechHistoryController is not None:
@@ -398,6 +413,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self._applicationsKey = ApplicationsKey(lambda: config.conf[CONFIG_SECTION])
         self._numpadNavigation = NumpadNavigation(lambda: config.conf[CONFIG_SECTION]["numpadNavigation"])
         self._lineTranslation = LineTranslation(lambda: config.conf[CONFIG_SECTION])
+        self._lineTranslation.clipboard = ClipboardTranslation(lambda: config.conf[CONFIG_SECTION])
         self._lineTranslation.automatic = AutomaticTranslation(lambda: config.conf[CONFIG_SECTION])
         _translationController = self._lineTranslation
         self._clipboardAnnouncements = ClipboardAnnouncements(
@@ -431,13 +447,22 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self._speechHistory.show()
 
     @script(
-        description=_("Translate the current line"),
+        description=_("Translate current text"),
         category=_("NVDA Extra Settings"),
         gesture="kb:NVDA+shift+t",
         speakOnDemand=True,
     )
     def script_translateCurrentLine(self, gesture):
         self._lineTranslation.translateCurrentLine()
+
+    @script(
+        description=_("Translate clipboard text"),
+        category=_("NVDA Extra Settings"),
+        gesture="kb:NVDA+control+shift+t",
+        speakOnDemand=True,
+    )
+    def script_translateClipboard(self, gesture):
+        self._lineTranslation.clipboard.translateClipboard()
 
     @script(
         description=_("Automatic translation"),

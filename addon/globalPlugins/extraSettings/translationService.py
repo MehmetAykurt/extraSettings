@@ -84,7 +84,7 @@ def fetchTranslation(text, target):
     request = Request(
         ENDPOINT + "&" + urlencode({"tl": target}), data=data,
         headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                 "User-Agent": "ExtraSettings/2026.10.20", "Accept": "application/json"},
+                 "User-Agent": "ExtraSettings/2026.10.26", "Accept": "application/json"},
         method="POST",
     )
     try:

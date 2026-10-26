@@ -16,7 +16,6 @@ import inputCore
 import scriptHandler
 import speech
 import textInfos
-import ui
 from controlTypes import OutputReason, Role, State
 
 from .webCycle import isWebDocument
@@ -88,7 +87,6 @@ class _Search:
     focus: object
     direction: int
     fallback: object
-    skipped: bool = False
 
 
 class SkipBlankLines:
@@ -178,10 +176,12 @@ class SkipBlankLines:
                 moved = search.probe.move(textInfos.UNIT_LINE, search.direction)
                 if moved == 0 or search.probe.compareEndPoints(previous, 'startToStart') == 0:
                     self._pending = None
-                    if search.skipped:
-                        ui.message(_("No more non-blank lines in this direction."))
-                        return
-                    return search.fallback()
+                    # Stay on the real caret and repeat its line, including
+                    # when trailing/leading blank lines were probed.
+                    line = search.originalInfo.copy()
+                    line.expand(textInfos.UNIT_LINE)
+                    speech.speakTextInfo(line, unit=textInfos.UNIT_LINE, reason=OutputReason.CARET)
+                    return
                 line = search.probe.copy()
                 line.expand(textInfos.UNIT_LINE)
                 if not isBlankLine(line):
@@ -195,7 +195,6 @@ class SkipBlankLines:
                     speech.speakTextInfo(line, unit=textInfos.UNIT_LINE, reason=OutputReason.CARET)
                     search.document.selection = search.probe.copy()
                     return
-                search.skipped = True
                 if self._clock() - started >= SLICE_SECONDS:
                     break
         except Exception:

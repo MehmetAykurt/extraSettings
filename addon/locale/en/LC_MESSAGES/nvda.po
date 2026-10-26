@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: extraSettings 2026.10.20\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+msgstr "Project-Id-Version: extraSettings 2026.10.26\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
 
 msgid "Extra Settings"
 msgstr "Extra Settings"
@@ -163,8 +163,8 @@ msgstr "Target language"
 msgid "Choose a target language."
 msgstr "Choose a target language."
 
-msgid "Translate the current line"
-msgstr "Translate the current line"
+msgid "Translate current text"
+msgstr "Translate current text"
 
 msgid "Enable translation in Extra Settings first."
 msgstr "Enable translation in Extra Settings first."
@@ -172,14 +172,14 @@ msgstr "Enable translation in Extra Settings first."
 msgid "Protected fields cannot be translated."
 msgstr "Protected fields cannot be translated."
 
-msgid "The line at the caret could not be read."
-msgstr "The line at the caret could not be read."
+msgid "The text at the caret or focused item could not be read."
+msgstr "The text at the caret or focused item could not be read."
 
-msgid "There is no text on this line to translate."
-msgstr "There is no text on this line to translate."
+msgid "There is no accessible text here to translate."
+msgstr "There is no accessible text here to translate."
 
-msgid "This line is too long to translate. The limit is 5000 characters."
-msgstr "This line is too long to translate. The limit is 5000 characters."
+msgid "This text is too long to translate. The limit is 5000 characters."
+msgstr "This text is too long to translate. The limit is 5000 characters."
 
 msgid "Choose a supported target language in Extra Settings."
 msgstr "Choose a supported target language in Extra Settings."
@@ -223,11 +223,11 @@ msgstr "Automatic translation paused. Turn it off and on to start a new session.
 msgid "Translation"
 msgstr "Translation"
 
-msgid "Line translation — {shortcut}"
-msgstr "Line translation — {shortcut}"
+msgid "Text translation — {shortcut}"
+msgstr "Text translation — {shortcut}"
 
-msgid "Enable line translation in Extra Settings first."
-msgstr "Enable line translation in Extra Settings first."
+msgid "Enable text translation in Extra Settings first."
+msgstr "Enable text translation in Extra Settings first."
 
 msgid "Enable automatic translation in Extra Settings first."
 msgstr "Enable automatic translation in Extra Settings first."
@@ -235,8 +235,6 @@ msgstr "Enable automatic translation in Extra Settings first."
 msgid "Skip blank lines on web pages"
 msgstr "Skip blank lines on web pages"
 
-msgid "No more non-blank lines in this direction."
-msgstr "No more non-blank lines in this direction."
 
 msgid "Announce word and character counts"
 msgstr "Announce word and character counts"
@@ -573,3 +571,18 @@ msgstr "Change shortcut"
 
 msgid "Go to a saved location in the current document"
 msgstr "Go to a saved location in the current document"
+
+msgid "Translate clipboard text"
+msgstr "Translate clipboard text"
+
+msgid "Clipboard translation — {shortcut}"
+msgstr "Clipboard translation — {shortcut}"
+
+msgid "Enable clipboard translation in Extra Settings first."
+msgstr "Enable clipboard translation in Extra Settings first."
+
+msgid "The clipboard text could not be read. Please try again."
+msgstr "The clipboard text could not be read. Please try again."
+
+msgid "There is no text on the clipboard to translate."
+msgstr "There is no text on the clipboard to translate."

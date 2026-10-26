@@ -20,7 +20,7 @@ th { background: #f1f1f1; } section { scroll-margin-top: 1rem; }
 <body>
 <header>
 <h1>Extra Settings User Manual</h1>
-<p>Add-on version: 2026.10.20<br>NVDA Version: 2026.2</p>
+<p>Add-on version: 2026.10.26<br>NVDA Version: 2026.3</p>
 <p><strong>Developer</strong><br>Mehmet Aykurt<br><a href="https://mehmetaykurt.com.tr">Mehmet Aykurt</a></p>
 <p>For suggestions, feedback and comments:<br><a href="mailto:m.aykurt38@gmail.com">m.aykurt38@gmail.com</a></p>
 <h2>About</h2>
@@ -71,7 +71,7 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <section aria-labelledby="installation">
 <h2 id="installation">1. Installation and first use</h2>
 <h3>1.1. System requirements</h3>
-<p>This release targets NVDA 2026.2. The add-on manifest specifies 2026.2 as both the minimum and last tested NVDA version. Features other than translation do not require an internet connection. Translation requires access to Google’s online service.</p>
+<p>The minimum NVDA version is 2026.2 and the last tested NVDA version is 2026.3. Features other than translation do not require an internet connection. Translation requires access to Google’s online service.</p>
 <h3>1.2. Installation procedure</h3>
 <ol><li>Open the Extra Settings <code>.nvda-addon</code> package while NVDA is running.</li><li>Review the add-on name and version in NVDA’s installation dialog, then complete installation.</li><li>Restart NVDA when prompted.</li><li>Open Preferences, Settings, Extra Settings. Enable the required features and apply the changes.</li></ol>
 <p>After an update, compare the version shown in this manual with the installed add-on version. Reinstallation is not required to change preferences. Existing bookmarks and Quick find records are stored separately from the add-on files in the <code>extraSettings</code> subdirectory of NVDA’s user configuration directory.</p>
@@ -89,7 +89,7 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <p>After initial configuration, the feature chapters follow the order used in the Extra Settings category. Use the contents links to open a chapter directly. Headings and lists provide a consistent structure for screen reader navigation.</p>
 <p>The <strong>NVDA key</strong> is the Insert or Caps Lock key configured as an NVDA modifier. A plus sign indicates that the keys are pressed together. For example, <kbd>NVDA+Shift+H</kbd> means holding NVDA and Shift while pressing H. Commands shown in this manual are default assignments; assignments changed in Input Gestures take precedence.</p>
 <p><strong>Browse mode</strong> supports navigation through the text and elements of a web page. <strong>Focus mode</strong> passes keys to application controls, such as edit fields. Features restricted to browse mode identify that requirement in their respective chapters.</p>
-<p>All added features are unchecked on first installation and work independently. Line translation and Automatic translation are child options of the master Translation setting. Automatic translation also requires a running session, as described in the relevant chapters.</p>
+<p>All added features are unchecked on first installation and work independently. Text translation, Clipboard translation and Automatic translation are child options of the master Translation setting. Automatic translation also requires a running session, as described in the relevant chapters.</p>
 </section>
 <section aria-labelledby="keyboard-commands">
 <h2 id="keyboard-commands">3. Keyboard commands and shortcut management</h2>
@@ -104,7 +104,8 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <tr><th scope="row">Inspect clipboard</th><td><kbd>NVDA+Shift+C</kbd></td><td>Clipboard inspection must be enabled.</td></tr>
 <tr><th scope="row">Bookmarks</th><td><kbd>NVDA+Shift+Y</kbd></td><td>Bookmarks must be enabled.</td></tr>
 <tr><th scope="row">Quick find</th><td><kbd>NVDA+Shift+H</kbd></td><td>Quick find must be enabled and a supported document open.</td></tr>
-<tr><th scope="row">Translate the current line</th><td><kbd>NVDA+Shift+T</kbd></td><td>Translation and Line translation must be enabled.</td></tr>
+<tr><th scope="row">Translate clipboard text</th><td><kbd>NVDA+Ctrl+Shift+T</kbd></td><td>Translation and Clipboard translation must be enabled.</td></tr>
+<tr><th scope="row">Translate current text</th><td><kbd>NVDA+Shift+T</kbd></td><td>Translation and Text translation must be enabled.</td></tr>
 <tr><th scope="row">Start or stop automatic translation</th><td><kbd>NVDA+Shift+O</kbd></td><td>Translation and Automatic translation must be enabled.</td></tr>
 </tbody>
 </table>
@@ -138,7 +139,7 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <p><strong>Default: Unchecked.</strong> There is no shortcut for this option. In web browse mode, ordinary Up arrow and Down arrow movements skip empty lines and move the caret to the next non-blank line in the same direction, which is then read. Lines containing only spaces, tabs or non-breaking spaces also count as blank.</p>
 <h3>5.2. Enabling and using the feature</h3>
 <p>When numeric keypad navigation is enabled, the navigation functions of keypad 8 and 2 use the same behavior. Shift selection, Ctrl paragraph movement, quick navigation, say all, focus-mode editing and native editors such as Notepad keep their normal behavior. Existing selections also use NVDA’s normal movement.</p>
-<p>Buttons, editable controls, links, images and real table cells are preserved even when their text appears empty. Visual margins that NVDA does not expose as blank lines are outside this feature. At an empty document boundary, the caret stays in place and NVDA says <strong>“No more non-blank lines in this direction.”</strong></p>
+<p>Buttons, editable controls, links, images and real table cells are preserved even when their text appears empty. Visual margins that NVDA does not expose as blank lines are outside this feature. If no further non-blank line exists, the caret stays in place and its current line is read again without an extra message. This also applies at the first and last line. For example, if only blank lines follow the final non-blank line, pressing Down arrow repeats that final line. Up arrow behaves the same way at the beginning.</p>
 <p>Searching happens only on the relevant movement key; there is no continuous scan or whole-page cache. Long runs of blank lines are examined in short chunks. A new key, focus change or disabling the option cancels a pending search. The document is never edited. When automatic translation is running, only the reached non-blank line enters its queue. Ineligible documents and unsupported text operations use NVDA’s normal navigation.</p>
 </section>
 <section aria-labelledby="clipboard">
@@ -217,6 +218,7 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <p>If nothing is selected, NVDA says <strong>“No selected text was found to append.”</strong> Inaccessible selections are reported as <strong>“The selected text could not be read.”</strong> Password fields are excluded. A locked clipboard or write failure produces <strong>“Could not append to the clipboard.”</strong></p>
 <p>This feature accumulates plain text. Font, color and other rich formatting are not retained. A clipboard containing only files, images or other non-text data is preserved; copy text first. The add-on does not save the collected text to a file or log. It resides in the Windows clipboard and is subject to your Windows clipboard preferences.</p>
 <p>A clipboard containing only non-text data reports “The clipboard contains non-text data. Copy text first.” Existing clipboard data is not overwritten in this case.</p>
+<p>Append to clipboard keeps <kbd>Windows+C</kbd> as its default shortcut; <kbd>Ctrl+Shift+C</kbd> is not assigned by default. You can change the assignment in Input Gestures.</p>
 <h3>9.3. Changing the shortcut</h3>
 <p>In Preferences, Input Gestures, find <strong>Append to clipboard</strong> under <strong>NVDA Extra Settings</strong>. Change the default Windows+C assignment or add another shortcut. When Extra Settings is reopened or the checkbox receives focus, its label shows the current assignments. If none remain, it says <strong>No shortcut assigned</strong>.</p>
 <p>While enabled, the assigned shortcut performs this action. Uncheck and apply to return the key to its usual task. If you also assign the same key as an Applications key substitute, that option takes precedence.</p>
@@ -377,24 +379,25 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <section aria-labelledby="translation">
 <h2 id="translation">15. Translation</h2>
 <h3>15.1. Purpose and scope</h3>
-<p><strong>The master Translation checkbox defaults to unchecked. The target defaults to Turkish.</strong> Uses Google online translation without an account, API key, Chrome or another browser. No web page opens. An internet connection is required.</p>
+<p><strong>The master Translation checkbox defaults to unchecked. The target defaults to Turkish.</strong> Uses Google ontext translation without an account, API key, Chrome or another browser. No web page opens. An internet connection is required.</p>
 <ol>
 <li>Check <strong>Translation</strong> in Extra Settings to reveal its options.</li>
-<li>Tab through <strong>Target language</strong>, <strong>Line translation — NVDA+Shift+T</strong>, and <strong>Automatic translation — NVDA+Shift+O</strong>.</li>
-<li>Select manual line translation, automatic translation, or both. They share the target language. Line translation defaults to checked and automatic translation to unchecked; neither runs with the master switch off.</li>
+<li>Tab through <strong>Target language</strong>, <strong>Text translation — NVDA+Shift+T</strong>, <strong>Clipboard translation — NVDA+Ctrl+Shift+T</strong>, and <strong>Automatic translation — NVDA+Shift+O</strong>.</li>
+<li>Select Text translation, Clipboard translation and Automatic translation independently. All three share the target language. Text translation and Clipboard translation default to checked; Automatic translation defaults to unchecked. None runs with the master switch off.</li>
 <li>Apply or confirm your settings. Disabling the master switch stops both modes, clears pending work and caches, and hides their controls. Child choices and the target are preserved when the master is re-enabled. Start a new automatic session with its shortcut.</li>
 </ol>
-<h3>15.2. Line translation — NVDA+Shift+T</h3>
-<p>With both <strong>Translation</strong> and <strong>Line translation</strong> checked, press <kbd>NVDA+Shift+T</kbd> to translate and speak the current caret line. The shortcut does not toggle the option. If manual line translation is off, an announcement asks you to enable it; automatic translation remains independent.</p>
-<p>Uses the writing caret in editable fields and NVDA's browse-mode caret in web documents. Does not move the caret, edit the document, or use the clipboard. Images and controls without an accessible caret line may report an unreadable line; no OCR is performed.</p>
+<h3>15.2. Text translation — NVDA+Shift+T</h3>
+<p>With both <strong>Translation</strong> and <strong>Text translation</strong> checked, press <kbd>NVDA+Shift+T</kbd> to translate and speak the current caret line or focused item text. The shortcut does not toggle the option. If manual text translation is off, an announcement asks you to enable it; automatic translation remains independent.</p>
+<p>Uses the writing caret in editable fields and NVDA's browse-mode caret in web documents. If a readable caret line is unavailable, it uses the accessible name, value and description of the focused menu item, button or other application control. This also works in supported native documents and applications. It does not move the caret, edit the document or use the clipboard. Items without accessible text report an error; no OCR is performed.</p>
 <p>The bundled list contains 249 supported target languages as of 19 October 2026. Source language is detected automatically. Language names follow the Turkish or English interface; opening settings does not fetch the list over the network.</p>
-<p>Change the shortcut under <strong>Input Gestures → NVDA Extra Settings → Translate the current line</strong>. The line translation checkbox reflects the effective assignments, including multiple gestures or no assignment.</p>
+<p>Change the shortcut under <strong>Input Gestures → NVDA Extra Settings → Translate current text</strong>. The text translation checkbox reflects the effective assignments, including multiple gestures or no assignment.</p>
 <p>Requests run in the background. A delayed result triggers one “Translating...” notice. Repeating the same pending manual request does not duplicate it. A new manual request replaces an earlier pending request and stale results are ignored; this is separate from the automatic queue.</p>
-<p>The last 32 manual results are cached in memory. A result can be reused for 120 seconds; expired entries are removed on the next manual request. Turning off manual line translation or the master option, changing the target, or closing NVDA clears this cache. Results are not automatically copied to the clipboard.</p>
+<p>The last 32 manual results are cached in memory. A result can be reused for 120 seconds; expired entries are removed on the next manual request. Turning off manual text translation or the master option, changing the target, or closing NVDA clears this cache. Results are not automatically copied to the clipboard.</p>
+<p><strong>Example in an application:</strong> Tab to an English “Save changes” button and press <kbd>NVDA+Shift+T</kbd>. With Turkish as the target, the button text is translated and spoken in Turkish. The same shortcut works on menu items. You do not need to select or copy text. The exact wording depends on the translation service.</p>
 <h3>15.3. Messages and limits</h3>
 <ul>
-<li>When the master option is off: <strong>“Enable translation in Extra Settings first.”</strong> If only manual line translation is off: <strong>“Enable line translation in Extra Settings first.”</strong></li>
-<li>Empty lines: <strong>“There is no text on this line to translate.”</strong> No network request is made.</li>
+<li>When the master option is off: <strong>“Enable translation in Extra Settings first.”</strong> If only manual text translation is off: <strong>“Enable text translation in Extra Settings first.”</strong></li>
+<li>Empty lines: <strong>“There is no accessible text here to translate.”</strong> No network request is made.</li>
 <li>Protected fields such as passwords are not translated. If focus moves to a protected field while waiting, the result is not spoken.</li>
 <li>The maximum input is 5000 characters. Longer lines are reported instead of being silently truncated.</li>
 <li>Connection failures, timeouts and unreadable responses produce brief messages. Other NVDA functions continue working.</li>
@@ -403,32 +406,44 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <h3>15.4. Connection messages</h3>
 <p>A failed request reports “The translation request could not be completed. Please try again.” A timeout reports “The translation service did not respond in time.” An invalid response reports “The translation service returned an unreadable response.” These messages alone do not establish that the internet connection is offline.</p>
 <h3>15.5. Text transmission and disabling</h3>
-<p>In manual mode, only the requested line is sent to Google over HTTPS when a translation is needed. Automatic mode also sends eligible lines as you navigate. The whole document and surrounding lines are not sent. The text is not included in a URL or written to a separate add-on log. Spoken results may appear in speech history if enabled; NVDA debug logging can also record spoken text.</p>
+<p>In manual mode, only the requested line or focused item text is sent to Google over HTTPS when a translation is needed. Automatic mode also sends eligible lines and focused items’ accessible names, values and descriptions as you navigate. The whole document and surrounding lines are not sent. The text is not included in a URL or written to a separate add-on log. Spoken results may appear in speech history if enabled; NVDA debug logging can also record spoken text.</p>
 <p>The connection uses Google’s keyless web translation endpoint, rather than its official paid developer service. Endpoint or response changes may require an add-on update. Continuous availability is not guaranteed.</p>
-<p>Uncheck the master Translation option and choose OK or Apply to stop both modes. The target list and child controls are hidden, pending results are not announced, and new translation requests are stopped. An already running network operation ends when it responds or times out. Cancel discards unapplied changes.</p>
+<p>Uncheck the master Translation option and choose OK or Apply to stop all three modes. The target list and child controls are hidden, pending results are not announced, and new translation requests are stopped. An already running network operation ends when it responds or times out. Cancel discards unapplied changes.</p>
 <h3>15.6. Other translation messages</h3>
 <ul>
 <li>Choose a supported target language in Extra Settings.</li>
 <li>Choose a target language.</li>
 <li>Protected fields cannot be translated.</li>
-<li>The line at the caret could not be read.</li>
-<li>This line is too long to translate. The limit is 5000 characters.</li>
+<li>The text at the caret or focused item could not be read.</li>
+<li>This text is too long to translate. The limit is 5000 characters.</li>
 <li>Translation is already in progress.</li>
 </ul>
+<h3>15.7. Clipboard translation — NVDA+Ctrl+Shift+T</h3>
+<p><strong>Default child selection: checked.</strong> The master Translation option is off on first installation. Clipboard translation appears below the target language when Translation is enabled. It is independent of Text translation and Automatic translation, so you can use clipboard translation alone.</p>
+<ol><li>Enable Translation and Clipboard translation, choose a target language, then select OK or Apply.</li><li>Copy the text from any application using the normal <kbd>Ctrl+C</kbd> command.</li><li>Press <kbd>NVDA+Ctrl+Shift+T</kbd>. The clipboard text is translated in the background and the result is spoken. For example, copy “The settings have been saved.” and translate it into Turkish.</li></ol>
+<p>Change the shortcut in Input Gestures → NVDA Extra Settings → <strong>Translate clipboard text</strong>. The Clipboard translation checkbox reflects the effective assignment when the category opens or the checkbox receives focus. Removing the assignment displays No shortcut assigned.</p>
+<p>The clipboard is read only when you invoke the shortcut; it is not monitored. The translation does not overwrite the clipboard, paste into an application or change existing clipboard contents. Line endings in plain text are preserved in the request. Files and images are not translated. If a copied table also provides plain text, only that text is used.</p>
+<p>Each request accepts up to 5000 characters; longer text is rejected without truncation. Source language detection is automatic. The feature uses the same target language and online service as the other translation modes. Clipboard text is sent to Google over HTTPS only when the shortcut is invoked. Clipboard translation is blocked while focus is protected.</p>
+<p>The last 32 clipboard results have a separate in-memory cache lasting up to 120 seconds. Disabling Clipboard translation or the master option and applying, changing the target, or closing NVDA clears this cache and pending requests. Disabling Text translation does not disable Clipboard translation. Late results are discarded when clipboard translation has been disabled.</p>
+<ul><li>There is no text on the clipboard to translate.</li><li>The clipboard text could not be read. Please try again.</li><li>Enable clipboard translation in Extra Settings first.</li></ul>
+<p>If the master option is off, you hear “Enable translation in Extra Settings first.” Length, connection, timeout and service-limit messages are shared with the other manual translation requests.</p>
 </section>
 <section aria-labelledby="automatic-translation">
 <h2 id="automatic-translation">16. Automatic translation</h2>
 <h3>16.1. Purpose and scope</h3>
 <p>Starting a session announces “Automatic translation on.” Stopping announces “Automatic translation off.” A full queue reports “The automatic translation queue is full.” The pause message is “Automatic translation paused. Turn it off and on to start a new session.”</p>
 <h3>16.2. Enabling and using the feature</h3>
-<p><strong>Default: unchecked.</strong> With the master <strong>Translation</strong> option enabled, an <strong>Automatic translation</strong> checkbox appears after the target language and Line translation control. Manual line translation need not be checked. This checkbox permits use of the shortcut. Check it and apply settings, then press <kbd>NVDA+Shift+O</kbd> to start or stop an automatic session. The shortcut never changes the saved checkbox. Starting captures the current line. If the master option is off, you are asked to enable translation first; if only the automatic checkbox is off, you hear “Enable automatic translation in Extra Settings first.” No session starts and no line is sent. Checking the box alone does not start translation.</p>
+<p><strong>Default: unchecked.</strong> With the master <strong>Translation</strong> option enabled, an <strong>Automatic translation</strong> checkbox appears after the target language, Text translation and Clipboard translation controls. Manual text translation need not be checked. This checkbox permits use of the shortcut. Check it and apply settings, then press <kbd>NVDA+Shift+O</kbd> to start or stop an automatic session. The shortcut never changes the saved checkbox. Starting captures the current line or focused item text. If the master option is off, you are asked to enable translation first; if only the automatic checkbox is off, you hear “Enable automatic translation in Extra Settings first.” No session starts and no line is sent. Checking the box alone does not start translation.</p>
 <p>Change the shortcut under <strong>Input Gestures → NVDA Extra Settings → Automatic translation</strong>. The settings label reflects the effective gesture, including a removed assignment.</p>
-<p>Captures NVDA caret announcements made in line units, such as Up/Down in text fields and web browse mode. Captures each line immediately and replaces its original announcement with the translation in the selected target language. Does not translate all menus or buttons; character and word navigation work normally.</p>
+<p>Captures NVDA caret announcements made in line units, such as Up/Down in text fields and web browse mode. When focus moves to a menu item, button or other application control, its accessible name, value and description are also queued for translation. The original text is replaced with the translation in the selected target language. NVDA's localized role and state information is spoken alongside the result without being sent for translation, so it cannot confuse source-language detection. Character and word navigation work normally. Only text exposed to NVDA is translated; no OCR is performed.</p>
+<p><strong>Automatic use with menus and buttons:</strong></p>
+<ol><li>Enable Translation and Automatic translation in Extra Settings, choose a target language, and select OK or Apply.</li><li>Return to the application and press <kbd>NVDA+Shift+O</kbd>. You hear “Automatic translation on.”</li><li>Move between controls with Tab or Shift+Tab, or navigate an application menu using arrow keys. Accessible focused item text is translated in order without pressing the manual translation shortcut for each item.</li><li>Press the same shortcut again when finished. You hear “Automatic translation off.” Pending translations and the session cache are cleared.</li></ol>
+<p>For example, moving to “Save changes” and then “Open document” translates the two items in that order. This is not limited to web pages. Controls drawn as images without text exposed to NVDA cannot be translated.</p>
 <p>Lines 1, 2, 3 and 4 are translated and spoken in capture order even when navigated rapidly. New lines never replace earlier queued lines. The next translation is spoken after the preceding one finishes. Later lines can continue being translated in the background. If navigation cancels speech, the interrupted translation is retained and read again. Repeated announcements of the same position are deduplicated. Returning to a line after another line reads it again; identical text on distinct lines remains distinct.</p>
 <p>The last 256 translations are cached in memory for the automatic session. Repeated text reuses these results; new text still requires translation. Blank lines are not translated. Protected fields are not sent, and queued translations are held while focus is protected.</p>
 <p>Stopping the session with its shortcut, or unchecking Automatic translation and applying, clears captured lines, unread results and the automatic cache, and stops its current speech. In-flight network results are ignored after closing a session. Starting again with the shortcut creates a fresh session; checking the box alone does not start one. Changing the target or disabling the main translation feature also clears the automatic session. The manual translation cache is separate.</p>
 <p>A failed translation holds that row and subsequent rows, reports the problem and pauses capture. Toggle off and on to start a new session, clearing the old queue. Lines over 5000 characters or a queue reaching 1000 rows or 1,000,000 source characters also pause capture with an announcement; already accepted successful rows continue reading.</p>
-<p><strong>Text transmission:</strong> While automatic translation is on, eligible lines are sent to Google as you navigate, without another translation shortcut for each line. The add-on does not save text or results to disk. NVDA speech history and debug logs may record spoken translations according to their settings. The checkbox permission follows normal NVDA configuration saving. The running session is not saved: after restarting NVDA, use the shortcut to start it even if the checkbox remains checked. Queued lines and cached translations never survive a restart.</p>
+<p><strong>Text transmission:</strong> While automatic translation is on, eligible lines and focused items’ accessible names, values and descriptions are sent to Google as you navigate, without another translation shortcut for each line. The add-on does not save text or results to disk. NVDA speech history and debug logs may record spoken translations according to their settings. The checkbox permission follows normal NVDA configuration saving. The running session is not saved: after restarting NVDA, use the shortcut to start it even if the checkbox remains checked. Queued lines and cached translations never survive a restart.</p>
 </section>
 <section aria-labelledby="stored-data">
 <h2 id="stored-data">17. Settings and user data</h2>
@@ -440,13 +455,13 @@ To request additional features, you can contact m.aykurt38@gmail.com.</p>
 <p>Records contain names, addresses, or document identities. Quick find records also contain the target line and short surrounding text. Consider this content when backing up or transferring these files. If a folder path or document identity changes, verify that the corresponding records still work in the new location.</p>
 <h3>17.3. Temporary data and the clipboard</h3>
 <p>Speech history and translation caches are held in memory and do not survive an NVDA restart. A running automatic translation session and its queued lines also end at restart. Text collected with Append to clipboard resides in the Windows clipboard and follows Windows clipboard storage preferences.</p>
-<h3>17.4. Online translation</h3>
-<p>A line is sent to Google when translation is required. During an automatic translation session, eligible lines are sent as you navigate. The Translation and Automatic translation chapters explain transmission scope, memory use, protected fields, and service limits.</p>
+<h3>17.4. Ontext translation</h3>
+<p>A line or accessible focused item text is sent to Google when translation is required. During an automatic translation session, eligible lines and focused items’ accessible names, values and descriptions are sent as you navigate. The Translation and Automatic translation chapters explain transmission scope, memory use, protected fields, and service limits.</p>
 </section>
 <section aria-labelledby="troubleshooting">
 <h2 id="troubleshooting">18. Troubleshooting and support</h2>
 <h3>18.1. When a command does not respond</h3>
-<ol><li>Verify that the corresponding feature is checked in Extra Settings and that Apply or OK has been used.</li><li>Check the current assignment in Input Gestures. The shortcut may have been changed or removed.</li><li>Confirm that the active field is within the feature’s supported scope. Text counting requires a selection; line translation requires a readable text line.</li><li>Compare NVDA’s announcement with the explanation in the relevant feature chapter.</li></ol>
+<ol><li>Verify that the corresponding feature is checked in Extra Settings and that Apply or OK has been used.</li><li>Check the current assignment in Input Gestures. The shortcut may have been changed or removed.</li><li>Confirm that the active field is within the feature’s supported scope. Text counting requires a selection; text translation requires a readable line or accessible item text.</li><li>Compare NVDA’s announcement with the explanation in the relevant feature chapter.</li></ol>
 <h3>18.2. When a Quick find shortcut is used on another page</h3>
 <p>Saved locations are matched to their page or document. Pressing a saved shortcut on another page does not navigate to the original page’s record; the key performs its normal action. Separate locations can be saved for different pages, and those pages may reuse the same shortcut. A change to the saved page’s address can also affect matching.</p>
 <h3>18.3. When translation does not return a result</h3>

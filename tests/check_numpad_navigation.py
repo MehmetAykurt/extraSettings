@@ -227,7 +227,7 @@ class SettingsRegistrationTests(unittest.TestCase):
                      config=types.SimpleNamespace(conf=types.SimpleNamespace(spec={})),
                      CONFIG_SECTION="extraSettings", CONFIG_SPEC={},
                      SpeechHistory=Feature, WebCycle=Feature, SkipBlankLines=Feature, TextStatistics=Feature, ClipboardInspector=Feature, Bookmarks=Feature, QuickFind=Feature, ApplicationsKey=Feature,
-                     ClipboardAnnouncements=Feature, NumpadNavigation=Feature, LineTranslation=Feature, AutomaticTranslation=Feature,
+                     ClipboardAnnouncements=Feature, NumpadNavigation=Feature, LineTranslation=Feature, ClipboardTranslation=Feature, AutomaticTranslation=Feature,
                      core=types.SimpleNamespace(postNvdaStartup=Action(),
                          callLater=lambda delay, handler: self.scheduled.append(handler)),
                      script=lambda **kwargs: lambda func: func, _=lambda value: value)

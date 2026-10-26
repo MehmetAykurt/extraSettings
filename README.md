@@ -19,11 +19,19 @@ Sayısal tuş takımıyla gezinme,
 NVDA menüsü / Tercihler / Ayarlar altında yer alan Ek ayarlar bölümünden istediğiniz özelliği aktif edebilir;  
 Eklenmesini istediğiniz özellikler için m.aykurt38@gmail.com adresine bildiride bulunabilirsiniz.  
 
+## Bu sürümdeki iyileştirmeler
+
+- NVDA+Ctrl+Shift+T ile panodaki metni, pano içeriğini değiştirmeden çevirme. Çeviri altındaki Pano çevirisi seçeneği bağımsız kullanılabilir.
+
+- Boş satır atlamada belge sınırında uyarı yerine mevcut satır yeniden okunur.
+- Elle ve otomatik çeviri, erişilebilir uygulama öğelerini de kapsar.
+- Panoya metin ekleme için Windows+C korunur; atama Girdi Hareketleri’nden değiştirilebilir.
+
 ## Sürüm ve uyumluluk
 
-- Eklenti sürümü: 2026.10.20
+- Eklenti sürümü: 2026.10.26
 - En düşük NVDA sürümü: 2026.2
-- Son sınanan NVDA sürümü: 2026.2
+- Son sınanan NVDA sürümü: 2026.3
 - Arayüz ve yardım dilleri: Türkçe ve İngilizce
 
 ## Geliştirici
@@ -47,7 +55,7 @@ Mehmet Aykurt
 - Web sayfaları ve klasörler için yer imleri oluşturma.
 - Hızlı bul ile desteklenen sayfa ve belgelerde metin konumları kaydetme; kayıtlara belgeye özgü kısayollar atama.
 - Sayısal tuş takımını gezinme tuşları olarak kullanma.
-- İmlecin bulunduğu satırı seçilen dile çevirme ve otomatik çeviri oturumu sırasında satırları sırayla seslendirme.
+- İmlecin bulunduğu satırı veya odaktaki menü, düğme ve diğer uygulama öğelerinin erişilebilir metnini çevirme; otomatik oturumda satır ve öğe duyurularını sırayla seslendirme.
 
 ## Kurulum ve ilk kullanım
 
@@ -65,7 +73,8 @@ Yayımlanmış `.nvda-addon` paketini NVDA çalışırken açın ve kurulum yön
 | Panoyu incele | NVDA+Shift+C |
 | Yer imleri | NVDA+Shift+Y |
 | Hızlı bul | NVDA+Shift+H |
-| Bulunulan satırı çevir | NVDA+Shift+T |
+| Panodaki metni çevir | NVDA+Ctrl+Shift+T |
+| Bulunulan metni çevir | NVDA+Shift+T |
 | Otomatik çeviri oturumunu başlat veya durdur | NVDA+Shift+O |
 
 İlgili özellik önceden etkinleştirilmiş olmalıdır. Komut atamaları Tercihler, Girdi Hareketleri, NVDA Ek Ayarları bölümünden değiştirilebilir. Hızlı bul kayıtlarının özel kısayolları kayıt penceresinden atanır. NVDA+Shift+C, Word ve Excel’in sütun başlığı komutuyla çakışabileceğinden gerektiğinde değiştirilmelidir.
@@ -83,7 +92,7 @@ GitHub, HTML dosyasını kaynak metin olarak gösterebilir. Biçimlendirilmiş y
 
 Yer imleri, Hızlı bul kayıtları ve yedekleri NVDA kullanıcı ayar klasörünün `extraSettings` alt klasöründe tutulur. Eski konumdaki dosyalar otomatik taşınır. Onay kutuları gibi tercihler ile Girdi Hareketleri atamaları NVDA’nın kendi yapılandırma sistemi tarafından yönetilir. Konuşma geçmişi ve çeviri önbellekleri bellekte tutulur.
 
-Çeviri internet bağlantısı gerektirir; çevrilecek satır Google’a gönderilir. Hesap veya API anahtarı gerekmez. Resmî ücretli geliştirici hizmeti kullanılmadığından hizmetteki değişiklikler uyarlama gerektirebilir. Otomatik çeviri kutusu kullanım iznidir; oturum kısayolla başlatılır.
+Çeviri internet bağlantısı gerektirir; çevrilecek satır veya odaktaki öğenin erişilebilir adı, değeri ve açıklaması Google’a gönderilir. Öğenin tür ve durum bilgileri, çeviri isteğine katılmadan NVDA’nın kendi dilinde korunur. Hesap veya API anahtarı gerekmez. Resmî ücretli geliştirici hizmeti kullanılmadığından hizmetteki değişiklikler uyarlama gerektirebilir. Otomatik çeviri kutusu kullanım iznidir; oturum kısayolla başlatılır.
 
 `update.json`, diğer depolardaki sürüm bilgi düzenini sürdürür. Eklenti bu dosyayı okuyarak kendi başına güncelleme indirmez. Mağaza dağıtımı için her sürüm NVDA Eklenti Mağazası’na ayrıca sunulmalıdır.
 

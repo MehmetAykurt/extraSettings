@@ -156,6 +156,25 @@ class Container:
 class LineTests(unittest.TestCase):
     def setUp(self):
         api.isTypingProtected = lambda: False
+        api.getFocusObject = lambda: None
+    def test_button_menu_and_application_label_fallback_without_copy(self):
+        for label in ('Save', 'File', 'Next page'):
+            api.getCaretObject = lambda: None
+            api.getFocusObject = lambda: types.SimpleNamespace(
+                name=label, value=None, description='Helpful description', isProtected=False)
+            self.assertEqual(translation.currentLine(), label + ' Helpful description')
+    def test_accessible_properties_deduplicate_and_protected_control_is_never_read(self):
+        obj = types.SimpleNamespace(name='Save', value='Save', description='Save', isProtected=False)
+        self.assertEqual(translation.objectText(obj), 'Save')
+        class Protected:
+            isProtected = True
+            @property
+            def name(self): raise AssertionError('Read protected name')
+        api.getCaretObject = lambda: None
+        api.getFocusObject = lambda: Protected()
+        with self.assertRaises(service.TranslationFailure) as caught:
+            translation.currentLine()
+        self.assertEqual(caught.exception.reason, 'protected')
     def test_reading_line_preserves_internal_text_without_moving_caret(self):
         container = Container("  Hello  world & 世界.\r\n")
         api.getCaretObject = lambda: container
@@ -224,7 +243,7 @@ class LifecycleTests(unittest.TestCase):
         self.settings.update(manualTranslation=False, automaticTranslation=True)
         with patch.object(translation, 'currentLine', side_effect=AssertionError('Disabled manual mode read caret')):
             controller.translateCurrentLine()
-        self.assertIn('Enable line translation', messages[-1])
+        self.assertIn('Enable text translation', messages[-1])
         self.assertIsNone(controller._worker)
         self.settings['manualTranslation'] = True
         self.settings['automaticTranslation'] = False
@@ -373,7 +392,7 @@ class PanelTests(unittest.TestCase):
         self.conf = {"webCycle": False, "skipWebBlankLines": False, "announceClipboard": False, "recordHistory": False,
                      "historyLimit": 100, "historyOrder": "newestFirst", "replaceApplicationsKey": False,
                      "applicationsGesture": "", "appendClipboard": False, "numpadNavigation": False, "textStatistics": False, "inspectClipboard": False, "bookmarks": False, "quickFind": False,
-                     "lineTranslation": False, "manualTranslation": True,
+                     "lineTranslation": False, "manualTranslation": True, "clipboardTranslation": True,
                      "automaticTranslation": False, "translationTarget": "tr"}
         class Control:
             def __init__(self, parent=None, label="", value="", choices=None, **kwargs):
@@ -403,6 +422,9 @@ class PanelTests(unittest.TestCase):
         self.autoGestures = ["kb:NVDA+shift+o"]
         self.autoInfo = types.SimpleNamespace(moduleName="testedSettingsPanel", scriptName="toggleAutomaticTranslation",
                                              gestures=self.autoGestures)
+        self.clipboardTranslationGestures = ['kb:NVDA+control+shift+t']
+        self.clipboardTranslationInfo = types.SimpleNamespace(moduleName='testedSettingsPanel', scriptName='translateClipboard',
+                                                              gestures=self.clipboardTranslationGestures)
         self.statisticsGestures = ["kb:NVDA+shift+k"]
         self.statisticsInfo = types.SimpleNamespace(moduleName="testedSettingsPanel", scriptName="showTextStatistics",
                                                    gestures=self.statisticsGestures)
@@ -418,7 +440,7 @@ class PanelTests(unittest.TestCase):
         self.applies = []
         scope = dict(__name__="testedSettingsPanel", SettingsPanel=Panel,
                      Mapping=Mapping, inputCore=types.SimpleNamespace(manager=types.SimpleNamespace(
-                         getAllGestureMappings=lambda: {"extra": {"translate": self.info, "auto": self.autoInfo, "statistics": self.statisticsInfo, "clipboard": self.clipboardInfo, "bookmarks": self.bookmarkInfo, "quickFind": self.quickFindInfo}}),
+                         getAllGestureMappings=lambda: {"extra": {"translate": self.info, "auto": self.autoInfo, "clipboardTranslation": self.clipboardTranslationInfo, "statistics": self.statisticsInfo, "clipboard": self.clipboardInfo, "bookmarks": self.bookmarkInfo, "quickFind": self.quickFindInfo}}),
                          getDisplayTextForGestureIdentifier=lambda gesture: (None, gesture.partition(":")[2])),
                      config=types.SimpleNamespace(conf={"extraSettings": self.conf}), CONFIG_SECTION="extraSettings",
                      guiHelper=types.SimpleNamespace(BoxSizerHelper=Helper),
@@ -480,6 +502,20 @@ class PanelTests(unittest.TestCase):
             self.assertTrue(self.conf['lineTranslation'])
             self.assertEqual(self.conf['manualTranslation'], manual)
             self.assertEqual(self.conf['automaticTranslation'], automatic)
+
+    def test_clipboard_translation_permission_and_shortcut_are_independent(self):
+        self.assertTrue(self.panel.clipboardTranslation.GetValue())
+        self.assertIn('NVDA+control+shift+T', self.panel.clipboardTranslation.label)
+        self.panel.clipboardTranslation.SetValue(False)
+        self.panel.onSave()
+        self.assertFalse(self.conf['clipboardTranslation'])
+        self.assertTrue(self.conf['manualTranslation'])
+        self.clipboardTranslationGestures[:] = ['kb:NVDA+alt+t']
+        self.panel.onClipboardTranslationFocus(types.SimpleNamespace(Skip=lambda:None))
+        self.assertIn('NVDA+alt+T', self.panel.clipboardTranslation.label)
+        self.clipboardTranslationGestures.clear()
+        self.panel.onPanelActivated()
+        self.assertIn('No shortcut assigned', self.panel.clipboardTranslation.label)
 
     def test_bookmarks_option_and_reassigned_shortcut(self):
         self.assertFalse(self.panel.bookmarks.GetValue())

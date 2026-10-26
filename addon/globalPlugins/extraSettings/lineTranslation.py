@@ -1,4 +1,4 @@
-"""Translate a caret line on demand using one lazy background worker."""
+"""Translate a caret line or focused control using one lazy background worker."""
 from collections import OrderedDict
 import threading
 import time
@@ -19,7 +19,77 @@ CACHE_ENTRIES = 32
 REQUEST_INTERVAL = 0.5
 
 
+def objectTextParts(obj):
+    """Read accessible properties only; never walk parents or child controls."""
+    if obj is None:
+        raise TranslationFailure("caret")
+    if api.isTypingProtected() or getattr(obj, "isProtected", False):
+        raise TranslationFailure("protected")
+    parts = []
+    for attribute in ("name", "value", "description"):
+        try:
+            value = getattr(obj, attribute, None)
+        except Exception:
+            continue
+        if isinstance(value, str) and value.strip() and value.strip() not in parts:
+            parts.append(value.strip())
+    return parts
+
+
+def objectText(obj):
+    return checkedText(" ".join(objectTextParts(obj)))
+
+
+def checkedText(text):
+    if not isinstance(text, str):
+        raise TranslationFailure("caret")
+    text = text.strip()
+    if not text:
+        raise TranslationFailure("empty")
+    if len(text) > MAX_TEXT:
+        raise TranslationFailure("length")
+    return text
+
+
+def clipboardText():
+    """Read Unicode clipboard text once on demand; never write to it."""
+    if api.isTypingProtected():
+        raise TranslationFailure("protected")
+    try:
+        text = api.getClipData()
+    except Exception:
+        raise TranslationFailure("clipboard") from None
+    if not isinstance(text, str) or not text.strip():
+        raise TranslationFailure("clipboardEmpty")
+    return checkedText(text)
+
+
 def currentLine():
+    """Prefer the caret; fall back to the focused control's accessible text."""
+    if api.isTypingProtected():
+        raise TranslationFailure("protected")
+    try:
+        focus = getattr(api, "getFocusObject", lambda: None)()
+        if focus is not None and getattr(focus, "isProtected", False):
+            raise TranslationFailure("protected")
+    except TranslationFailure:
+        raise
+    except Exception:
+        raise TranslationFailure("caret") from None
+    try:
+        return _caretLine()
+    except TranslationFailure as error:
+        if error.reason not in ("caret", "empty") or focus is None:
+            raise
+        try:
+            return objectText(focus)
+        except TranslationFailure:
+            raise
+        except Exception:
+            raise TranslationFailure("caret") from None
+
+
+def _caretLine():
     """Called on the NVDA main thread. Never move a caret or issue Copy."""
     try:
         if api.isTypingProtected():
@@ -44,15 +114,7 @@ def currentLine():
             atStart = None
         if atStart is not None and getattr(atStart, "isProtected", False):
             raise TranslationFailure("protected")
-        text = info.text
-        if not isinstance(text, str):
-            raise TranslationFailure("caret")
-        text = text.strip()
-        if not text:
-            raise TranslationFailure("empty")
-        if len(text) > MAX_TEXT:
-            raise TranslationFailure("length")
-        return text
+        return checkedText(info.text)
     except TranslationFailure:
         raise
     except Exception:
@@ -62,9 +124,11 @@ def currentLine():
 def failureMessage(reason):
     messages = {
         "protected": _("Protected fields cannot be translated."),
-        "caret": _("The line at the caret could not be read."),
-        "empty": _("There is no text on this line to translate."),
-        "length": _("This line is too long to translate. The limit is 5000 characters."),
+        "caret": _("The text at the caret or focused item could not be read."),
+        "empty": _("There is no accessible text here to translate."),
+        "length": _("This text is too long to translate. The limit is 5000 characters."),
+        "clipboard": _("The clipboard text could not be read. Please try again."),
+        "clipboardEmpty": _("There is no text on the clipboard to translate."),
         "language": _("Choose a supported target language in Extra Settings."),
         "limited": _("The translation service is limiting access. Try again later."),
         "timeout": _("The translation service did not respond in time."),
@@ -99,6 +163,8 @@ class LineTranslation:
         """Only called on the main thread; never access config in the worker."""
         if hasattr(self, 'automatic'):
             self.automatic.applySettings()
+        if hasattr(self, 'clipboard'):
+            self.clipboard.applySettings()
         settings = self._settingsKey()
         if settings == self._lastSettings:
             return
@@ -115,7 +181,7 @@ class LineTranslation:
         self.applySettings()
         enabled, target = self._lastSettings
         if not enabled:
-            ui.message(_("Enable line translation in Extra Settings first.") if self._settings()["lineTranslation"]
+            ui.message(_("Enable text translation in Extra Settings first.") if self._settings()["lineTranslation"]
                        else _("Enable translation in Extra Settings first."))
             return
         if target not in LANGUAGE_CODES:
@@ -243,6 +309,8 @@ class LineTranslation:
     def terminate(self):
         if hasattr(self, 'automatic'):
             self.automatic.terminate()
+        if hasattr(self, 'clipboard'):
+            self.clipboard.terminate()
         with self._condition:
             self._active = False
             self._serial += 1
@@ -250,3 +318,33 @@ class LineTranslation:
             self._waiting = False
             self._condition.notify_all()
         self._cache.clear()
+
+
+class ClipboardTranslation(LineTranslation):
+    """Independent permission/cache, sharing the asynchronous request machinery."""
+    def _settingsKey(self):
+        settings = self._settings()
+        return bool(settings['lineTranslation'] and settings.get('clipboardTranslation', True)), settings['translationTarget']
+
+    def translateClipboard(self):
+        if not self._active:
+            return
+        self.applySettings()
+        enabled, target = self._lastSettings
+        if not enabled:
+            ui.message(_("Enable clipboard translation in Extra Settings first.") if self._settings()['lineTranslation']
+                       else _("Enable translation in Extra Settings first."))
+            return
+        if target not in LANGUAGE_CODES:
+            ui.message(failureMessage('language'))
+            return
+        try:
+            text = clipboardText()
+        except TranslationFailure as error:
+            with self._condition:
+                self._serial += 1
+                self._pending = None
+                self._waiting = False
+            ui.message(failureMessage(error.reason))
+            return
+        self._request(text, target)

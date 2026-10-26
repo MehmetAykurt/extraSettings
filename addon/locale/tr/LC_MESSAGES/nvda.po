@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: extraSettings 2026.10.20\n"
+"Project-Id-Version: extraSettings 2026.10.26\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -168,8 +168,8 @@ msgstr "Hedef dil"
 msgid "Choose a target language."
 msgstr "Bir hedef dil seçin."
 
-msgid "Translate the current line"
-msgstr "Bulunulan satırı çevir"
+msgid "Translate current text"
+msgstr "Bulunulan metni çevir"
 
 msgid "Enable translation in Extra Settings first."
 msgstr "Önce Ek Ayarlar bölümünden çeviri özelliğini etkinleştirin."
@@ -177,14 +177,14 @@ msgstr "Önce Ek Ayarlar bölümünden çeviri özelliğini etkinleştirin."
 msgid "Protected fields cannot be translated."
 msgstr "Korumalı alanlarda çeviri yapılamaz."
 
-msgid "The line at the caret could not be read."
-msgstr "İmlecin bulunduğu satır okunamadı."
+msgid "The text at the caret or focused item could not be read."
+msgstr "İmlecin veya odaktaki öğenin metni okunamadı."
 
-msgid "There is no text on this line to translate."
-msgstr "Bu satırda çevrilecek metin yok."
+msgid "There is no accessible text here to translate."
+msgstr "Burada çevrilecek erişilebilir metin yok."
 
-msgid "This line is too long to translate. The limit is 5000 characters."
-msgstr "Bu satır çeviri için çok uzun. Sınır 5000 karakterdir."
+msgid "This text is too long to translate. The limit is 5000 characters."
+msgstr "Bu metin çeviri için çok uzun. Sınır 5000 karakterdir."
 
 msgid "Choose a supported target language in Extra Settings."
 msgstr "Ek Ayarlar bölümünden desteklenen bir hedef dil seçin."
@@ -228,11 +228,11 @@ msgstr "Otomatik çeviri duraklatıldı. Yeni bir oturum başlatmak için kapat�
 msgid "Translation"
 msgstr "Çeviri"
 
-msgid "Line translation — {shortcut}"
-msgstr "Satır çevirisi — {shortcut}"
+msgid "Text translation — {shortcut}"
+msgstr "Metin çevirisi — {shortcut}"
 
-msgid "Enable line translation in Extra Settings first."
-msgstr "Önce Ek Ayarlar bölümünden satır çevirisini etkinleştirin."
+msgid "Enable text translation in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden metin çevirisini etkinleştirin."
 
 msgid "Enable automatic translation in Extra Settings first."
 msgstr "Önce Ek Ayarlar bölümünden otomatik çeviriyi etkinleştirin."
@@ -240,8 +240,6 @@ msgstr "Önce Ek Ayarlar bölümünden otomatik çeviriyi etkinleştirin."
 msgid "Skip blank lines on web pages"
 msgstr "Web sayfalarında boş satırları atla"
 
-msgid "No more non-blank lines in this direction."
-msgstr "Bu yönde başka dolu satır yok."
 
 msgid "Announce word and character counts"
 msgstr "Sözcük ve karakter sayısını duyur"
@@ -578,3 +576,18 @@ msgstr "Kısayolu değiştir"
 
 msgid "Go to a saved location in the current document"
 msgstr "Geçerli belgede kayıtlı konuma git"
+
+msgid "Translate clipboard text"
+msgstr "Panodaki metni çevir"
+
+msgid "Clipboard translation — {shortcut}"
+msgstr "Pano çevirisi — {shortcut}"
+
+msgid "Enable clipboard translation in Extra Settings first."
+msgstr "Önce Ek Ayarlar bölümünden pano çevirisini etkinleştirin."
+
+msgid "The clipboard text could not be read. Please try again."
+msgstr "Panodaki metin okunamadı. Lütfen yeniden deneyin."
+
+msgid "There is no text on the clipboard to translate."
+msgstr "Panoda çevrilecek metin yok."

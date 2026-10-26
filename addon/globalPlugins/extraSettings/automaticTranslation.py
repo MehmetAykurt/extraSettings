@@ -17,7 +17,7 @@ import textInfos
 import ui
 import wx
 
-from .lineTranslation import failureMessage
+from .lineTranslation import failureMessage, currentLine, objectTextParts
 from .translationService import fetchTranslation, TranslationFailure, LANGUAGE_CODES, MAX_TEXT
 
 addonHandler.initTranslation()
@@ -42,6 +42,8 @@ class AutomaticTranslation:
         self._cache = OrderedDict()
         self._lastInfo = None
         self._lastText = None
+        self._lastObject = None
+        self._lastContext = ()
         self._rows = self._characters = 0
         self._speaking = False
         self._speechTicket = 0
@@ -49,6 +51,10 @@ class AutomaticTranslation:
         self._original = speech.speakTextInfo
         self._wrapper = self._speakTextInfo
         speech.speakTextInfo = self._wrapper
+        self._originalObject = getattr(speech, 'speakObject', None)
+        self._objectWrapper = self._speakObject
+        if self._originalObject is not None:
+            speech.speakObject = self._objectWrapper
         speechCanceled.register(self._onCanceled)
         self.applySettings()
 
@@ -100,6 +106,8 @@ class AutomaticTranslation:
             self._condition.notify_all()
         self._ready.clear()
         self._lastInfo = self._lastText = None
+        self._lastObject = None
+        self._lastContext = ()
         self._rows = self._characters = 0
         if wasSpeaking:
             speech.cancelSpeech()
@@ -121,10 +129,10 @@ class AutomaticTranslation:
         if not self._check():
             return False
         try:
-            obj = api.getCaretObject()
-            if obj is None or getattr(obj, 'isProtected', False):
-                return False
-            return self.capture(obj.makeTextInfo(textInfos.POSITION_CARET))
+            text = currentLine()
+            obj = getattr(api, 'getFocusObject', lambda: None)()
+            self._lastInfo = None
+            return self._captureText(text, obj)
         except Exception:
             return False
 
@@ -152,13 +160,20 @@ class AutomaticTranslation:
                     pass
             if same:
                 return bool(text)
-            self._lastInfo, self._lastText = line, text
+            self._lastInfo = line
+            self._lastObject = None
         except Exception:
             # If positions cannot be compared, do not silently deduplicate two
             # different lines just because their text happens to be identical.
             return False
+        return self._captureText(text)
+
+    def _captureText(self, text, obj=None, context=()):
         if not text:
             return False
+        if (obj is not None and obj == self._lastObject and text == self._lastText
+                and context == self._lastContext):
+            return True
         if len(text) > MAX_TEXT:
             self._pause('length')
             return False
@@ -167,13 +182,38 @@ class AutomaticTranslation:
             return False
         self._rows += 1
         self._characters += len(text)
+        self._lastText = text
+        self._lastObject = obj
+        self._lastContext = context
         with self._condition:
-            self._pending.append((self._generation, text, self._target))
+            self._pending.append((self._generation, text, self._target, context))
             if self._worker is None or not self._worker.is_alive():
                 self._worker = threading.Thread(target=self._run, name='ExtraSettingsAutomaticTranslation', daemon=True)
                 self._worker.start()
             self._condition.notify_all()
         return True
+
+    def _speakObject(self, obj, reason=OutputReason.QUERY, _prefixSpeechCommand=None, priority=None):
+        if reason != OutputReason.FOCUS or not self._check() or getattr(obj, 'isProtected', False):
+            return self._originalObject(obj, reason=reason,
+                _prefixSpeechCommand=_prefixSpeechCommand, priority=priority)
+        # Update NVDA's property cache once. Translate accessible content only:
+        # appending a localized role such as Turkish "dugme" to an English
+        # label can make automatic language detection keep that label English.
+        # Keep NVDA's already-localized role/state text outside the request.
+        sequence = speech.getObjectSpeech(obj, reason, _prefixSpeechCommand)
+        try:
+            parts = objectTextParts(obj)
+            text = ' '.join(parts)
+        except Exception:
+            parts, text = [], ''
+        context = tuple(part.strip() for part in sequence
+                        if isinstance(part, str) and part.strip() and part.strip() not in parts)
+        if self._captureText(text, obj, context):
+            self._lastInfo = None
+            return
+        if sequence:
+            return speech.speak(sequence, priority=priority)
 
     def _speakTextInfo(self, info, useCache=True, formatConfig=None, unit=None,
                        reason=OutputReason.QUERY, _prefixSpeechCommand=None,
@@ -193,7 +233,7 @@ class AutomaticTranslation:
                     self._condition.wait()
                 if not self._active:
                     return
-                generation, text, target = self._pending.popleft()
+                generation, text, target, context = self._pending.popleft()
                 key = (text, target)
                 result = self._cache.get(key)
             error = None
@@ -218,22 +258,22 @@ class AutomaticTranslation:
                     else:
                         # Hold this and following rows until the user closes
                         # the session; no failing row is silently skipped.
-                        self._pending.appendleft((generation, text, target))
+                        self._pending.appendleft((generation, text, target, context))
                     try:
-                        wx.CallAfter(self._finish, generation, len(text), result, error)
+                        wx.CallAfter(self._finish, generation, len(text), result, error, context)
                     except RuntimeError:
                         return
                     if error:
                         self._condition.wait_for(lambda: not self._active or generation != self._generation)
-            del text, target, result, key, error
+            del text, target, result, key, error, context
 
-    def _finish(self, generation, length, result, error):
+    def _finish(self, generation, length, result, error, context=()):
         if not self._active or not self._enabled or generation != self._generation:
             return
         if error:
             self._pause(error)
             return
-        self._ready.append((length, result))
+        self._ready.append((length, result, context))
         self._pump()
 
     def _pump(self):
@@ -251,13 +291,13 @@ class AutomaticTranslation:
         self._speaking = True
         self._speechTicket += 1
         ticket = self._speechTicket
-        speech.speak([self._ready[0][1], CallbackCommand(lambda: self._spoken(ticket))])
+        speech.speak([self._ready[0][1], *self._ready[0][2], CallbackCommand(lambda: self._spoken(ticket))])
 
     def _spoken(self, ticket):
         if not self._active or ticket != self._speechTicket or not self._speaking:
             return
         self._speaking = False
-        length, result = self._ready.popleft()
+        length, result, context = self._ready.popleft()
         self._rows -= 1
         self._characters -= length
         core.callLater(0, self._pump)
@@ -281,3 +321,5 @@ class AutomaticTranslation:
         speechCanceled.unregister(self._onCanceled)
         if speech.speakTextInfo is self._wrapper:
             speech.speakTextInfo = self._original
+        if self._originalObject is not None and speech.speakObject is self._objectWrapper:
+            speech.speakObject = self._originalObject

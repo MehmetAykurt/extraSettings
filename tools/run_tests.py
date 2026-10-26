@@ -6,7 +6,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
 MODULES = (
-    'check_translation', 'check_automatic_translation', 'check_existing_features',
+    'check_translation', 'check_automatic_translation', 'check_clipboard_translation', 'check_existing_features',
     'check_numpad_navigation', 'check_skip_blank_lines', 'check_text_statistics',
     'check_clipboard_inspector', 'check_bookmarks', 'check_quick_find',
     'check_extra_settings_storage',

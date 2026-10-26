@@ -18,13 +18,21 @@ class Callback:
     def __init__(self, func): self.func = func
 
 originalCalls = []
+objectCalls = []
 def original(info, **kwargs):
     originalCalls.append((info, kwargs))
     return 'original-return'
 
 canceled = Action()
 spoken = []
+def originalObject(obj, **kwargs):
+    objectCalls.append((obj, kwargs))
+    return 'original-object'
+def objectSpeech(obj, reason, prefix):
+    objectCalls.append(('sequence', obj))
+    return [obj.name, 'düğmesi']
 speech = base.stub('speech', speakTextInfo=original, speak=lambda seq: spoken.append(seq),
+    speakObject=originalObject, getObjectSpeech=objectSpeech,
     getState=lambda: types.SimpleNamespace(speechMode='talk'),
     SpeechMode=types.SimpleNamespace(talk='talk'), cancelSpeech=canceled.notify)
 base.stub('speech.commands', CallbackCommand=Callback)
@@ -54,7 +62,10 @@ class AutomaticTests(unittest.TestCase):
         originalCalls.clear(); spoken.clear(); base.messages.clear(); base.delays.clear()
         base.api.isTypingProtected = lambda: False
         base.api.getCaretObject = lambda: None
+        base.api.getFocusObject = lambda: None
         speech.speakTextInfo = original
+        speech.speakObject = originalObject
+        objectCalls.clear()
         while not base.callbacks.empty(): base.callbacks.get_nowait()
     def make(self, fetch=None, start=True):
         def fetchDefault(text, target):
@@ -73,6 +84,7 @@ class AutomaticTests(unittest.TestCase):
             worker = self.controller._worker
             if worker: worker.join(1)
         self.assertEqual(canceled.handlers, [])
+        self.assertIs(speech.speakObject, originalObject)
     def info(self, index, text=None): return Info(self.document, index, text or str(index))
     def dispatch(self):
         while not base.callbacks.empty():
@@ -116,6 +128,53 @@ class AutomaticTests(unittest.TestCase):
         speech.speakTextInfo(self.info(3), unit='line', reason='query')
         self.assertEqual(originalCalls[-1][1]['reason'], 'query')
         self.assertEqual(controller._rows, 1)
+    def test_focus_controls_are_translated_in_order_and_same_control_deduplicated(self):
+        controller = self.make()
+        first = types.SimpleNamespace(name='Save', isProtected=False)
+        second = types.SimpleNamespace(name='Open', isProtected=False)
+        speech.speakObject(first, reason='focus')
+        speech.speakObject(first, reason='focus')
+        speech.speakObject(second, reason='focus')
+        speech.speakObject(first, reason='focus')
+        self.until(lambda: len(controller._ready) == 3)
+        self.assertEqual(self.fetches, [('Save', 'tr'), ('Open', 'tr')])
+        self.assertEqual([call[0] for call in objectCalls], ['sequence'] * 4)
+        self.assertEqual(controller._rows, 3)
+        for text in ('Save', 'Open', 'Save'):
+            self.assertEqual(spoken[-1][0], 'translated:' + text)
+            self.assertEqual(spoken[-1][1], 'düğmesi')
+            self.complete()
+    def test_disabled_query_and_protected_objects_use_original_without_reading_sequence(self):
+        controller = self.make(start=False)
+        obj = types.SimpleNamespace(name='Save', isProtected=False)
+        self.assertEqual(speech.speakObject(obj, reason='focus'), 'original-object')
+        controller.toggle()
+        self.assertEqual(speech.speakObject(obj, reason='query'), 'original-object')
+        obj.isProtected = True
+        self.assertEqual(speech.speakObject(obj, reason='focus'), 'original-object')
+        self.assertFalse(any(call[0] == 'sequence' for call in objectCalls))
+        self.assertFalse(self.fetches)
+    def test_toggle_on_focused_button_captures_name_without_a_caret(self):
+        obj = types.SimpleNamespace(name='Save', value=None, description=None, isProtected=False)
+        base.api.getFocusObject = lambda: obj
+        controller = self.make()
+        self.until(lambda: bool(controller._ready))
+        self.assertEqual(self.fetches, [('Save', 'tr')])
+    def test_localized_role_is_not_sent_and_changed_state_is_not_deduplicated(self):
+        def fetch(text, target):
+            self.fetches.append((text, target))
+            return text if 'düğmesi' in text else 'Kaydet'
+        controller = self.make(fetch)
+        obj = types.SimpleNamespace(name='Save', isProtected=False)
+        with patch.object(speech, 'getObjectSpeech', side_effect=[
+                ['Save', 'düğmesi', 'kullanılabilir'], ['Save', 'düğmesi', 'kullanılamaz']]):
+            speech.speakObject(obj, reason='focus')
+            speech.speakObject(obj, reason='focus')
+        self.until(lambda: len(controller._ready) == 2)
+        self.assertEqual(self.fetches, [('Save', 'tr')])
+        self.assertEqual(spoken[-1][:-1], ['Kaydet', 'düğmesi', 'kullanılabilir'])
+        self.complete()
+        self.assertEqual(spoken[-1][:-1], ['Kaydet', 'düğmesi', 'kullanılamaz'])
     def test_cancel_replays_interrupted_row_and_ignores_old_callback(self):
         controller = self.make()
         controller.capture(self.info(1)); controller.capture(self.info(2))

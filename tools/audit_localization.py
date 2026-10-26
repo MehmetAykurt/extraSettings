@@ -117,16 +117,20 @@ def audit(requireEnglish=True):
         if language == 'tr':
             assert '<strong>NVDA Ek Ayarlar</strong>' not in helpFile.read_text(encoding='utf-8-sig')
         for key in ('Choose a supported target language in Extra Settings.', 'Choose a target language.',
-                    'Protected fields cannot be translated.', 'The line at the caret could not be read.',
-                    'This line is too long to translate. The limit is 5000 characters.',
+                    'Protected fields cannot be translated.', 'The text at the caret or focused item could not be read.',
+                    'This text is too long to translate. The limit is 5000 characters.',
                     'Translation is already in progress.', 'Key selection canceled.',
                     'Open the context menu', 'History entries'):
             assert catalog[key] in text, (language, 'undocumented interface label or message', key)
-        for gesture in ('NVDA+Shift+T', 'NVDA+Shift+O', 'NVDA+Shift+K', 'NVDA+Shift+C', 'NVDA+Shift+Y', 'NVDA+Shift+H', 'NVDA+G', 'Windows+C'):
+        for gesture in ('NVDA+Shift+T', 'NVDA+Ctrl+Shift+T', 'NVDA+Shift+O', 'NVDA+Shift+K', 'NVDA+Shift+C', 'NVDA+Shift+Y', 'NVDA+Shift+H', 'NVDA+G', 'Windows+C'):
             assert gesture in text, (language, 'missing shortcut', gesture)
-        for key in ('Inspect clipboard', 'Enable clipboard inspection in Extra Settings first.', 'The clipboard is empty.', 'The clipboard does not contain supported text, a table or files.', 'Clipboard inspection is already in progress.', 'The clipboard content is too large to inspect.', 'The clipboard could not be read. Please try again.', 'The file could not be accessed. It may have been moved or deleted.', 'Announce word and character counts', 'Enable word and character counts in Extra Settings first.', 'Select some text first.', 'Text counting is already in progress.', 'The selected text could not be counted.', 'Skip blank lines on web pages', 'No more non-blank lines in this direction.', 'Translation', 'Line translation — {shortcut}', 'Automatic translation — {shortcut}',
-                    'Enable translation in Extra Settings first.', 'Enable line translation in Extra Settings first.',
-                    'Enable automatic translation in Extra Settings first.', 'No shortcut assigned'):
+        for key in ('Inspect clipboard', 'Enable clipboard inspection in Extra Settings first.', 'The clipboard is empty.', 'The clipboard does not contain supported text, a table or files.', 'Clipboard inspection is already in progress.', 'The clipboard content is too large to inspect.', 'The clipboard could not be read. Please try again.', 'The file could not be accessed. It may have been moved or deleted.', 'Announce word and character counts', 'Enable word and character counts in Extra Settings first.', 'Select some text first.', 'Text counting is already in progress.', 'The selected text could not be counted.', 'Skip blank lines on web pages', 'Translation', 'Text translation — {shortcut}', 'Automatic translation — {shortcut}',
+                    'Enable translation in Extra Settings first.', 'Enable text translation in Extra Settings first.',
+                    'Enable automatic translation in Extra Settings first.', 'No shortcut assigned',
+                    'Clipboard translation — {shortcut}', 'Translate clipboard text',
+                    'Enable clipboard translation in Extra Settings first.',
+                    'There is no text on the clipboard to translate.',
+                    'The clipboard text could not be read. Please try again.'):
             label = catalog[key].replace(' — {shortcut}', '')
             assert label in text, (language, 'help differs from interface', label)
         for key in ('Automatic translation on.', 'Automatic translation off.', 'The automatic translation queue is full.',
@@ -172,7 +176,7 @@ def audit(requireEnglish=True):
         manualSections = ('kurulum', 'kisayollar', 'veriler', 'sorun-giderme') if language == 'tr' else (
             'installation', 'keyboard-commands', 'stored-data', 'troubleshooting')
         assert all(identifier in help.ids for identifier in manualSections), (language, 'missing manual chapter')
-        assert '<caption>' in markup and markup.count('scope="col"') == 3 and markup.count('scope="row"') == 8, (
+        assert '<caption>' in markup and markup.count('scope="col"') == 3 and markup.count('scope="row"') == 9, (
             language, 'keyboard command table accessibility')
         result[language] = dict(runtimeMessages=len(source), catalogMessages=len(catalog)-1,
                                 helpSections=help.sectionCount)
