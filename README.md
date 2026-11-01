@@ -1,4 +1,4 @@
-# Extra Settings (Ek Ayarlar)
+# Ek Ayarlar (Extra Settings)
 
 Bu eklenti; web gezinmesinden pano yönetimine, yer imlerinden konuşma geçmişine ve anlık çeviriye kadar günlük bilgisayar kullanımında en çok ihtiyaç duyulan birçok güçlü özelliği NVDA ekran okuyucusuna kazandırmaktadır.
 
@@ -22,7 +22,7 @@ Bu eklenti; web gezinmesinden pano yönetimine, yer imlerinden konuşma geçmiş
 
 ---
 
-## Nasıl Kullanılır?
+### Nasıl Kullanılır?
 
 Eklentiyi kurduktan sonra:
 1. **NVDA Menüsü**'nü açın (`NVDA + N`).
@@ -32,7 +32,7 @@ Eklentiyi kurduktan sonra:
 
 ---
 
-## Geri Bildirim ve İletişim
+### Geri Bildirim ve İletişim
 
 Görüşleriniz, hata bildirimleriniz ve eklentiye eklenmesini istediğiniz yeni özellik önerileriniz için:
 - **E-posta:** [m.aykurt38@gmail.com](mailto:m.aykurt38@gmail.com)
@@ -40,6 +40,6 @@ Görüşleriniz, hata bildirimleriniz ve eklentiye eklenmesini istediğiniz yeni
 
 ---
 
-## Lisans
+### Lisans
 
 Bu proje **GNU General Public License v2 (GPL-2.0)** ile lisanslanmıştır.
