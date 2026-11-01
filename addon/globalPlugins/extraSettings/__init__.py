@@ -21,6 +21,7 @@ addonHandler.initTranslation()
 from .webCycle import WebCycle
 from .skipBlankLines import SkipBlankLines
 from .clipboardAnnouncements import ClipboardAnnouncements
+from .explorerSelection import ExplorerSelection
 from .speechHistory import SpeechHistory
 from .historyBuffer import parseLimit
 from .applicationsKey import ApplicationsKey, shortcutLabel
@@ -30,7 +31,7 @@ from .clipboardInspector import ClipboardInspector
 from .bookmarks import Bookmarks
 from .quickFind import QuickFind
 from .numpadNavigation import NumpadNavigation
-from .lineTranslation import LineTranslation, ClipboardTranslation
+from .lineTranslation import LineTranslation
 from .automaticTranslation import AutomaticTranslation
 from .translationService import languageChoices
 from .storage import prepareDataDirectory
@@ -41,6 +42,7 @@ CONFIG_SPEC = {
     "webCycle": "boolean(default=False)",
     "skipWebBlankLines": "boolean(default=False)",
     "announceClipboard": "boolean(default=False)",
+    "announceExplorerSelection": "boolean(default=False)",
     "recordHistory": "boolean(default=False)",
     "historyLimit": "integer(default=100, min=1, max=1000)",
     "historyOrder": "option('newestFirst', 'newestLast', default='newestFirst')",
@@ -54,7 +56,6 @@ CONFIG_SPEC = {
     "numpadNavigation": "boolean(default=False)",
     "lineTranslation": "boolean(default=False)",
     "manualTranslation": "boolean(default=True)",
-    "clipboardTranslation": "boolean(default=True)",
     "automaticTranslation": "boolean(default=False)",
     "translationTarget": "string(default='tr')",
 }
@@ -66,6 +67,7 @@ _textStatisticsController = None
 _clipboardInspectorController = None
 _bookmarksController = None
 _quickFindController = None
+_explorerSelectionController = None
 
 
 def commandShortcutLabel(scriptName):
@@ -118,6 +120,10 @@ class ExtraSettingsPanel(SettingsPanel):
             self, label=_("Announce cut, copy and paste operations"),
         ))
         self.announceClipboard.SetValue(config.conf[CONFIG_SECTION]["announceClipboard"])
+        self.announceExplorerSelection = helper.addItem(wx.CheckBox(
+            self, label=_("Announce selection state in File Explorer"),
+        ))
+        self.announceExplorerSelection.SetValue(config.conf[CONFIG_SECTION]["announceExplorerSelection"])
         self.recordHistory = helper.addItem(wx.CheckBox(self, label=self._historyLabel()))
         self.recordHistory.SetValue(config.conf[CONFIG_SECTION]["recordHistory"])
         self.recordHistory.Bind(wx.EVT_CHECKBOX, self.onHistoryChanged)
@@ -183,10 +189,6 @@ class ExtraSettingsPanel(SettingsPanel):
             self.translationOptions, label=self._translationLabel()))
         self.lineTranslation.SetValue(config.conf[CONFIG_SECTION]["manualTranslation"])
         self.lineTranslation.Bind(wx.EVT_SET_FOCUS, self.onTranslationFocus)
-        self.clipboardTranslation = translationHelper.addItem(wx.CheckBox(
-            self.translationOptions, label=self._clipboardTranslationLabel()))
-        self.clipboardTranslation.SetValue(config.conf[CONFIG_SECTION]["clipboardTranslation"])
-        self.clipboardTranslation.Bind(wx.EVT_SET_FOCUS, self.onClipboardTranslationFocus)
         self.automaticTranslation = translationHelper.addItem(wx.CheckBox(
             self.translationOptions, label=self._automaticTranslationLabel()))
         self.automaticTranslation.SetValue(config.conf[CONFIG_SECTION]["automaticTranslation"])
@@ -195,17 +197,10 @@ class ExtraSettingsPanel(SettingsPanel):
         self.translationOptions.Show(self.translation.GetValue())
 
     def _translationLabel(self):
-        return _("Text translation — {shortcut}").format(shortcut=commandShortcutLabel("translateCurrentLine"))
+        return _("Line translation — {shortcut}").format(shortcut=commandShortcutLabel("translateCurrentLine"))
 
     def _automaticTranslationLabel(self):
         return _("Automatic translation — {shortcut}").format(shortcut=commandShortcutLabel("toggleAutomaticTranslation"))
-
-    def _clipboardTranslationLabel(self):
-        return _("Clipboard translation — {shortcut}").format(shortcut=commandShortcutLabel("translateClipboard"))
-
-    def onClipboardTranslationFocus(self, event):
-        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
-        event.Skip()
 
     def onAutomaticTranslationFocus(self, event):
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
@@ -213,7 +208,6 @@ class ExtraSettingsPanel(SettingsPanel):
 
     def onTranslationFocus(self, event):
         self.lineTranslation.SetLabel(self._translationLabel())
-        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         event.Skip()
 
@@ -303,7 +297,6 @@ class ExtraSettingsPanel(SettingsPanel):
         self.bookmarks.SetLabel(self._bookmarksLabel())
         self.quickFind.SetLabel(self._quickFindLabel())
         self.lineTranslation.SetLabel(self._translationLabel())
-        self.clipboardTranslation.SetLabel(self._clipboardTranslationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         super().onPanelActivated()
 
@@ -345,6 +338,7 @@ class ExtraSettingsPanel(SettingsPanel):
         config.conf[CONFIG_SECTION]["webCycle"] = self.webCycle.GetValue()
         config.conf[CONFIG_SECTION]["skipWebBlankLines"] = self.skipWebBlankLines.GetValue()
         config.conf[CONFIG_SECTION]["announceClipboard"] = self.announceClipboard.GetValue()
+        config.conf[CONFIG_SECTION]["announceExplorerSelection"] = self.announceExplorerSelection.GetValue()
         config.conf[CONFIG_SECTION]["recordHistory"] = enabled
         config.conf[CONFIG_SECTION]["historyLimit"] = limit
         config.conf[CONFIG_SECTION]["historyOrder"] = "newestFirst" if self.historyOrder.GetSelection() == 0 else "newestLast"
@@ -358,7 +352,6 @@ class ExtraSettingsPanel(SettingsPanel):
         config.conf[CONFIG_SECTION]["numpadNavigation"] = self.numpadNavigation.GetValue()
         config.conf[CONFIG_SECTION]["lineTranslation"] = self.translation.GetValue()
         config.conf[CONFIG_SECTION]["manualTranslation"] = self.lineTranslation.GetValue()
-        config.conf[CONFIG_SECTION]["clipboardTranslation"] = self.clipboardTranslation.GetValue()
         config.conf[CONFIG_SECTION]["automaticTranslation"] = self.automaticTranslation.GetValue()
         config.conf[CONFIG_SECTION]["translationTarget"] = self._targetCodes[targetIndex]
         if _speechHistoryController is not None:
@@ -375,6 +368,8 @@ class ExtraSettingsPanel(SettingsPanel):
             _bookmarksController.applySettings()
         if _quickFindController is not None:
             _quickFindController.applySettings()
+        if _explorerSelectionController is not None:
+            _explorerSelectionController.applySettings()
 
 
 def _movePanelToEnd():
@@ -388,7 +383,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     """Load automatically with no separate window or activation shortcut."""
 
     def __init__(self, *args, **kwargs):
-        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController
+        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController
         super().__init__(*args, **kwargs)
         config.conf.spec[CONFIG_SECTION] = CONFIG_SPEC
         try:
@@ -413,13 +408,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self._applicationsKey = ApplicationsKey(lambda: config.conf[CONFIG_SECTION])
         self._numpadNavigation = NumpadNavigation(lambda: config.conf[CONFIG_SECTION]["numpadNavigation"])
         self._lineTranslation = LineTranslation(lambda: config.conf[CONFIG_SECTION])
-        self._lineTranslation.clipboard = ClipboardTranslation(lambda: config.conf[CONFIG_SECTION])
         self._lineTranslation.automatic = AutomaticTranslation(lambda: config.conf[CONFIG_SECTION])
         _translationController = self._lineTranslation
         self._clipboardAnnouncements = ClipboardAnnouncements(
             lambda: config.conf[CONFIG_SECTION]["announceClipboard"] and not self._speechHistory.isViewing,
             shouldIgnore=self._ignoreClipboardAnnouncement,
         )
+        self._explorerSelection = ExplorerSelection(lambda: config.conf[CONFIG_SECTION]["announceExplorerSelection"])
+        _explorerSelectionController = self._explorerSelection
         self._active = True
         _movePanelToEnd()
         # Finish ordering after all startup plug-ins have registered. Never
@@ -447,22 +443,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self._speechHistory.show()
 
     @script(
-        description=_("Translate current text"),
+        description=_("Translate the current line"),
         category=_("NVDA Extra Settings"),
         gesture="kb:NVDA+shift+t",
         speakOnDemand=True,
     )
     def script_translateCurrentLine(self, gesture):
         self._lineTranslation.translateCurrentLine()
-
-    @script(
-        description=_("Translate clipboard text"),
-        category=_("NVDA Extra Settings"),
-        gesture="kb:NVDA+control+shift+t",
-        speakOnDemand=True,
-    )
-    def script_translateClipboard(self, gesture):
-        self._lineTranslation.clipboard.translateClipboard()
 
     @script(
         description=_("Automatic translation"),
@@ -548,9 +535,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     script_applicationsKey.__doc__ = _("Open the context menu")
 
     def terminate(self):
-        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController
+        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController
         self._active = False
         core.postNvdaStartup.unregister(self._onStartupComplete)
+        self._explorerSelection.terminate()
         self._numpadNavigation.terminate()
         self._lineTranslation.terminate()
         self._applicationsKey.terminate()
@@ -576,6 +564,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             _bookmarksController = None
         if _quickFindController is self._quickFind:
             _quickFindController = None
+        if _explorerSelectionController is self._explorerSelection:
+            _explorerSelectionController = None
         categories = NVDASettingsDialog.categoryClasses
         while ExtraSettingsPanel in categories:
             categories.remove(ExtraSettingsPanel)
