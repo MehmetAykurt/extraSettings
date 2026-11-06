@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: extraSettings 2026.11.01\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+msgstr "Project-Id-Version: extraSettings 2026.11.06\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
 
 msgid "Extra Settings"
 msgstr "Extra Settings"
@@ -595,3 +595,123 @@ msgstr "{count} items selected."
 
 msgid "Test Explorer selection detection"
 msgstr "Test Explorer selection detection"
+
+msgid "Google Gemini API key:"
+msgstr "Google Gemini API key:"
+
+msgid "Get Google API key..."
+msgstr "Get Google API key..."
+
+msgid "Analyze images — {shortcut}"
+msgstr "Analyze images — {shortcut}"
+
+msgid "Analyze image"
+msgstr "Analyze image"
+
+msgid "File: {name}"
+msgstr "File: {name}"
+
+msgid "Clipboard image"
+msgstr "Clipboard image"
+
+msgid "Screen visual"
+msgstr "Screen visual"
+
+msgid "Active window"
+msgstr "Active window"
+
+msgid "The entered Google Gemini API key is invalid. Please check your key."
+msgstr "The entered Google Gemini API key is invalid. Please check your key."
+
+msgid "API error: {msg}"
+msgstr "API error: {msg}"
+
+msgid "Usage quota exceeded or request limit reached. Please try again later."
+msgstr "Usage quota exceeded or request limit reached. Please try again later."
+
+msgid "Service error (HTTP {code}). Please try again."
+msgstr "Service error (HTTP {code}). Please try again."
+
+msgid "Could not connect to the internet. Please check your network connection."
+msgstr "Could not connect to the internet. Please check your network connection."
+
+msgid "An error occurred during analysis: {error}"
+msgstr "An error occurred during analysis: {error}"
+
+msgid "Could not reach image analysis service."
+msgstr "Could not reach image analysis service."
+
+msgid "Image analysis is not enabled. Please enable it in NVDA menu / Preferences / Settings / Extra Settings."
+msgstr "Image analysis is not enabled. Please enable it in NVDA menu / Preferences / Settings / Extra Settings."
+
+msgid "Google Gemini API key has not been entered. Please set your key in NVDA Extra Settings."
+msgstr "Google Gemini API key has not been entered. Please set your key in NVDA Extra Settings."
+
+msgid "An image is already being analyzed. Please wait."
+msgstr "An image is already being analyzed. Please wait."
+
+msgid "No image found to analyze. Please select an image file, copy an image to the clipboard, or focus on a visual element."
+msgstr "No image found to analyze. Please select an image file, copy an image to the clipboard, or focus on a visual element."
+
+msgid "Analyzing image, please wait..."
+msgstr "Analyzing image, please wait..."
+
+msgid "Analysis completed."
+msgstr "Analysis completed."
+
+msgid "Image Analysis: {source}"
+msgstr "Image Analysis: {source}"
+
+msgid "Access denied: {msg}"
+msgstr "Access denied: {msg}"
+
+msgid "Service error (HTTP {code}): {msg}"
+msgstr "Service error (HTTP {code}): {msg}"
+
+msgid "Could not reach image analysis service: {error}"
+msgstr "Could not reach image analysis service: {error}"
+
+msgid "Analysis Report"
+msgstr "Analysis Report"
+
+msgid "Text in Image"
+msgstr "Text in Image"
+
+msgid "&Ask a question about the image:"
+msgstr "&Ask a question about the image:"
+
+msgid "&Send"
+msgstr "&Send"
+
+msgid "Question: {text}"
+msgstr "Question: {text}"
+
+msgid "Answer: {answer}"
+msgstr "Answer: {answer}"
+
+msgid "Answer received: {answer}"
+msgstr "Answer received: {answer}"
+
+msgid "Please enter a question."
+msgstr "Please enter a question."
+
+msgid "A question is already being processed. Please wait."
+msgstr "A question is already being processed. Please wait."
+
+msgid "Answering your question, please wait..."
+msgstr "Answering your question, please wait..."
+
+msgid "No image found to analyze. Please select an image file or copy an image to the clipboard."
+msgstr "No image found to analyze. Please select an image file or copy an image to the clipboard."
+
+msgid "Google Gemini daily usage quota exceeded. Please try again tomorrow or use another Google API key."
+msgstr "Google Gemini daily usage quota exceeded. Please try again tomorrow or use another Google API key."
+
+msgid "Short-term request rate limit reached. Please wait a few seconds and try again."
+msgstr "Short-term request rate limit reached. Please wait a few seconds and try again."
+
+msgid "&Copy"
+msgstr "&Copy"
+
+msgid "Copied to clipboard"
+msgstr "Copied to clipboard"
