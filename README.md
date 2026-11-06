@@ -10,6 +10,7 @@ Bu eklenti; web gezinmesinden pano yönetimine, yer imlerinden konuşma geçmiş
 - **Boş Satırları Atlama:** Web sayfalarında boş satırları otomatik atlayarak hızlı ve kesintisiz okuma.
 - **Pano Bildirimleri:** Panoya bir metin kopyalandığında veya kesildiğinde sesli bildirim verme.
 - **Dosya Gezgininde Seçim Bildirimi:** Windows Dosya Gezgini'nde öge seçildiğinde seçim durumunu net bildirme.
+- **Görselleri analiz etme:** Odakta veya panoda bulunan görsel içerik hakkında yapay zekâ betimlemesi, metin aktarımı (OCR) ve etkileşimli soru-cevap danışmanlığı.
 - **Konuşma Geçmişi:** NVDA'nın son seslendirdiği metinleri liste halinde inceleme ve kopyalama.
 - **Uygulama Tuşu Kısayolu:** Klavyede Uygulama tuşu olmayan kullanıcılar için alternatif kısayol atama.
 - **Panoya Metin Ekleme:** Mevcut panoyu silmeden yeni metinleri panonun sonuna ekleme.
