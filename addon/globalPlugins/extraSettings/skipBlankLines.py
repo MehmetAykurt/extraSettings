@@ -179,7 +179,9 @@ class SkipBlankLines:
                 if moved == 0 or search.probe.compareEndPoints(previous, 'startToStart') == 0:
                     self._pending = None
                     if search.skipped:
-                        ui.message(_("No more non-blank lines in this direction."))
+                        currentLine = search.originalInfo.copy()
+                        currentLine.expand(textInfos.UNIT_LINE)
+                        speech.speakTextInfo(currentLine, unit=textInfos.UNIT_LINE, reason=OutputReason.CARET)
                         return
                     return search.fallback()
                 line = search.probe.copy()
