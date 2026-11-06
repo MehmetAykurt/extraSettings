@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: extraSettings 2026.11.01\n"
+"Project-Id-Version: extraSettings 2026.11.06\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -600,3 +600,123 @@ msgstr "{count} öge seçildi."
 
 msgid "Test Explorer selection detection"
 msgstr "Dosya Gezgini seçim tespiti testi"
+
+msgid "Google Gemini API key:"
+msgstr "Google Gemini API anahtarı:"
+
+msgid "Get Google API key..."
+msgstr "Google API anahtarı al..."
+
+msgid "Analyze images — {shortcut}"
+msgstr "Görselleri analiz et — {shortcut}"
+
+msgid "Analyze image"
+msgstr "Görseli analiz et"
+
+msgid "File: {name}"
+msgstr "Dosya: {name}"
+
+msgid "Clipboard image"
+msgstr "Pano görseli"
+
+msgid "Screen visual"
+msgstr "Ekran görseli"
+
+msgid "Active window"
+msgstr "Etkin pencere"
+
+msgid "The entered Google Gemini API key is invalid. Please check your key."
+msgstr "Girilen Google Gemini API anahtarı geçersiz. Lütfen anahtarınızı kontrol edin."
+
+msgid "API error: {msg}"
+msgstr "API hatası: {msg}"
+
+msgid "Usage quota exceeded or request limit reached. Please try again later."
+msgstr "Kullanım kotası aşıldı veya istek sınırına ulaşıldı. Lütfen daha sonra tekrar deneyin."
+
+msgid "Service error (HTTP {code}). Please try again."
+msgstr "Hizmet hatası (HTTP {code}). Lütfen tekrar deneyin."
+
+msgid "Could not connect to the internet. Please check your network connection."
+msgstr "İnternete bağlanılamadı. Lütfen ağ bağlantınızı kontrol edin."
+
+msgid "An error occurred during analysis: {error}"
+msgstr "Analiz sırasında bir hata oluştu: {error}"
+
+msgid "Could not reach image analysis service."
+msgstr "Görsel analiz hizmetine ulaşılamadı."
+
+msgid "Image analysis is not enabled. Please enable it in NVDA menu / Preferences / Settings / Extra Settings."
+msgstr "Görsel analizi etkin değil. Lütfen NVDA menüsü / Tercihler / Ayarlar / Ek Ayarlar bölümünden etkinleştirin."
+
+msgid "Google Gemini API key has not been entered. Please set your key in NVDA Extra Settings."
+msgstr "Google Gemini API anahtarı girilmemiş. Lütfen NVDA Ek Ayarlar bölümünden anahtarınızı tanımlayın."
+
+msgid "An image is already being analyzed. Please wait."
+msgstr "Şu anda zaten bir görsel analiz ediliyor. Lütfen bekleyin."
+
+msgid "No image found to analyze. Please select an image file, copy an image to the clipboard, or focus on a visual element."
+msgstr "Analiz edilecek bir görsel bulunamadı. Lütfen bir resim dosyası seçin, panoya bir görsel kopyalayın veya ekranda bir görsel öğenin üzerine odaklanın."
+
+msgid "Analyzing image, please wait..."
+msgstr "Görsel analiz ediliyor, lütfen bekleyin..."
+
+msgid "Analysis completed."
+msgstr "Analiz tamamlandı."
+
+msgid "Image Analysis: {source}"
+msgstr "Görsel Analizi: {source}"
+
+msgid "Access denied: {msg}"
+msgstr "Erişim reddedildi: {msg}"
+
+msgid "Service error (HTTP {code}): {msg}"
+msgstr "Hizmet hatası (HTTP {code}): {msg}"
+
+msgid "Could not reach image analysis service: {error}"
+msgstr "Görsel analiz hizmetine ulaşılamadı: {error}"
+
+msgid "Analysis Report"
+msgstr "Analiz Raporu"
+
+msgid "Text in Image"
+msgstr "Görseldeki Metinler"
+
+msgid "&Ask a question about the image:"
+msgstr "Görsel hakkında &soru sorun:"
+
+msgid "&Send"
+msgstr "&Gönder"
+
+msgid "Question: {text}"
+msgstr "Soru: {text}"
+
+msgid "Answer: {answer}"
+msgstr "Yanıt: {answer}"
+
+msgid "Answer received: {answer}"
+msgstr "Yanıt alındı: {answer}"
+
+msgid "Please enter a question."
+msgstr "Lütfen bir soru yazın."
+
+msgid "A question is already being processed. Please wait."
+msgstr "Şu anda bir soru yanıtlanıyor. Lütfen bekleyin."
+
+msgid "Answering your question, please wait..."
+msgstr "Sorunuz yanıtlanıyor, lütfen bekleyin..."
+
+msgid "No image found to analyze. Please select an image file or copy an image to the clipboard."
+msgstr "Analiz edilecek bir görsel bulunamadı. Lütfen bir resim dosyası seçin veya panoya bir görsel kopyalayın."
+
+msgid "Google Gemini daily usage quota exceeded. Please try again tomorrow or use another Google API key."
+msgstr "Google Gemini günlük kullanım kotanız doldu. Lütfen yarın tekrar deneyin veya farklı bir Google API anahtarı kullanın."
+
+msgid "Short-term request rate limit reached. Please wait a few seconds and try again."
+msgstr "Kısa süreli istek sınırına ulaşıldı. Lütfen birkaç saniye bekleyip tekrar deneyin."
+
+msgid "&Copy"
+msgstr "&Kopyala"
+
+msgid "Copied to clipboard"
+msgstr "Panoya kopyalandı"
