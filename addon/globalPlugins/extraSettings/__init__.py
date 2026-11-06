@@ -22,6 +22,7 @@ from .webCycle import WebCycle
 from .skipBlankLines import SkipBlankLines
 from .clipboardAnnouncements import ClipboardAnnouncements
 from .explorerSelection import ExplorerSelection
+from .imageAnalysis import ImageAnalysis
 from .speechHistory import SpeechHistory
 from .historyBuffer import parseLimit
 from .applicationsKey import ApplicationsKey, shortcutLabel
@@ -43,6 +44,8 @@ CONFIG_SPEC = {
     "skipWebBlankLines": "boolean(default=False)",
     "announceClipboard": "boolean(default=False)",
     "announceExplorerSelection": "boolean(default=False)",
+    "analyzeImages": "boolean(default=False)",
+    "geminiApiKey": "string(default='')",
     "recordHistory": "boolean(default=False)",
     "historyLimit": "integer(default=100, min=1, max=1000)",
     "historyOrder": "option('newestFirst', 'newestLast', default='newestFirst')",
@@ -68,6 +71,7 @@ _clipboardInspectorController = None
 _bookmarksController = None
 _quickFindController = None
 _explorerSelectionController = None
+_imageAnalysisController = None
 
 
 def commandShortcutLabel(scriptName):
@@ -84,7 +88,7 @@ def commandShortcutLabel(scriptName):
 
     labels = []
     for info in scriptInfos(inputCore.manager.getAllGestureMappings()):
-        if info.moduleName != __name__ or info.scriptName != scriptName:
+        if not (info.moduleName == __name__ or info.moduleName.startswith(__name__ + '.')) or info.scriptName != scriptName:
             continue
         for gesture in info.gestures:
             try:
@@ -124,6 +128,23 @@ class ExtraSettingsPanel(SettingsPanel):
             self, label=_("Announce selection state in File Explorer"),
         ))
         self.announceExplorerSelection.SetValue(config.conf[CONFIG_SECTION]["announceExplorerSelection"])
+        self.analyzeImages = helper.addItem(wx.CheckBox(self, label=self._analyzeImagesLabel()))
+        self.analyzeImages.SetValue(config.conf[CONFIG_SECTION]["analyzeImages"])
+        self.analyzeImages.Bind(wx.EVT_CHECKBOX, self.onAnalyzeImagesChanged)
+        self.analyzeImages.Bind(wx.EVT_SET_FOCUS, self.onAnalyzeImagesFocus)
+        self.analyzeImagesOptions = helper.addItem(wx.Panel(self))
+        analyzeOptionsSizer = wx.BoxSizer(wx.VERTICAL)
+        analyzeHelper = guiHelper.BoxSizerHelper(self.analyzeImagesOptions, sizer=analyzeOptionsSizer)
+        self.geminiApiKey = analyzeHelper.addLabeledControl(
+            _("Google Gemini API key:"), wx.TextCtrl,
+            value=config.conf[CONFIG_SECTION]["geminiApiKey"],
+        )
+        self.getApiKeyButton = analyzeHelper.addItem(
+            wx.Button(self.analyzeImagesOptions, label=_("Get Google API key..."))
+        )
+        self.getApiKeyButton.Bind(wx.EVT_BUTTON, self.onGetApiKey)
+        self.analyzeImagesOptions.SetSizer(analyzeOptionsSizer)
+        self.analyzeImagesOptions.Show(self.analyzeImages.GetValue())
         self.recordHistory = helper.addItem(wx.CheckBox(self, label=self._historyLabel()))
         self.recordHistory.SetValue(config.conf[CONFIG_SECTION]["recordHistory"])
         self.recordHistory.Bind(wx.EVT_CHECKBOX, self.onHistoryChanged)
@@ -282,6 +303,25 @@ class ExtraSettingsPanel(SettingsPanel):
             dialog.stopCapture()
             dialog.Destroy()
 
+    def _analyzeImagesLabel(self):
+        return _("Analyze images — {shortcut}").format(shortcut=commandShortcutLabel("analyzeImage"))
+
+    def onAnalyzeImagesFocus(self, event):
+        self.analyzeImages.SetLabel(self._analyzeImagesLabel())
+        event.Skip()
+
+    def onAnalyzeImagesChanged(self, event):
+        self.analyzeImagesOptions.Show(self.analyzeImages.GetValue())
+        self.Layout()
+        self._sendLayoutUpdatedEvent()
+
+    def onGetApiKey(self, event):
+        import os
+        try:
+            os.startfile("https://aistudio.google.com/app/apikey")
+        except Exception as e:
+            log.error(f"Failed to open API key URL: {e}")
+
     def _historyLabel(self):
         return _("Enable speech history — {shortcut}").format(shortcut=historyShortcutLabel())
 
@@ -296,6 +336,7 @@ class ExtraSettingsPanel(SettingsPanel):
         self.inspectClipboard.SetLabel(self._clipboardInspectorLabel())
         self.bookmarks.SetLabel(self._bookmarksLabel())
         self.quickFind.SetLabel(self._quickFindLabel())
+        self.analyzeImages.SetLabel(self._analyzeImagesLabel())
         self.lineTranslation.SetLabel(self._translationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         super().onPanelActivated()
@@ -339,6 +380,8 @@ class ExtraSettingsPanel(SettingsPanel):
         config.conf[CONFIG_SECTION]["skipWebBlankLines"] = self.skipWebBlankLines.GetValue()
         config.conf[CONFIG_SECTION]["announceClipboard"] = self.announceClipboard.GetValue()
         config.conf[CONFIG_SECTION]["announceExplorerSelection"] = self.announceExplorerSelection.GetValue()
+        config.conf[CONFIG_SECTION]["analyzeImages"] = self.analyzeImages.GetValue()
+        config.conf[CONFIG_SECTION]["geminiApiKey"] = self.geminiApiKey.GetValue().strip()
         config.conf[CONFIG_SECTION]["recordHistory"] = enabled
         config.conf[CONFIG_SECTION]["historyLimit"] = limit
         config.conf[CONFIG_SECTION]["historyOrder"] = "newestFirst" if self.historyOrder.GetSelection() == 0 else "newestLast"
@@ -370,6 +413,12 @@ class ExtraSettingsPanel(SettingsPanel):
             _quickFindController.applySettings()
         if _explorerSelectionController is not None:
             _explorerSelectionController.applySettings()
+        if _imageAnalysisController is not None:
+            _imageAnalysisController.applySettings()
+        try:
+            config.conf.save()
+        except Exception as e:
+            log.error(f"ExtraSettings: Failed to save config to disk: {e}")
 
 
 def _movePanelToEnd():
@@ -383,7 +432,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     """Load automatically with no separate window or activation shortcut."""
 
     def __init__(self, *args, **kwargs):
-        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController
+        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController, _imageAnalysisController
         super().__init__(*args, **kwargs)
         config.conf.spec[CONFIG_SECTION] = CONFIG_SPEC
         try:
@@ -416,6 +465,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         )
         self._explorerSelection = ExplorerSelection(lambda: config.conf[CONFIG_SECTION]["announceExplorerSelection"])
         _explorerSelectionController = self._explorerSelection
+        self._imageAnalysis = ImageAnalysis(
+            lambda: config.conf[CONFIG_SECTION]["analyzeImages"],
+            lambda: config.conf[CONFIG_SECTION]["geminiApiKey"],
+        )
+        _imageAnalysisController = self._imageAnalysis
         self._active = True
         _movePanelToEnd()
         # Finish ordering after all startup plug-ins have registered. Never
@@ -508,6 +562,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_showQuickFind(self, gesture):
         self._quickFind.show()
 
+    @script(
+        description=_("Analyze image"),
+        category=_("NVDA Extra Settings"),
+        gesture="kb:NVDA+shift+a",
+        speakOnDemand=True,
+    )
+    def script_analyzeImage(self, gesture):
+        self._imageAnalysis.analyze()
+
     def _ignoreClipboardAnnouncement(self, gesture):
         if self._applicationsKey.matches(gesture):
             return True
@@ -535,10 +598,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     script_applicationsKey.__doc__ = _("Open the context menu")
 
     def terminate(self):
-        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController
+        global _speechHistoryController, _translationController, _skipBlankLinesController, _textStatisticsController, _clipboardInspectorController, _bookmarksController, _quickFindController, _explorerSelectionController, _imageAnalysisController
         self._active = False
         core.postNvdaStartup.unregister(self._onStartupComplete)
         self._explorerSelection.terminate()
+        self._imageAnalysis.terminate()
         self._numpadNavigation.terminate()
         self._lineTranslation.terminate()
         self._applicationsKey.terminate()
@@ -566,6 +630,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             _quickFindController = None
         if _explorerSelectionController is self._explorerSelection:
             _explorerSelectionController = None
+        if _imageAnalysisController is self._imageAnalysis:
+            _imageAnalysisController = None
         categories = NVDASettingsDialog.categoryClasses
         while ExtraSettingsPanel in categories:
             categories.remove(ExtraSettingsPanel)
