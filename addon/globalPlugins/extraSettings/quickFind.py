@@ -238,7 +238,12 @@ class QuickFind:
                 wx.CallAfter(self._resolved, serial, context, caret, source, entry, choices, error)
             except RuntimeError:
                 pass
-        threading.Thread(target=worker, name="extraSettings-quickFind", daemon=True).start()
+        try:
+            threading.Thread(target=worker, name="extraSettings-quickFind", daemon=True).start()
+        except RuntimeError:
+            self._busy = False
+            log.debug("ExtraSettings Quick find: could not start search worker", exc_info=True)
+            ui.message(_("Quick find could not complete the operation."))
 
     def _valid(self, serial, context, caret):
         if not self._active or not self._enabled() or serial != self._serial:
