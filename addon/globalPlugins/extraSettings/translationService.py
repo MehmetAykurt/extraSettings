@@ -12,7 +12,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-ENDPOINT = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&dt=t"
+ENDPOINT = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t"
 MAX_TEXT = 5000
 MAX_RESPONSE = 256 * 1024
 NETWORK_TIMEOUT = 8
@@ -50,6 +50,12 @@ def languageChoices(interfaceLanguage):
                   key=lambda item: locale.strxfrm(item[1].casefold()))
 
 
+def translationPair(settings):
+    source = settings.get("translationSource", "en")
+    target = settings["translationTarget"]
+    return (target, source) if settings.get("reverseTranslation", False) else (source, target)
+
+
 def parseTranslation(raw):
     try:
         payload = json.loads(raw.decode("utf-8"))
@@ -73,8 +79,8 @@ def parseTranslation(raw):
         raise TranslationFailure("response") from None
 
 
-def fetchTranslation(text, target):
-    if target not in LANGUAGE_CODES:
+def fetchTranslation(text, target, source="en"):
+    if source not in LANGUAGE_CODES or target not in LANGUAGE_CODES:
         raise TranslationFailure("language")
     if not isinstance(text, str) or not text.strip():
         raise TranslationFailure("empty")
@@ -82,9 +88,9 @@ def fetchTranslation(text, target):
         raise TranslationFailure("length")
     data = urlencode({"q": text}).encode("ascii")
     request = Request(
-        ENDPOINT + "&" + urlencode({"tl": target}), data=data,
+        ENDPOINT + "&" + urlencode({"sl": source, "tl": target}), data=data,
         headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                 "User-Agent": "ExtraSettings/2026.11.06", "Accept": "application/json"},
+                 "User-Agent": "ExtraSettings/2026.11.22", "Accept": "application/json"},
         method="POST",
     )
     try:
