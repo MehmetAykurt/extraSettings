@@ -60,7 +60,9 @@ CONFIG_SPEC = {
     "lineTranslation": "boolean(default=False)",
     "manualTranslation": "boolean(default=True)",
     "automaticTranslation": "boolean(default=False)",
+    "translationSource": "string(default='en')",
     "translationTarget": "string(default='tr')",
+    "reverseTranslation": "boolean(default=False)",
 }
 
 _speechHistoryController = None
@@ -199,13 +201,6 @@ class ExtraSettingsPanel(SettingsPanel):
         self.translationOptions = helper.addItem(wx.Panel(self))
         translationSizer = wx.BoxSizer(wx.VERTICAL)
         translationHelper = guiHelper.BoxSizerHelper(self.translationOptions, sizer=translationSizer)
-        choices = languageChoices(languageHandler.getLanguage())
-        self._targetCodes = [code for code, label in choices]
-        self.translationTarget = translationHelper.addLabeledControl(
-            _("Target language"), wx.Choice, choices=[label for code, label in choices],
-        )
-        target = config.conf[CONFIG_SECTION]["translationTarget"]
-        self.translationTarget.SetSelection(self._targetCodes.index(target if target in self._targetCodes else "tr"))
         self.lineTranslation = translationHelper.addItem(wx.CheckBox(
             self.translationOptions, label=self._translationLabel()))
         self.lineTranslation.SetValue(config.conf[CONFIG_SECTION]["manualTranslation"])
@@ -214,14 +209,71 @@ class ExtraSettingsPanel(SettingsPanel):
             self.translationOptions, label=self._automaticTranslationLabel()))
         self.automaticTranslation.SetValue(config.conf[CONFIG_SECTION]["automaticTranslation"])
         self.automaticTranslation.Bind(wx.EVT_SET_FOCUS, self.onAutomaticTranslationFocus)
+        choices = languageChoices(languageHandler.getLanguage())
+        self._languageCodes = [code for code, label in choices]
+        labels = [label for code, label in choices]
+        self.translationSource = translationHelper.addLabeledControl(
+            _("Source language"), wx.Choice, choices=labels,
+        )
+        source = config.conf[CONFIG_SECTION]["translationSource"]
+        self.translationSource.SetSelection(self._languageCodes.index(source if source in self._languageCodes else "en"))
+        self.translationTarget = translationHelper.addLabeledControl(
+            _("Target language"), wx.Choice, choices=labels,
+        )
+        target = config.conf[CONFIG_SECTION]["translationTarget"]
+        self.translationTarget.SetSelection(self._languageCodes.index(target if target in self._languageCodes else "tr"))
+        self.reverseTranslation = translationHelper.addItem(wx.CheckBox(
+            self.translationOptions, label=self._reverseTranslationLabel()))
+        self.reverseTranslation.SetValue(config.conf[CONFIG_SECTION]["reverseTranslation"])
+        self.reverseTranslation.Bind(wx.EVT_SET_FOCUS, self.onReverseTranslationFocus)
         self.translationOptions.SetSizer(translationSizer)
         self.translationOptions.Show(self.translation.GetValue())
+        self.transferSettingsButton = helper.addItem(wx.Button(self, label=_("Import / export...")))
+        self.transferSettingsButton.Bind(wx.EVT_BUTTON, self.onTransferSettings)
+
+    def onTransferSettings(self, event):
+        from .backupDialog import BackupDialog
+        from .importDialog import ImportDialog, TransferDialog
+        try:
+            choice = TransferDialog(self)
+        except Exception:
+            ui.message(_("The backup window could not be opened."))
+            return
+        try:
+            if choice.ShowModal() != wx.ID_OK:
+                return
+            action = choice.action
+        finally:
+            choice.Destroy()
+        try:
+            dialog = BackupDialog(self) if action == "export" else ImportDialog(self)
+        except Exception:
+            ui.message(_("The backup window could not be opened."))
+            return
+        try:
+            result = dialog.ShowModal()
+        finally:
+            dialog.Destroy()
+        if action == "import" and result == wx.ID_OK:
+            # Discard the old settings panel before it can save over the
+            # restored files. The new process loads the imported configuration.
+            try:
+                wx.GetTopLevelParent(self).Close()
+            finally:
+                core.callLater(1000, core.restart)
 
     def _translationLabel(self):
         return _("Line translation — {shortcut}").format(shortcut=commandShortcutLabel("translateCurrentLine"))
 
     def _automaticTranslationLabel(self):
         return _("Automatic translation — {shortcut}").format(shortcut=commandShortcutLabel("toggleAutomaticTranslation"))
+
+    def _reverseTranslationLabel(self):
+        return _("Reverse translation - {shortcut}").format(shortcut=commandShortcutLabel("toggleReverseTranslation"))
+
+    def onReverseTranslationFocus(self, event):
+        self.reverseTranslation.SetLabel(self._reverseTranslationLabel())
+        event.Skip()
 
     def onAutomaticTranslationFocus(self, event):
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
@@ -337,6 +389,7 @@ class ExtraSettingsPanel(SettingsPanel):
         self.bookmarks.SetLabel(self._bookmarksLabel())
         self.quickFind.SetLabel(self._quickFindLabel())
         self.analyzeImages.SetLabel(self._analyzeImagesLabel())
+        self.reverseTranslation.SetLabel(self._reverseTranslationLabel())
         self.lineTranslation.SetLabel(self._translationLabel())
         self.automaticTranslation.SetLabel(self._automaticTranslationLabel())
         super().onPanelActivated()
@@ -347,7 +400,11 @@ class ExtraSettingsPanel(SettingsPanel):
         self._sendLayoutUpdatedEvent()
 
     def isValid(self):
-        if not 0 <= self.translationTarget.GetSelection() < len(self._targetCodes):
+        if not 0 <= self.translationSource.GetSelection() < len(self._languageCodes):
+            self._validationErrorMessageBox(_("Choose a source language."), _("Source language"))
+            self.translationSource.SetFocus()
+            return False
+        if not 0 <= self.translationTarget.GetSelection() < len(self._languageCodes):
             self._validationErrorMessageBox(_("Choose a target language."), _("Target language"))
             self.translationTarget.SetFocus()
             return False
@@ -371,8 +428,11 @@ class ExtraSettingsPanel(SettingsPanel):
         enabled = self.recordHistory.GetValue()
         if self.replaceApplicationsKey.GetValue() and not self.applicationsGesture:
             raise ValueError("Applications key shortcut is required")
+        sourceIndex = self.translationSource.GetSelection()
+        if not 0 <= sourceIndex < len(self._languageCodes):
+            raise ValueError("Source language is required")
         targetIndex = self.translationTarget.GetSelection()
-        if not 0 <= targetIndex < len(self._targetCodes):
+        if not 0 <= targetIndex < len(self._languageCodes):
             raise ValueError("Target language is required")
         # Validate before modifying any settings, including the older options.
         limit = parseLimit(self.historyLimit.GetValue()) if enabled else config.conf[CONFIG_SECTION]["historyLimit"]
@@ -396,7 +456,9 @@ class ExtraSettingsPanel(SettingsPanel):
         config.conf[CONFIG_SECTION]["lineTranslation"] = self.translation.GetValue()
         config.conf[CONFIG_SECTION]["manualTranslation"] = self.lineTranslation.GetValue()
         config.conf[CONFIG_SECTION]["automaticTranslation"] = self.automaticTranslation.GetValue()
-        config.conf[CONFIG_SECTION]["translationTarget"] = self._targetCodes[targetIndex]
+        config.conf[CONFIG_SECTION]["translationSource"] = self._languageCodes[sourceIndex]
+        config.conf[CONFIG_SECTION]["translationTarget"] = self._languageCodes[targetIndex]
+        config.conf[CONFIG_SECTION]["reverseTranslation"] = self.reverseTranslation.GetValue()
         if _speechHistoryController is not None:
             _speechHistoryController.applySettings()
         if _translationController is not None:
@@ -513,6 +575,20 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     )
     def script_toggleAutomaticTranslation(self, gesture):
         self._lineTranslation.automatic.toggle()
+
+    def event_gainFocus(self, obj, nextHandler):
+        nextHandler()
+        controller = getattr(self, "_lineTranslation", None)
+        if controller is not None:
+            controller.automatic.captureFocus(obj)
+
+    @script(
+        description=_("Reverse translation"),
+        category=_("NVDA Extra Settings"),
+        speakOnDemand=True,
+    )
+    def script_toggleReverseTranslation(self, gesture):
+        self._lineTranslation.toggleDirection()
 
     @script(
         description=_("Append to clipboard"),
