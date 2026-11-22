@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: extraSettings 2026.11.06\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+msgstr "Project-Id-Version: extraSettings 2026.11.22\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
 
 msgid "Extra Settings"
 msgstr "Extra Settings"
@@ -79,8 +79,17 @@ msgstr "History entries"
 msgid "There are no history entries yet."
 msgstr "There are no history entries yet."
 
-msgid "Copy selected entry"
-msgstr "Copy selected entry"
+msgid "Copy selected entries"
+msgstr "Copy selected entries"
+
+msgid "{count} entries copied."
+msgstr "{count} entries copied."
+
+msgid "Checked"
+msgstr "Checked"
+
+msgid "Not checked"
+msgstr "Not checked"
 
 msgid "Copy all"
 msgstr "Copy all"
@@ -93,6 +102,9 @@ msgstr "Close"
 
 msgid "Could not copy to the clipboard."
 msgstr "Could not copy to the clipboard."
+
+msgid "Could not open speech history."
+msgstr "Could not open speech history."
 
 msgid "Speech history cleared."
 msgstr "Speech history cleared."
@@ -234,9 +246,6 @@ msgstr "Enable automatic translation in Extra Settings first."
 
 msgid "Skip blank lines on web pages"
 msgstr "Skip blank lines on web pages"
-
-msgid "No more non-blank lines in this direction."
-msgstr "No more non-blank lines in this direction."
 
 msgid "Announce word and character counts"
 msgstr "Announce word and character counts"
@@ -584,8 +593,8 @@ msgstr "Select all and announce item count in File Explorer"
 msgid "No items to select."
 msgstr "No items to select."
 
-msgid "No items selected."
-msgstr "No items selected."
+msgid "The number of selected items could not be determined."
+msgstr "The number of selected items could not be determined."
 
 msgid "1 item selected."
 msgstr "1 item selected."
@@ -637,6 +646,15 @@ msgstr "Could not connect to the internet. Please check your network connection.
 
 msgid "An error occurred during analysis: {error}"
 msgstr "An error occurred during analysis: {error}"
+
+msgid "The image is too large to analyze."
+msgstr "The image is too large to analyze."
+
+msgid "The analysis service returned an empty response. Please try again."
+msgstr "The analysis service returned an empty response. Please try again."
+
+msgid "The response was cut short because it exceeded the length limit."
+msgstr "The response was cut short because it exceeded the length limit."
 
 msgid "Could not reach image analysis service."
 msgstr "Could not reach image analysis service."
@@ -715,3 +733,153 @@ msgstr "&Copy"
 
 msgid "Copied to clipboard"
 msgstr "Copied to clipboard"
+
+msgid "Source language"
+msgstr "Source language"
+
+msgid "Choose a source language."
+msgstr "Choose a source language."
+
+msgid "Reverse translation"
+msgstr "Reverse translation"
+
+msgid "Reverse translation - {shortcut}"
+msgstr "Reverse translation - {shortcut}"
+
+msgid "Reverse translation on."
+msgstr "Reverse translation on."
+
+msgid "Reverse translation off."
+msgstr "Reverse translation off."
+
+msgid "Choose a supported source and target language in Extra Settings."
+msgstr "Choose a supported source and target language in Extra Settings."
+
+msgid "The current text or control could not be read."
+msgstr "The current text or control could not be read."
+
+msgid "There is no accessible text to translate here."
+msgstr "There is no accessible text to translate here."
+
+msgid "This content is too long to translate. The limit is 5000 characters."
+msgstr "This content is too long to translate. The limit is 5000 characters."
+
+msgid "Backup canceled."
+msgstr "Backup canceled."
+
+msgid "Backup saved: {path}"
+msgstr "Backup saved: {path}"
+
+msgid "Canceling backup..."
+msgstr "Canceling backup..."
+
+msgid "Configuration profiles"
+msgstr "Configuration profiles"
+
+msgid "Creating backup..."
+msgstr "Creating backup..."
+
+msgid "Custom input gestures"
+msgstr "Custom input gestures"
+
+msgid "Export NVDA settings"
+msgstr "Export NVDA settings"
+
+msgid "Export NVDA settings..."
+msgstr "Export NVDA settings..."
+
+msgid "Extra Settings Quick find locations"
+msgstr "Extra Settings Quick find locations"
+
+msgid "Extra Settings bookmarks"
+msgstr "Extra Settings bookmarks"
+
+msgid "Installed add-ons"
+msgstr "Installed add-ons"
+
+msgid "NVDA settings"
+msgstr "NVDA settings"
+
+msgid "NVDA settings could not be saved. Export was not started."
+msgstr "NVDA settings could not be saved. Export was not started."
+
+msgid "No files were found for the selected items."
+msgstr "No files were found for the selected items."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Select at least one setting or add-on."
+msgstr "Select at least one setting or add-on."
+
+msgid "Selected add-on installation folders are included. Settings stored elsewhere are not included by selecting an add-on. Selected files may contain API keys or other personal data."
+msgstr "Selected add-on installation folders are included. Settings stored elsewhere are not included by selecting an add-on. Selected files may contain API keys or other personal data."
+
+msgid "Settings to include"
+msgstr "Settings to include"
+
+msgid "Speech dictionaries"
+msgstr "Speech dictionaries"
+
+msgid "The backup could not be created. No complete ZIP was saved. Please try again."
+msgstr "The backup could not be created. No complete ZIP was saved. Please try again."
+
+msgid "The backup window could not be opened."
+msgstr "The backup window could not be opened."
+
+msgid "Import / export..."
+msgstr "Import / export..."
+
+msgid "Import / export"
+msgstr "Import / export"
+
+msgid "Operation"
+msgstr "Operation"
+
+msgid "Export settings"
+msgstr "Export settings"
+
+msgid "Import settings"
+msgstr "Import settings"
+
+msgid "Import NVDA settings"
+msgstr "Import NVDA settings"
+
+msgid "Backup ZIP file"
+msgstr "Backup ZIP file"
+
+msgid "Browse..."
+msgstr "Browse..."
+
+msgid "Files in the ZIP replace matching settings and add-on files automatically. NVDA restarts after a successful import. Pending changes in the settings window are discarded."
+msgstr "Files in the ZIP replace matching settings and add-on files automatically. NVDA restarts after a successful import. Pending changes in the settings window are discarded."
+
+msgid "Choose an NVDA backup"
+msgstr "Choose an NVDA backup"
+
+msgid "ZIP files (*.zip)|*.zip"
+msgstr "ZIP files (*.zip)|*.zip"
+
+msgid "Choose a backup ZIP file first."
+msgstr "Choose a backup ZIP file first."
+
+msgid "Importing backup..."
+msgstr "Importing backup..."
+
+msgid "Backup imported. NVDA is restarting."
+msgstr "Backup imported. NVDA is restarting."
+
+msgid "Import canceled. Previous files were restored."
+msgstr "Import canceled. Previous files were restored."
+
+msgid "Import failed. Some files could not be restored. Recovery files are in: {path}"
+msgstr "Import failed. Some files could not be restored. Recovery files are in: {path}"
+
+msgid "This ZIP is not a supported NVDA backup. No changes were applied."
+msgstr "This ZIP is not a supported NVDA backup. No changes were applied."
+
+msgid "The backup could not be imported. Previous files were restored. Check file access and try again."
+msgstr "The backup could not be imported. Previous files were restored. Check file access and try again."
+
+msgid "Canceling import..."
+msgstr "Canceling import..."
