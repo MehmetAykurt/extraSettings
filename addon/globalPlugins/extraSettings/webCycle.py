@@ -180,15 +180,17 @@ class WebCycle:
         original = self._original
 
         @wraps(original)
-        def quickNav(document, gesture, itemType, direction, errorMessage, readUnit):
+        def quickNav(document, gesture, itemType, direction, *args, **kwargs):
+            # Extra parameters are forwarded untouched so a future NVDA
+            # signature change cannot break quick navigation.
             if (
                 not self._active or not self._enabled()
                 or direction not in ("next", "previous")
                 or document.passThrough or not isWebDocument(document)
             ):
-                return original(document, gesture, itemType, direction, errorMessage, readUnit)
+                return original(document, gesture, itemType, direction, *args, **kwargs)
             with cyclingIterators(document, lambda: _announceWrap(direction)):
-                return original(document, gesture, itemType, direction, errorMessage, readUnit)
+                return original(document, gesture, itemType, direction, *args, **kwargs)
 
         self._wrapper = quickNav
         browseMode.BrowseModeTreeInterceptor._quickNavScript = quickNav
