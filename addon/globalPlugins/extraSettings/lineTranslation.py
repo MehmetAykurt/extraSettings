@@ -1,4 +1,4 @@
-"""Translate a caret line on demand using one lazy background worker."""
+"""Translate accessible line or focused-control text using one background worker."""
 from collections import OrderedDict
 import threading
 import time
@@ -6,11 +6,12 @@ import time
 import addonHandler
 import api
 import core
+import controlTypes
 import textInfos
 import ui
 import wx
 
-from .translationService import fetchTranslation, TranslationFailure, LANGUAGE_CODES, MAX_TEXT
+from .translationService import fetchTranslation, translationPair, TranslationFailure, LANGUAGE_CODES, MAX_TEXT
 
 addonHandler.initTranslation()
 
@@ -19,53 +20,113 @@ CACHE_ENTRIES = 32
 REQUEST_INTERVAL = 0.5
 
 
+def _property(obj, name, default=None):
+    try:
+        return getattr(obj, name, default)
+    except Exception:
+        return default
+
+
+def _protected(obj):
+    return bool(_property(obj, "isProtected", False)
+                or _property(_property(obj, "role"), "name") == "PASSWORDEDIT"
+                or controlTypes.State.PROTECTED in (_property(obj, "states", set()) or ()))
+
+
+def focusedText(focus):
+    """Read just this object's exposed text, without traversing other controls."""
+    if focus is None:
+        raise TranslationFailure("caret")
+    if _protected(focus):
+        raise TranslationFailure("protected")
+    parts = []
+    for attribute in ("name", "value", "description"):
+        value = _property(focus, attribute)
+        if isinstance(value, str) and value.strip() and value.strip() not in parts:
+            parts.append(value.strip())
+    if not parts:
+        raise TranslationFailure("empty")
+    return _boundedText("\n".join(parts))
+
+
+def _boundedText(text):
+    if not isinstance(text, str):
+        raise TranslationFailure("caret")
+    text = text.strip()
+    if not text:
+        raise TranslationFailure("empty")
+    if len(text) > MAX_TEXT:
+        raise TranslationFailure("length")
+    return text
+
+
+def _lineText(container):
+    if container is None:
+        raise TranslationFailure("caret")
+    if _protected(container):
+        raise TranslationFailure("protected")
+    try:
+        container.invalidateCache()
+    except Exception:
+        pass
+    info = container.makeTextInfo(textInfos.POSITION_CARET)
+    info.expand(textInfos.UNIT_LINE)
+    if _protected(_property(info, "NVDAObjectAtStart")):
+        raise TranslationFailure("protected")
+    return _boundedText(info.text)
+
+
 def currentLine():
-    """Called on the NVDA main thread. Never move a caret or issue Copy."""
+    """Resolve the current accessible content on NVDA's main thread."""
     try:
         if api.isTypingProtected():
             raise TranslationFailure("protected")
-        container = api.getCaretObject()
-        if container is None or getattr(container, "isProtected", False):
-            raise TranslationFailure("protected" if container is not None else "caret")
-        container.invalidateCache()
-    except TranslationFailure:
-        raise
-    except AttributeError:
-        # Some browse-mode text containers have no AutoProperty cache.
-        pass
-    except Exception:
-        raise TranslationFailure("caret") from None
-    try:
-        info = container.makeTextInfo(textInfos.POSITION_CARET)
-        info.expand(textInfos.UNIT_LINE)
-        try:
-            atStart = info.NVDAObjectAtStart
-        except (AttributeError, NotImplementedError):
-            atStart = None
-        if atStart is not None and getattr(atStart, "isProtected", False):
-            raise TranslationFailure("protected")
-        text = info.text
-        if not isinstance(text, str):
+        focus = api.getFocusObject()
+        if focus is None:
             raise TranslationFailure("caret")
-        text = text.strip()
-        if not text:
-            raise TranslationFailure("empty")
-        if len(text) > MAX_TEXT:
-            raise TranslationFailure("length")
-        return text
+        if _protected(focus):
+            raise TranslationFailure("protected")
     except TranslationFailure:
         raise
     except Exception:
         raise TranslationFailure("caret") from None
+    role = _property(_property(focus, "role"), "name", "")
+    # A focused button may coexist with a stale caret in its document.
+    # Prefer control text before asking the global caret in that case.
+    textControl = role in ("EDITABLETEXT", "PASSWORDEDIT", "DOCUMENT", "TERMINAL", "RICHEDIT")
+    browse = _property(focus, "treeInterceptor")
+    inBrowseMode = browse is not None and not _property(browse, "passThrough", True)
+    if not textControl and not inBrowseMode:
+        try:
+            return focusedText(focus)
+        except TranslationFailure as error:
+            if error.reason != "empty":
+                raise
+        container = focus
+    else:
+        try:
+            container = api.getCaretObject()
+        except Exception:
+            container = focus
+    try:
+        return _lineText(container)
+    except TranslationFailure as error:
+        if error.reason in ("protected", "length"):
+            raise
+        if textControl and error.reason == "empty":
+            raise
+    except Exception:
+        pass
+    return focusedText(focus)
 
 
 def failureMessage(reason):
     messages = {
         "protected": _("Protected fields cannot be translated."),
-        "caret": _("The line at the caret could not be read."),
-        "empty": _("There is no text on this line to translate."),
-        "length": _("This line is too long to translate. The limit is 5000 characters."),
-        "language": _("Choose a supported target language in Extra Settings."),
+        "caret": _("The current text or control could not be read."),
+        "empty": _("There is no accessible text to translate here."),
+        "length": _("This content is too long to translate. The limit is 5000 characters."),
+        "language": _("Choose a supported source and target language in Extra Settings."),
         "limited": _("The translation service is limiting access. Try again later."),
         "timeout": _("The translation service did not respond in time."),
         "response": _("The translation service returned an unreadable response."),
@@ -93,7 +154,19 @@ class LineTranslation:
 
     def _settingsKey(self):
         settings = self._settings()
-        return bool(settings["lineTranslation"] and settings.get("manualTranslation", True)), settings["translationTarget"]
+        return bool(settings["lineTranslation"] and settings.get("manualTranslation", True)), *translationPair(settings)
+
+    def toggleDirection(self):
+        if not self._active:
+            return
+        settings = self._settings()
+        if not settings["lineTranslation"]:
+            ui.message(_("Enable translation in Extra Settings first."))
+            return
+        reversedDirection = not settings.get("reverseTranslation", False)
+        settings["reverseTranslation"] = reversedDirection
+        self.applySettings()
+        ui.message(_("Reverse translation on.") if reversedDirection else _("Reverse translation off."))
 
     def applySettings(self):
         """Only called on the main thread; never access config in the worker."""
@@ -113,12 +186,12 @@ class LineTranslation:
         if not self._active:
             return
         self.applySettings()
-        enabled, target = self._lastSettings
+        enabled, source, target = self._lastSettings
         if not enabled:
             ui.message(_("Enable line translation in Extra Settings first.") if self._settings()["lineTranslation"]
                        else _("Enable translation in Extra Settings first."))
             return
-        if target not in LANGUAGE_CODES:
+        if source not in LANGUAGE_CODES or target not in LANGUAGE_CODES:
             ui.message(failureMessage("language"))
             return
         try:
@@ -131,10 +204,10 @@ class LineTranslation:
                 self._waiting = False
             ui.message(failureMessage(error.reason))
             return
-        self._request(text, target)
+        self._request(text, source, target)
 
-    def _request(self, text, target):
-        key = (text, target)
+    def _request(self, text, source, target):
+        key = (text, source, target)
         now = self._clock()
         # Also purge expired text so cache retention is bounded in time when
         # the feature is used again. Nothing is persisted to disk.
@@ -159,11 +232,16 @@ class LineTranslation:
             if now < self._retryAfter:
                 ui.message(failureMessage("limited"))
                 return
-            self._pending = (token, text, target)
-            self._waiting = True
             if self._worker is None or not self._worker.is_alive():
-                self._worker = threading.Thread(target=self._run, name="ExtraSettingsTranslation", daemon=True)
-                self._worker.start()
+                try:
+                    self._worker = threading.Thread(target=self._run, name="ExtraSettingsTranslation", daemon=True)
+                    self._worker.start()
+                except RuntimeError:
+                    self._worker = None
+                    ui.message(failureMessage("unavailable"))
+                    return
+            self._pending = (token, *key)
+            self._waiting = True
             self._condition.notify()
         core.callLater(700, self._announceWaiting, token)
 
@@ -175,7 +253,9 @@ class LineTranslation:
         if not self._active or not self._lastSettings[0]:
             return False
         try:
-            return self._settingsKey() == self._lastSettings and not api.isTypingProtected()
+            getFocus = _property(api, "getFocusObject")
+            return (self._settingsKey() == self._lastSettings and not api.isTypingProtected()
+                    and (getFocus is None or not _protected(getFocus())))
         except Exception:
             # Focus/config can be unavailable during shutdown or a reset.
             return False
@@ -197,10 +277,10 @@ class LineTranslation:
                 request = self._current = self._pending
                 self._pending = None
                 self._lastNetwork = self._clock()
-            token, text, target = request
+            token, text, source, target = request
             result, error = None, None
             try:
-                result = self._fetch(text, target)
+                result = self._fetch(text, target, source)
             except TranslationFailure as failure:
                 error = failure.reason
             except Exception:
@@ -211,12 +291,12 @@ class LineTranslation:
                 if not self._active:
                     return
                 try:
-                    wx.CallAfter(self._finish, token, (text, target), result, error)
+                    wx.CallAfter(self._finish, token, (text, source, target), result, error)
                 except RuntimeError:
                     # wx may already be shutting down; do not leak a worker
                     # exception or retain text in a dormant thread.
                     return
-            del request, text, target, result, error
+            del request, text, source, target, result, error
 
     def _finish(self, token, key, result, error):
         # wx dispatch ensures that config, the cache, APIs and speech are only
