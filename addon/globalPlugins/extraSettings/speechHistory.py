@@ -1,9 +1,10 @@
-"""Observe queued NVDA speech without replacing any speech function."""
+"""Record everything NVDA sends to the synthesizer, without replacing any speech function."""
 import addonHandler
 import api
 import gui
 import ui
-from speech.extensions import pre_speechQueued
+from logHandler import log
+from speech.extensions import pre_speech
 
 from .historyBuffer import HistoryBuffer
 
@@ -17,10 +18,15 @@ class SpeechHistory:
         self._active = True
         self._viewActive = False
         self._dialog = None
-        pre_speechQueued.register(self._onSpeech)
+        # pre_speech fires for what is really handed to the synthesizer
+        # (menus, notifications, focus changes, typing, reading), so history
+        # matches what the user hears. Speech canceled before it is sent is
+        # never heard and therefore never recorded.
+        pre_speech.register(self._onSpeech)
 
-    def _onSpeech(self, speechSequence, **kwargs):
-        if not self._active or self._viewActive:
+    def _onSpeech(self, *args, **kwargs):
+        speechSequence = kwargs.get("speechSequence", args[0] if args else None)
+        if speechSequence is None or not self._active or self._viewActive:
             return
         settings = self._settings()
         if not settings["recordHistory"]:
@@ -32,17 +38,42 @@ class SpeechHistory:
         self.buffer.resize(settings["historyLimit"])
         self.buffer.append(speechSequence)
 
-    def applySettings(self):
+    def _syncBuffer(self):
+        """Apply the current limit and recording state to the buffer only."""
         settings = self._settings()
         self.buffer.resize(settings["historyLimit"])
         if not settings["recordHistory"]:
             self.buffer.clear()
-            if self._dialog is not None:
-                self._dialog.Close()
+
+    def _callDialog(self, method):
+        """Call a wx method on the dialog; False if wx already deleted it."""
+        if self._dialog is None:
+            return False
+        try:
+            getattr(self._dialog, method)()
+        except RuntimeError:
+            # The user already closed the window: wx has deleted the C++ object.
+            log.debug("ExtraSettings: speech history dialog was already destroyed")
+            self._dialog = None
+            self._viewActive = False
+            return False
+        return True
+
+    def applySettings(self):
+        self._syncBuffer()
+        if not self._settings()["recordHistory"]:
+            self._callDialog("Close")
 
     def entries(self):
-        self.applySettings()
+        # Refreshing a dialog must never close that same dialog, so only the
+        # buffer is synchronised here; applySettings() handles the window.
+        self._syncBuffer()
         return self.buffer.snapshot(newestFirst=self._settings()["historyOrder"] == "newestFirst")
+
+    def entryItems(self):
+        """Like entries(), but as (id, text) pairs so the dialog can track marks."""
+        self._syncBuffer()
+        return self.buffer.snapshotItems(newestFirst=self._settings()["historyOrder"] == "newestFirst")
 
     def show(self):
         if not self._active:
@@ -50,9 +81,8 @@ class SpeechHistory:
         if not self._settings()["recordHistory"]:
             ui.message(_("Enable speech history in Extra Settings first."))
             return
-        if self._dialog is not None:
-            self._dialog.Raise()
-            self._dialog.SetFocus()
+        # If the window was already gone, fall through and open a new one.
+        if self._dialog is not None and self._callDialog("Raise") and self._callDialog("SetFocus"):
             return
         # Freeze history before creating controls, so opening announcements
         # and spoken history rows never feed back into the same buffer.
@@ -68,9 +98,10 @@ class SpeechHistory:
             finally:
                 gui.mainFrame.postPopup()
         except Exception:
+            log.error("ExtraSettings: speech history could not be opened", exc_info=True)
             self._dialog = None
             self._viewActive = False
-            raise
+            ui.message(_("Could not open speech history."))
 
     def viewActivated(self, active):
         self._viewActive = bool(active)
@@ -87,9 +118,8 @@ class SpeechHistory:
         if not self._active:
             return
         self._active = False
-        pre_speechQueued.unregister(self._onSpeech)
-        if self._dialog is not None:
-            self._dialog.Destroy()
-            self._dialog = None
+        pre_speech.unregister(self._onSpeech)
+        self._callDialog("Destroy")
+        self._dialog = None
         self._viewActive = False
         self.buffer.clear()
