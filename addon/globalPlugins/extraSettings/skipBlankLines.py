@@ -16,8 +16,8 @@ import inputCore
 import scriptHandler
 import speech
 import textInfos
-import ui
 from controlTypes import OutputReason, Role, State
+from logHandler import log
 
 from .webCycle import isWebDocument
 
@@ -77,6 +77,7 @@ def isBlankLine(info):
         return True
     except Exception:
         # Unknown provider data is preserved rather than silently skipped.
+        log.debugWarning("ExtraSettings: could not inspect a line; keeping it", exc_info=True)
         return False
 
 
@@ -102,16 +103,21 @@ class SkipBlankLines:
 
         @wraps(original)
         def move(document, gesture, unit, direction=None, posConstant=textInfos.POSITION_SELECTION,
-                 posUnit=None, posUnitEnd=False, extraDetail=False, handleSymbols=False):
+                 posUnit=None, posUnitEnd=False, extraDetail=False, handleSymbols=False,
+                 *extraArgs, **extraKwargs):
             def fallback():
                 return original(document, gesture, unit, direction, posConstant,
-                                posUnit, posUnitEnd, extraDetail, handleSymbols)
+                                posUnit, posUnitEnd, extraDetail, handleSymbols,
+                                *extraArgs, **extraKwargs)
             if not self._active or not self._enabled():
                 return fallback()
             self._pending = None
             search = None
             try:
-                bypass = (unit != textInfos.UNIT_LINE or direction not in (-1, 1)
+                # Parameters unknown to this add-on mean NVDA's signature has
+                # changed: hand over to NVDA's own behaviour untouched.
+                bypass = (bool(extraArgs) or bool(extraKwargs)
+                        or unit != textInfos.UNIT_LINE or direction not in (-1, 1)
                         or posConstant != textInfos.POSITION_SELECTION or posUnit is not None
                         or posUnitEnd or extraDetail or handleSymbols
                         or gesture.mainKeyName.lower() not in ('uparrow', 'downarrow')
