@@ -1,6 +1,6 @@
 {
-  "surum": "2026.11.06",
-  "link": "https://github.com/MehmetAykurt/extraSettings/releases/download/2026.11.06/extraSettings-2026.11.06.nvda-addon",
-  "sha256": "90915c08b9cf8746492d7fa3569cb33d465a6cf4a16a0430fed89012f71f14ae",
-  "aciklama": "Eklenen görselleri analiz etme seçeneğiyle odakta veya panoda bulunan görsel içerik hakkında yapay zekâ betimlemesi, metin aktarımı (OCR) ve etkileşimli soru-cevap danışmanlığı gibi yeni özellikler kazandırılmıştır."
+  "surum": "2026.11.22",
+  "link": "https://github.com/MehmetAykurt/extraSettings/releases/download/2026.11.22/extraSettings-2026.11.22.nvda-addon",
+  "sha256": "d41587d753b4958a10c9fbf4d41cab4a60e530a8da6188c0fd962c82c23712b9",
+  "aciklama": "NVDA için ayarları içe dışa aktarma özelliği eklendi."
 }
