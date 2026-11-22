@@ -20,6 +20,7 @@ Bu eklenti; web gezinmesinden pano yönetimine, yer imlerinden konuşma geçmiş
 - **Hızlı Bul:** Belgeye özel kısayollarla önceden kaydedilmiş metin konumlarına tek tuşla gitme.
 - **Sayısal Tuş Takımıyla Gezinme:** Numpad üzerinden pratik gezinme ve kontrol seçenekleri.
 - **Anlık Çeviri:** Farklı dillerdeki metinleri doğrudan NVDA üzerinden hızlıca Türkçeye çevirme.
+- **Ayarları içe / dışa aktar:** NVDA ayarlarını içe / dışa aktarma özelliği.
 
 ---
 
