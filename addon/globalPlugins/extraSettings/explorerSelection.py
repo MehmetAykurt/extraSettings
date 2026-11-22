@@ -1,14 +1,82 @@
-"""Announce selected item count in File Explorer when pressing Ctrl+A."""
+"""Announce selected item count in File Explorer when pressing Ctrl+A.
+
+Gesture deciders run on the keyboard hook thread, so the gesture handler only
+recognises Ctrl+A and defers everything else (focus inspection, COM and Win32
+queries, speech) to NVDA's main thread.
+"""
+import ctypes
+from ctypes import wintypes
+
 import addonHandler
 import api
 import core
 import inputCore
 import keyboardHandler
 import ui
-from controlTypes import Role, State
+from controlTypes import Role
 from logHandler import log
 
 addonHandler.initTranslation()
+
+_DESKTOP_CLASSES = ("Progman", "WorkerW")
+_LIST_ROLES = (Role.LIST, Role.TREEVIEW)
+_LVM_GETITEMCOUNT = 0x1004
+_LVM_GETSELECTEDCOUNT = 0x1032
+_SMTO_ABORTIFHUNG = 0x0002
+_SEND_TIMEOUT_MS = 300
+_POLL_DELAY_MS = 150
+_RETRY_DELAY_MS = 60
+_MAX_RETRIES = 4
+
+_user32Dll = None
+
+
+def _user32():
+    """Return a private user32 binding with explicit signatures.
+
+    A private WinDLL keeps these signatures from affecting other code that
+    uses ctypes.windll.user32.
+    """
+    global _user32Dll
+    if _user32Dll is None:
+        dll = ctypes.WinDLL("user32", use_last_error=True)
+        dll.SendMessageTimeoutW.argtypes = [
+            wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM,
+            wintypes.UINT, wintypes.UINT, ctypes.POINTER(ctypes.c_size_t),
+        ]
+        dll.SendMessageTimeoutW.restype = ctypes.c_size_t
+        dll.GetClassNameW.argtypes = [wintypes.HWND, wintypes.LPWSTR, ctypes.c_int]
+        dll.FindWindowExW.argtypes = [
+            wintypes.HWND, wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR,
+        ]
+        dll.FindWindowExW.restype = wintypes.HWND
+        dll.GetParent.argtypes = [wintypes.HWND]
+        dll.GetParent.restype = wintypes.HWND
+        dll.GetForegroundWindow.restype = wintypes.HWND
+        dll.GetAncestor.argtypes = [wintypes.HWND, wintypes.UINT]
+        dll.GetAncestor.restype = wintypes.HWND
+        _user32Dll = dll
+    return _user32Dll
+
+
+def _sendMessage(hwnd, message):
+    """Send a message with a timeout so a hung window cannot freeze NVDA.
+
+    Returns the message result, or None on timeout or failure.
+    """
+    try:
+        result = ctypes.c_size_t(0)
+        ok = _user32().SendMessageTimeoutW(
+            hwnd, message, 0, 0, _SMTO_ABORTIFHUNG, _SEND_TIMEOUT_MS,
+            ctypes.pointer(result),
+        )
+        if not ok:
+            log.debug("ExplorerSelection: SendMessageTimeout timed out or failed")
+            return None
+        return int(result.value)
+    except Exception:
+        log.debug("ExplorerSelection: SendMessageTimeout raised", exc_info=True)
+        return None
 
 
 def _isDesktop(focus):
@@ -17,18 +85,17 @@ def _isDesktop(focus):
         return False
     try:
         root = getattr(focus, "rootNVDAObject", None)
-        if root is not None and getattr(root, "windowClassName", "") in ("Progman", "WorkerW"):
+        if root is not None and getattr(root, "windowClassName", "") in _DESKTOP_CLASSES:
             return True
-        className = getattr(focus, "windowClassName", "") or ""
-        if className in ("Progman", "WorkerW"):
+        if (getattr(focus, "windowClassName", "") or "") in _DESKTOP_CLASSES:
             return True
         parent = getattr(focus, "parent", None)
         while parent is not None:
-            if getattr(parent, "windowClassName", "") in ("Progman", "WorkerW"):
+            if getattr(parent, "windowClassName", "") in _DESKTOP_CLASSES:
                 return True
             parent = getattr(parent, "parent", None)
     except Exception:
-        pass
+        log.debug("ExplorerSelection: desktop detection failed", exc_info=True)
     return False
 
 
@@ -40,9 +107,9 @@ def _isExplorerFocus(focus):
         if api.isTypingProtected():
             return False
     except Exception:
-        pass
+        log.debug("ExplorerSelection: typing protection check failed", exc_info=True)
     app = getattr(focus, "appModule", None)
-    appName = getattr(app, "appName", "").lower() if app else ""
+    appName = (getattr(app, "appName", "") or "").lower() if app else ""
     if appName != "explorer":
         return False
 
@@ -59,13 +126,13 @@ def _isExplorerFocus(focus):
 def _findListContainer(focus):
     """Find the list or tree view container holding the items."""
     role = getattr(focus, "role", None)
-    if role in (Role.LIST, Role.TREEVIEW):
+    if role in _LIST_ROLES:
         return focus
     container = getattr(focus, "selectionContainer", None)
-    if container is not None and getattr(container, "role", None) in (Role.LIST, Role.TREEVIEW):
+    if container is not None and getattr(container, "role", None) in _LIST_ROLES:
         return container
     parent = getattr(focus, "parent", None)
-    if parent is not None and getattr(parent, "role", None) in (Role.LIST, Role.TREEVIEW):
+    if parent is not None and getattr(parent, "role", None) in _LIST_ROLES:
         return parent
     if container is not None:
         return container
@@ -79,8 +146,7 @@ def _getSysListViewHwnd(focus):
     if focus is None:
         return 0
     try:
-        import ctypes
-        user32 = ctypes.windll.user32
+        user32 = _user32()
         buf = ctypes.create_unicode_buffer(64)
 
         candidates = []
@@ -103,25 +169,19 @@ def _getSysListViewHwnd(focus):
                 if buf.value == "SysListView32":
                     return parent
     except Exception:
-        pass
+        log.debug("ExplorerSelection: SysListView32 lookup failed", exc_info=True)
     return 0
 
 
 def _getDesktopSelection(focus):
-    """Query selected items count on the Windows Desktop."""
-    # 1. Authoritative Win32 message: LVM_GETSELECTEDCOUNT (0x1032 = 4146)
-    # Directly queries the SysListView32 control in Windows, completely bypassing MSAA accSelection limits.
-    try:
-        import ctypes
-        user32 = ctypes.windll.user32
-        lvHwnd = _getSysListViewHwnd(focus)
-        if lvHwnd:
-            c = user32.SendMessageW(lvHwnd, 0x1032, 0, 0)
-            if c >= 0:
-                log.info(f"DesktopSelection: SendMessage LVM_GETSELECTEDCOUNT={c} on lvHwnd {hex(lvHwnd)}")
-                return c
-    except Exception as e:
-        log.error(f"DesktopSelection: Win32 LVM_GETSELECTEDCOUNT failed: {e}")
+    """Query selected items count on the Windows Desktop and in list fallbacks."""
+    # 1. Authoritative Win32 message, with a timeout so a hung window cannot freeze NVDA.
+    lvHwnd = _getSysListViewHwnd(focus)
+    if lvHwnd:
+        c = _sendMessage(lvHwnd, _LVM_GETSELECTEDCOUNT)
+        if c is not None:
+            log.debug(f"ExplorerSelection: LVM_GETSELECTEDCOUNT={c}")
+            return c
 
     container = _findListContainer(focus)
     candidates = [container]
@@ -138,55 +198,35 @@ def _getDesktopSelection(focus):
             if pattern is not None:
                 sel = pattern.GetCurrentSelection()
                 if sel is not None:
-                    c = len(sel)
-                    log.info(f"DesktopSelection: UIASelectionPattern count={c}")
-                    return c
+                    return len(sel)
         except Exception:
-            pass
+            log.debug("ExplorerSelection: UIA selection pattern failed", exc_info=True)
 
     # 3. Fallback to NVDA's getSelectedItemsCount / selectedItems
     for obj in candidates:
         try:
             c = obj.getSelectedItemsCount()
             if c is not None and c >= 0:
-                log.info(f"DesktopSelection: obj.getSelectedItemsCount()={c}")
                 return c
         except Exception:
-            pass
+            log.debug("ExplorerSelection: getSelectedItemsCount failed", exc_info=True)
         try:
             items = getattr(obj, "selectedItems", None)
             if items is not None:
-                log.info(f"DesktopSelection: obj.selectedItems length={len(items)}")
                 return len(items)
         except Exception:
-            pass
+            log.debug("ExplorerSelection: selectedItems failed", exc_info=True)
 
     return None
 
 
-def _getDesktopTotal(focus):
-    """Query total item count on the Windows Desktop."""
-    # 1. Authoritative Win32 message: LVM_GETITEMCOUNT (0x1004 = 4100)
-    try:
-        import ctypes
-        user32 = ctypes.windll.user32
-        lvHwnd = _getSysListViewHwnd(focus)
-        if lvHwnd:
-            tot = user32.SendMessageW(lvHwnd, 0x1004, 0, 0)
-            if tot >= 0:
-                log.info(f"DesktopTotal: SendMessage LVM_GETITEMCOUNT={tot} on lvHwnd {hex(lvHwnd)}")
-                return tot
-    except Exception:
-        pass
-
-    # 2. NVDA positionInfo
+def _containerTotal(focus):
+    """Estimate the item total from NVDA position info or the container."""
     pos = getattr(focus, "positionInfo", None)
     if isinstance(pos, dict):
         total = pos.get("similarItemsInGroup")
         if total is not None and total >= 0:
             return total
-
-    # 3. Container childCount
     container = _findListContainer(focus)
     if container is not None:
         try:
@@ -194,9 +234,18 @@ def _getDesktopTotal(focus):
             if count is not None and count >= 0:
                 return count
         except Exception:
-            pass
-
+            log.debug("ExplorerSelection: childCount failed", exc_info=True)
     return None
+
+
+def _getDesktopTotal(focus):
+    """Query total item count on the Windows Desktop."""
+    lvHwnd = _getSysListViewHwnd(focus)
+    if lvHwnd:
+        total = _sendMessage(lvHwnd, _LVM_GETITEMCOUNT)
+        if total is not None:
+            return total
+    return _containerTotal(focus)
 
 
 def _getExplorerHwnds(focus):
@@ -205,8 +254,7 @@ def _getExplorerHwnds(focus):
     if focus is None:
         return hwnds
     try:
-        import ctypes
-        user32 = ctypes.windll.user32
+        user32 = _user32()
         fg = user32.GetForegroundWindow()
         if fg:
             hwnds.add(fg)
@@ -224,21 +272,40 @@ def _getExplorerHwnds(focus):
                 hwnds.add(rh)
                 hwnds.add(user32.GetAncestor(rh, 2))
     except Exception:
-        pass
+        log.debug("ExplorerSelection: window handle collection failed", exc_info=True)
     hwnds.discard(0)
     return hwnds
 
 
-def _getSelectedCount(focus):
-    """Query selected items count in File Explorer folder or Desktop."""
-    # If on Desktop, NEVER query Shell.Windows() (which only manages CabinetWClass folders)
-    if _isDesktop(focus):
-        log.info("ExplorerSelection: Detected Desktop, using desktop selection query...")
-        return _getDesktopSelection(focus)
+def _documentCounts(window):
+    """Return (selected, total) for one Shell window, using None when unknown."""
+    selected = total = None
+    doc = getattr(window, "Document", None)
+    if doc is None:
+        return selected, total
+    try:
+        sel = getattr(doc, "SelectedItems", None)
+        if callable(sel):
+            sel = sel()
+        if sel is not None:
+            selected = int(sel.Count)
+    except Exception:
+        log.debug("ExplorerSelection: Shell selection query failed", exc_info=True)
+    try:
+        folder = getattr(doc, "Folder", None)
+        items = getattr(folder, "Items", None) if folder is not None else None
+        if callable(items):
+            items = items()
+        if items is not None:
+            total = int(items.Count)
+    except Exception:
+        log.debug("ExplorerSelection: Shell item count query failed", exc_info=True)
+    return selected, total
 
+
+def _shellFolderCounts(focus):
+    """Ask Shell.Application once for (selected, total); None when unknown."""
     targetHwnds = _getExplorerHwnds(focus)
-
-    # In File Explorer folder windows (CabinetWClass), query Shell COM matching window handle
     try:
         import comtypes.client
         from comtypes import CoInitialize, CoUninitialize
@@ -247,110 +314,47 @@ def _getSelectedCount(focus):
         try:
             shell = comtypes.client.CreateObject("Shell.Application", dynamic=True)
             windows = shell.Windows()
+            match = None
             for window in windows:
                 try:
-                    wHwnd = int(window.HWND)
-                    if wHwnd in targetHwnds:
-                        doc = getattr(window, "Document", None)
-                        if doc is not None:
-                            sel = getattr(doc, "SelectedItems", None)
-                            if callable(sel):
-                                sel = sel()
-                            if sel is not None:
-                                c = int(sel.Count)
-                                log.info(f"ExplorerSelection: Shell COM (matched HWND {hex(wHwnd)}) count={c}")
-                                return c
+                    if int(window.HWND) in targetHwnds:
+                        match = window
+                        break
                 except Exception:
-                    continue
-            # If no target HWND matched, check if exactly 1 Explorer window is open
-            if windows.Count == 1:
-                try:
-                    doc = getattr(windows.Item(0), "Document", None)
-                    if doc is not None:
-                        sel = getattr(doc, "SelectedItems", None)
-                        if callable(sel):
-                            sel = sel()
-                        if sel is not None:
-                            c = int(sel.Count)
-                            log.info(f"ExplorerSelection: Shell COM (single window) count={c}")
-                            return c
-                except Exception:
-                    pass
-        finally:
-            CoUninitialize()
-    except Exception as e:
-        log.error(f"ExplorerSelection: Shell COM query failed: {e}")
-
-    # Fallback to container methods
-    return _getDesktopSelection(focus)
-
-
-def _getTotalCount(focus):
-    """Estimate total item count in the group or folder."""
-    if _isDesktop(focus):
-        return _getDesktopTotal(focus)
-
-    targetHwnds = _getExplorerHwnds(focus)
-
-    # 1. Shell COM for folder windows
-    try:
-        import comtypes.client
-        from comtypes import CoInitialize, CoUninitialize
-
-        CoInitialize()
-        try:
-            shell = comtypes.client.CreateObject("Shell.Application", dynamic=True)
-            windows = shell.Windows()
-            for window in windows:
-                try:
-                    wHwnd = int(window.HWND)
-                    if wHwnd in targetHwnds:
-                        doc = getattr(window, "Document", None)
-                        if doc is not None:
-                            folder = getattr(doc, "Folder", None)
-                            if folder is not None:
-                                items = getattr(folder, "Items", None)
-                                if callable(items):
-                                    items = items()
-                                if items is not None:
-                                    tot = int(items.Count)
-                                    log.info(f"ExplorerTotal: Shell COM (matched HWND {hex(wHwnd)}) count={tot}")
-                                    return tot
-                except Exception:
-                    continue
-            if windows.Count == 1:
-                try:
-                    doc = getattr(windows.Item(0), "Document", None)
-                    if doc is not None:
-                        folder = getattr(doc, "Folder", None)
-                        if folder is not None:
-                            items = getattr(folder, "Items", None)
-                            if callable(items):
-                                items = items()
-                            if items is not None:
-                                return int(items.Count)
-                except Exception:
-                    pass
+                    log.debug("ExplorerSelection: Shell window inspection failed", exc_info=True)
+            # If no target HWND matched, accept the only open Explorer window.
+            if match is None and windows.Count == 1:
+                match = windows.Item(0)
+            if match is None:
+                return None, None
+            return _documentCounts(match)
         finally:
             CoUninitialize()
     except Exception:
-        pass
+        log.debug("ExplorerSelection: Shell COM query failed", exc_info=True)
+        return None, None
 
-    # 2. NVDA positionInfo or childCount
-    pos = getattr(focus, "positionInfo", None)
-    if isinstance(pos, dict):
-        total = pos.get("similarItemsInGroup")
-        if total is not None and total >= 0:
-            return total
-    container = _findListContainer(focus)
-    if container is not None:
-        try:
-            count = container.childCount
-            if count is not None and count >= 0:
-                return count
-        except Exception:
-            pass
-    return None
+
+def _getCounts(focus):
+    """Return (selected, total) for the folder or Desktop that has focus."""
+    # On the Desktop never query Shell.Windows(), which only lists folder windows.
+    if _isDesktop(focus):
+        return _getDesktopSelection(focus), _getDesktopTotal(focus)
+    selected, total = _shellFolderCounts(focus)
+    if selected is None:
+        selected = _getDesktopSelection(focus)
+    if total is None:
+        total = _containerTotal(focus)
+    return selected, total
+
+
+def _describe(focus):
+    """Short description of the focus for the diagnostic log (no file names)."""
+    app = getattr(focus, "appModule", None)
+    return (
+        f"app={getattr(app, 'appName', None)!r} role={getattr(focus, 'role', None)!r} "
+        f"class={getattr(focus, 'windowClassName', None)!r}"
+    )
 
 
 class ExplorerSelection:
@@ -372,12 +376,14 @@ class ExplorerSelection:
         if any(ident == "kb:control+a" or ident.endswith(":control+a") for ident in getattr(gesture, "normalizedIdentifiers", ())):
             return True
         if getattr(gesture, "mainKeyName", "").lower() == "a":
-            mods = set(m.lower() for m in getattr(gesture, "modifierNames", ()))
+            mods = {m.lower() for m in getattr(gesture, "modifierNames", ())}
             if mods == {"control"}:
                 return True
         return False
 
     def _onGesture(self, gesture):
+        # Runs on the keyboard hook thread: no NVDA object, COM or Win32
+        # queries here. Recognise the key and defer to the main thread.
         if not self._active or not self._enabled():
             return True
         manager = inputCore.manager
@@ -385,16 +391,21 @@ class ExplorerSelection:
             return True
         if not self._isCtrlA(gesture):
             return True
-        focus = api.getFocusObject()
-        if not _isExplorerFocus(focus):
-            return True
-
-        # Do NOT swallow Ctrl+A! Return True so Windows processes Ctrl+A natively!
+        # Never swallow Ctrl+A: return True so Windows processes it natively.
         self._generation += 1
-        token = self._generation
-        log.info("ExplorerSelection: Ctrl+A detected, letting Windows process it natively...")
-        core.callLater(150, self._pollSelection, token, 0)
+        core.callLater(0, self._begin, self._generation)
         return True
+
+    def _begin(self, token):
+        """Main thread: confirm Explorer has focus, then poll for the result."""
+        if not self._active or token != self._generation or not self._enabled():
+            return
+        focus = api.getFocusObject()
+        accepted = _isExplorerFocus(focus)
+        log.info(f"ExplorerSelection: Ctrl+A seen, {_describe(focus)}, accepted={accepted}")
+        if not accepted:
+            return
+        core.callLater(_POLL_DELAY_MS, self._pollSelection, token, 0)
 
     def _pollSelection(self, token, attempt):
         if not self._active or token != self._generation or not self._enabled():
@@ -403,23 +414,29 @@ class ExplorerSelection:
         if not _isExplorerFocus(focus):
             return
 
-        count = _getSelectedCount(focus)
-        total = _getTotalCount(focus)
-        log.info(f"ExplorerSelection: poll attempt={attempt}, count={count}, total={total}")
+        count, total = _getCounts(focus)
+        log.debug(f"ExplorerSelection: poll attempt={attempt}, count={count}, total={total}")
 
-        # If count could not be retrieved, or if count < total while total > 0,
-        # Windows may still be selecting items. Retry briefly (up to 4 times, ~350ms total).
-        if (count is None or (total is not None and total > 0 and count < total)) and attempt < 4:
-            core.callLater(60, self._pollSelection, token, attempt + 1)
+        # If the count is unknown, or lower than the total, Windows may still be
+        # selecting items. Retry briefly (up to 4 times, ~350 ms in total).
+        # An empty folder (total == 0) needs no retry.
+        if total != 0 and (count is None or (total is not None and count < total)) and attempt < _MAX_RETRIES:
+            core.callLater(_RETRY_DELAY_MS, self._pollSelection, token, attempt + 1)
             return
 
-        # Determine effective selection count
+        if total == 0 or (count is None and total is None):
+            if total == 0:
+                ui.message(_("No items to select."))
+            else:
+                ui.message(_("The number of selected items could not be determined."))
+            return
+
+        # Ctrl+A selects all items; if the count is unknown or zero while items exist, use the total.
         finalCount = count
         if (finalCount is None or finalCount == 0) and total is not None and total > 0:
-            # Ctrl+A selects all items; if count couldn't be queried or reported 0 while total items exist, use total
             finalCount = total
 
-        if finalCount is None or finalCount == 0 or total == 0:
+        if finalCount == 0:
             ui.message(_("No items to select."))
         elif finalCount == 1:
             ui.message(_("1 item selected."))
