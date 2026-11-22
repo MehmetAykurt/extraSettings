@@ -6,6 +6,7 @@ the option for every gesture also follows configuration profile changes.
 import addonHandler
 import inputCore
 import keyboardHandler
+import scriptHandler
 import winUser
 
 addonHandler.initTranslation()
@@ -61,6 +62,9 @@ class NumpadNavigation:
                     # Num Lock change or add-on termination. Resolve the
                     # original gesture normally if it is no longer enabled.
                     if not self.active or not self.enabled() or winUser.getKeyState(winUser.VK_NUMLOCK) & 1:
+                        # The source gesture may still cache this queued script.
+                        # Resolve it again while navigation is excluded.
+                        source.script = scriptHandler.findScript(source)
                         inputCore.manager.emulateGesture(source)
                         return
                     emulated = keyboardHandler.KeyboardInputGesture.fromName(targetName)
