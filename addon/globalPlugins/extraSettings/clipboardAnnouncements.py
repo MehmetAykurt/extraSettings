@@ -10,6 +10,7 @@ import winUser
 from controlTypes import State
 from ctypes import WinDLL, get_last_error, set_last_error
 from ctypes.wintypes import UINT, BOOL
+from logHandler import log
 
 addonHandler.initTranslation()
 
@@ -35,7 +36,7 @@ def hasSelectedData(focus):
     try:
         textContainers.append(api.getCaretObject())
     except Exception:
-        pass
+        log.debug("ExtraSettings: caret object unavailable", exc_info=True)
     if not any(container is focus for container in textContainers):
         textContainers.append(focus)
     textSelectionKnown = False
@@ -44,7 +45,7 @@ def hasSelectedData(focus):
             # AutoProperty values can still describe a previous pump cycle.
             textContainer.invalidateCache()
         except Exception:
-            pass
+            log.debug("ExtraSettings: cache could not be refreshed", exc_info=True)
         try:
             selection = textContainer.makeTextInfo(textInfos.POSITION_SELECTION)
             if not selection.isCollapsed:
@@ -52,32 +53,32 @@ def hasSelectedData(focus):
             textSelectionKnown = True
         except Exception:
             # Non-text controls commonly do not implement selection TextInfo.
-            pass
+            log.debug("ExtraSettings: selection TextInfo unavailable", exc_info=True)
     try:
         if State.SELECTED in focus.states:
             return True
     except Exception:
-        pass
+        log.debug("ExtraSettings: states unavailable", exc_info=True)
     candidates = [focus]
     try:
         container = focus.selectionContainer
         if container is not None and container is not focus:
             candidates.append(container)
     except Exception:
-        pass
+        log.debug("ExtraSettings: selection container unavailable", exc_info=True)
     for candidate in candidates:
         try:
             if candidate.getSelectedItemsCount(maxCount=1) > 0:
                 return True
         except Exception:
-            pass
+            log.debug("ExtraSettings: selected item count unavailable", exc_info=True)
     # For text controls which expose no usable selection API, say that the
     # selection could not be checked, rather than claiming nothing is selected.
     try:
         if not textSelectionKnown and State.EDITABLE in focus.states:
             return None
     except Exception:
-        pass
+        log.debug("ExtraSettings: editable state unavailable", exc_info=True)
     return False
 
 
@@ -113,6 +114,7 @@ def hasClipboardData():
             # empty string pasteable. Any other format can carry non-text data.
             return bool(formats - {1, 7, 13, 16})
     except Exception:
+        log.debugWarning("ExtraSettings: clipboard could not be inspected", exc_info=True)
         return None
 
 
@@ -162,6 +164,7 @@ class ClipboardAnnouncements:
                     available = hasClipboardData() if operation == "paste" else hasSelectedData(focus)
             except Exception:
                 # A failed accessibility provider must never swallow the key.
+                log.debugWarning("ExtraSettings: availability check failed", exc_info=True)
                 available = None
         # Always execute once, including if the checkbox was disabled or the
         # add-on terminated after the key was queued. Re-enter NVDA's normal
@@ -177,7 +180,6 @@ class ClipboardAnnouncements:
     def _announce(self, operation, available):
         if not self._active or not self._enabled():
             return
-        # Translators: Brief feedback after the standard editing shortcuts.
         if operation == "paste" and available is None:
             # Translators: The clipboard could not be opened or inspected.
             message = _("The clipboard could not be checked right now.")
@@ -193,6 +195,7 @@ class ClipboardAnnouncements:
             }
             message = messages[operation]
         else:
+            # Translators: Brief feedback after the standard editing shortcuts.
             messages = {"cut": _("Cut."), "copy": _("Copied."), "paste": _("Pasted.")}
             message = messages[operation]
         ui.message(message)
