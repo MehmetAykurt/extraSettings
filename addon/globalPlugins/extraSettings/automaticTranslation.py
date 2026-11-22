@@ -17,8 +17,8 @@ import textInfos
 import ui
 import wx
 
-from .lineTranslation import failureMessage
-from .translationService import fetchTranslation, TranslationFailure, LANGUAGE_CODES, MAX_TEXT
+from .lineTranslation import failureMessage, focusedText, _property, _protected
+from .translationService import fetchTranslation, translationPair, TranslationFailure, LANGUAGE_CODES, MAX_TEXT
 
 addonHandler.initTranslation()
 MAX_ROWS = 1000
@@ -37,14 +37,17 @@ class AutomaticTranslation:
         self._allowed = False
         self._paused = False
         self._target = None
+        self._source = None
         self._pending = deque()
         self._ready = deque()
         self._cache = OrderedDict()
         self._lastInfo = None
+        self._lastFocus = None
         self._lastText = None
         self._rows = self._characters = 0
         self._speaking = False
         self._speechTicket = 0
+        self._retryScheduled = False
         self._worker = None
         self._original = speech.speakTextInfo
         self._wrapper = self._speakTextInfo
@@ -55,16 +58,15 @@ class AutomaticTranslation:
     def applySettings(self):
         settings = self._settings()
         allowed = bool(settings['lineTranslation'] and settings.get('automaticTranslation', False))
-        target = settings['translationTarget']
-        if (allowed, target) == (self._allowed, self._target):
+        source, target = translationPair(settings)
+        if (allowed, source, target) == (self._allowed, self._source, self._target):
             return
-        wasRunning = self._enabled
+        # A change to the permitted mode or target ends the current session.
+        # A new session starts only through the shortcut.
         self._clear()
         self._allowed = allowed
+        self._source = source
         self._target = target
-        # The saved checkbox permits the shortcut. Only that shortcut starts
-        # a session; applying settings or restarting NVDA must not start one.
-        self._enabled = wasRunning and allowed and target in LANGUAGE_CODES and self._active
 
     def toggle(self):
         if not self._active:
@@ -76,7 +78,7 @@ class AutomaticTranslation:
         if not self._settings().get('automaticTranslation', False):
             ui.message(_("Enable automatic translation in Extra Settings first."))
             return
-        if self._target not in LANGUAGE_CODES:
+        if self._source not in LANGUAGE_CODES or self._target not in LANGUAGE_CODES:
             ui.message(failureMessage('language'))
             return
         if self._enabled:
@@ -93,6 +95,7 @@ class AutomaticTranslation:
         self._paused = False
         self._speechTicket += 1
         self._speaking = False
+        self._retryScheduled = False
         with self._condition:
             self._generation += 1
             self._pending.clear()
@@ -100,6 +103,7 @@ class AutomaticTranslation:
             self._condition.notify_all()
         self._ready.clear()
         self._lastInfo = self._lastText = None
+        self._lastFocus = None
         self._rows = self._characters = 0
         if wasSpeaking:
             speech.cancelSpeech()
@@ -113,6 +117,9 @@ class AutomaticTranslation:
         try:
             if api.isTypingProtected():
                 return False
+            getFocus = _property(api, "getFocusObject")
+            if getFocus is not None and _protected(getFocus()):
+                return False
         except Exception:
             return False
         return True
@@ -121,10 +128,47 @@ class AutomaticTranslation:
         if not self._check():
             return False
         try:
+            getFocus = _property(api, "getFocusObject")
+            focus = getFocus() if getFocus else None
+            role = _property(_property(focus, "role"), "name", "")
+            tree = _property(focus, "treeInterceptor")
+            inBrowseMode = tree is not None and not _property(tree, "passThrough", True)
+            if focus is not None and role not in ("EDITABLETEXT", "DOCUMENT", "TERMINAL", "RICHEDIT") and not inBrowseMode:
+                return self.captureFocus(focus)
             obj = api.getCaretObject()
-            if obj is None or getattr(obj, 'isProtected', False):
+            if obj is None or _protected(obj):
                 return False
             return self.capture(obj.makeTextInfo(textInfos.POSITION_CARET))
+        except Exception:
+            return False
+
+    def captureFocus(self, focus=None):
+        """Queue focused control text; document lines keep their existing path."""
+        if not self._check():
+            return False
+        try:
+            focus = focus if focus is not None else api.getFocusObject()
+            if self._lastFocus is not None and self._lastFocus != focus:
+                self._lastFocus = self._lastText = None
+            role = _property(_property(focus, "role"), "name", "")
+            if role in ("EDITABLETEXT", "DOCUMENT", "TERMINAL", "RICHEDIT"):
+                self._lastFocus = None
+                return False
+            tree = _property(focus, "treeInterceptor")
+            if tree is not None and not _property(tree, "passThrough", True):
+                return False
+            text = focusedText(focus)
+            if self._lastFocus == focus and self._lastText == text:
+                return True
+            accepted = self._enqueue(text)
+            if accepted:
+                self._lastFocus, self._lastText = focus, text
+                self._lastInfo = None
+            return accepted
+        except TranslationFailure as error:
+            if error.reason == "length":
+                self._pause("length")
+            return False
         except Exception:
             return False
 
@@ -132,12 +176,12 @@ class AutomaticTranslation:
         if not self._check():
             return False
         try:
-            if getattr(info.obj, 'isProtected', False):
+            if _protected(info.obj):
                 return False
             line = info.copy()
             line.expand(textInfos.UNIT_LINE)
             try:
-                if getattr(line.NVDAObjectAtStart, 'isProtected', False):
+                if _protected(line.NVDAObjectAtStart):
                     return False
             except (AttributeError, NotImplementedError):
                 pass
@@ -153,10 +197,14 @@ class AutomaticTranslation:
             if same:
                 return bool(text)
             self._lastInfo, self._lastText = line, text
+            self._lastFocus = None
         except Exception:
             # If positions cannot be compared, do not silently deduplicate two
             # different lines just because their text happens to be identical.
             return False
+        return self._enqueue(text)
+
+    def _enqueue(self, text):
         if not text:
             return False
         if len(text) > MAX_TEXT:
@@ -165,13 +213,18 @@ class AutomaticTranslation:
         if self._rows >= MAX_ROWS or self._characters + len(text) > MAX_CHARACTERS:
             self._pause('capacity')
             return False
-        self._rows += 1
-        self._characters += len(text)
         with self._condition:
-            self._pending.append((self._generation, text, self._target))
             if self._worker is None or not self._worker.is_alive():
-                self._worker = threading.Thread(target=self._run, name='ExtraSettingsAutomaticTranslation', daemon=True)
-                self._worker.start()
+                try:
+                    self._worker = threading.Thread(target=self._run, name='ExtraSettingsAutomaticTranslation', daemon=True)
+                    self._worker.start()
+                except RuntimeError:
+                    self._worker = None
+                    self._pause('unavailable')
+                    return False
+            self._rows += 1
+            self._characters += len(text)
+            self._pending.append((self._generation, text, self._source, self._target))
             self._condition.notify_all()
         return True
 
@@ -193,13 +246,13 @@ class AutomaticTranslation:
                     self._condition.wait()
                 if not self._active:
                     return
-                generation, text, target = self._pending.popleft()
-                key = (text, target)
+                generation, text, source, target = self._pending.popleft()
+                key = (text, source, target)
                 result = self._cache.get(key)
             error = None
             if result is None:
                 try:
-                    result = self._fetch(text, target)
+                    result = self._fetch(text, target, source)
                     if not isinstance(result, str) or not result.strip():
                         raise TranslationFailure('response')
                 except TranslationFailure as failure:
@@ -218,14 +271,14 @@ class AutomaticTranslation:
                     else:
                         # Hold this and following rows until the user closes
                         # the session; no failing row is silently skipped.
-                        self._pending.appendleft((generation, text, target))
+                        self._pending.appendleft((generation, *key))
                     try:
                         wx.CallAfter(self._finish, generation, len(text), result, error)
                     except RuntimeError:
                         return
                     if error:
                         self._condition.wait_for(lambda: not self._active or generation != self._generation)
-            del text, target, result, key, error
+            del text, source, target, result, key, error
 
     def _finish(self, generation, length, result, error):
         if not self._active or not self._enabled or generation != self._generation:
@@ -240,11 +293,12 @@ class AutomaticTranslation:
         if not self._active or not self._enabled or self._speaking or not self._ready:
             return
         try:
-            if api.isTypingProtected():
-                core.callLater(200, self._pump)
-                return
-            if speech.getState().speechMode != speech.SpeechMode.talk:
-                core.callLater(200, self._pump)
+            getFocus = _property(api, "getFocusObject")
+            if (api.isTypingProtected() or (getFocus is not None and _protected(getFocus()))
+                    or speech.getState().speechMode != speech.SpeechMode.talk):
+                if not self._retryScheduled:
+                    self._retryScheduled = True
+                    core.callLater(200, self._retryPump, self._generation)
                 return
         except Exception:
             return
@@ -252,6 +306,12 @@ class AutomaticTranslation:
         self._speechTicket += 1
         ticket = self._speechTicket
         speech.speak([self._ready[0][1], CallbackCommand(lambda: self._spoken(ticket))])
+
+    def _retryPump(self, generation):
+        if generation != self._generation:
+            return
+        self._retryScheduled = False
+        self._pump()
 
     def _spoken(self, ticket):
         if not self._active or ticket != self._speechTicket or not self._speaking:
