@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: extraSettings 2026.11.06\n"
+"Project-Id-Version: extraSettings 2026.11.22\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,8 +84,17 @@ msgstr "Geçmiş kayıtları"
 msgid "There are no history entries yet."
 msgstr "Henüz konuşma geçmişi kaydı yok."
 
-msgid "Copy selected entry"
-msgstr "Seçili kaydı kopyala"
+msgid "Copy selected entries"
+msgstr "Seçilenleri kopyala"
+
+msgid "{count} entries copied."
+msgstr "{count} kayıt kopyalandı."
+
+msgid "Checked"
+msgstr "İşaretli"
+
+msgid "Not checked"
+msgstr "İşaretli değil"
 
 msgid "Copy all"
 msgstr "Tümünü kopyala"
@@ -98,6 +107,9 @@ msgstr "Kapat"
 
 msgid "Could not copy to the clipboard."
 msgstr "Panoya kopyalanamadı."
+
+msgid "Could not open speech history."
+msgstr "Konuşma geçmişi açılamadı."
 
 msgid "Speech history cleared."
 msgstr "Konuşma geçmişi temizlendi."
@@ -239,9 +251,6 @@ msgstr "Önce Ek Ayarlar bölümünden otomatik çeviriyi etkinleştirin."
 
 msgid "Skip blank lines on web pages"
 msgstr "Web sayfalarında boş satırları atla"
-
-msgid "No more non-blank lines in this direction."
-msgstr "Bu yönde başka dolu satır yok."
 
 msgid "Announce word and character counts"
 msgstr "Sözcük ve karakter sayısını duyur"
@@ -587,10 +596,10 @@ msgid "Select all and announce item count in File Explorer"
 msgstr "Tümünü seç ve Dosya Gezgininde öge sayısını duyur"
 
 msgid "No items to select."
-msgstr "Seçilecek herhangi bir öğe yok."
+msgstr "Seçilecek herhangi bir öge yok."
 
-msgid "No items selected."
-msgstr "Seçilecek herhangi bir öğe yok."
+msgid "The number of selected items could not be determined."
+msgstr "Seçili öge sayısı belirlenemedi."
 
 msgid "1 item selected."
 msgstr "1 öge seçildi."
@@ -643,6 +652,15 @@ msgstr "İnternete bağlanılamadı. Lütfen ağ bağlantınızı kontrol edin."
 msgid "An error occurred during analysis: {error}"
 msgstr "Analiz sırasında bir hata oluştu: {error}"
 
+msgid "The image is too large to analyze."
+msgstr "Görsel analiz edilemeyecek kadar büyük."
+
+msgid "The analysis service returned an empty response. Please try again."
+msgstr "Analiz hizmeti boş yanıt döndürdü. Lütfen yeniden deneyin."
+
+msgid "The response was cut short because it exceeded the length limit."
+msgstr "Yanıt, uzunluk sınırını aştığı için yarıda kesildi."
+
 msgid "Could not reach image analysis service."
 msgstr "Görsel analiz hizmetine ulaşılamadı."
 
@@ -656,7 +674,7 @@ msgid "An image is already being analyzed. Please wait."
 msgstr "Şu anda zaten bir görsel analiz ediliyor. Lütfen bekleyin."
 
 msgid "No image found to analyze. Please select an image file, copy an image to the clipboard, or focus on a visual element."
-msgstr "Analiz edilecek bir görsel bulunamadı. Lütfen bir resim dosyası seçin, panoya bir görsel kopyalayın veya ekranda bir görsel öğenin üzerine odaklanın."
+msgstr "Analiz edilecek bir görsel bulunamadı. Lütfen bir resim dosyası seçin, panoya bir görsel kopyalayın veya ekranda bir görsel ögenin üzerine odaklanın."
 
 msgid "Analyzing image, please wait..."
 msgstr "Görsel analiz ediliyor, lütfen bekleyin..."
@@ -720,3 +738,153 @@ msgstr "&Kopyala"
 
 msgid "Copied to clipboard"
 msgstr "Panoya kopyalandı"
+
+msgid "Source language"
+msgstr "Kaynak dil"
+
+msgid "Choose a source language."
+msgstr "Bir kaynak dil seçin."
+
+msgid "Reverse translation"
+msgstr "Tersine çevir"
+
+msgid "Reverse translation - {shortcut}"
+msgstr "Tersine çevir - {shortcut}"
+
+msgid "Reverse translation on."
+msgstr "Tersine çevir açık."
+
+msgid "Reverse translation off."
+msgstr "Tersine çevir kapalı."
+
+msgid "Choose a supported source and target language in Extra Settings."
+msgstr "Ek Ayarlar bölümünden desteklenen bir kaynak dil ve hedef dil seçin."
+
+msgid "The current text or control could not be read."
+msgstr "Bulunulan metin veya denetim okunamadı."
+
+msgid "There is no accessible text to translate here."
+msgstr "Burada çevrilebilecek erişilebilir metin yok."
+
+msgid "This content is too long to translate. The limit is 5000 characters."
+msgstr "Bu içerik çevrilemeyecek kadar uzun. Sınır 5000 karakterdir."
+
+msgid "Backup canceled."
+msgstr "Yedekleme iptal edildi."
+
+msgid "Backup saved: {path}"
+msgstr "Yedek kaydedildi: {path}"
+
+msgid "Canceling backup..."
+msgstr "Yedekleme iptal ediliyor..."
+
+msgid "Configuration profiles"
+msgstr "Yapılandırma profilleri"
+
+msgid "Creating backup..."
+msgstr "Yedek oluşturuluyor..."
+
+msgid "Custom input gestures"
+msgstr "Özel tuş atamaları"
+
+msgid "Export NVDA settings"
+msgstr "NVDA ayarlarını dışa aktar"
+
+msgid "Export NVDA settings..."
+msgstr "NVDA ayarlarını dışa aktar..."
+
+msgid "Extra Settings Quick find locations"
+msgstr "Ek Ayarlar Hızlı bul kayıtları"
+
+msgid "Extra Settings bookmarks"
+msgstr "Ek Ayarlar yer imleri"
+
+msgid "Installed add-ons"
+msgstr "Kurulu eklentiler"
+
+msgid "NVDA settings"
+msgstr "NVDA ayarları"
+
+msgid "NVDA settings could not be saved. Export was not started."
+msgstr "NVDA ayarları kaydedilemedi. Dışa aktarma başlatılmadı."
+
+msgid "No files were found for the selected items."
+msgstr "Seçilen öğeler için yedeklenecek dosya bulunamadı."
+
+msgid "OK"
+msgstr "Tamam"
+
+msgid "Select at least one setting or add-on."
+msgstr "En az bir ayar veya eklenti seçin."
+
+msgid "Selected add-on installation folders are included. Settings stored elsewhere are not included by selecting an add-on. Selected files may contain API keys or other personal data."
+msgstr "Seçilen eklentilerin kurulum klasörleri yedeklenir. Başka konumlarda saklanan eklenti ayarları bu seçime dâhil değildir. Seçilen dosyalar API anahtarları veya kişisel veriler içerebilir."
+
+msgid "Settings to include"
+msgstr "Yedeklenecek ayarlar"
+
+msgid "Speech dictionaries"
+msgstr "Konuşma sözlükleri"
+
+msgid "The backup could not be created. No complete ZIP was saved. Please try again."
+msgstr "Yedek oluşturulamadı. Tamamlanmış bir ZIP dosyası kaydedilmedi. Lütfen yeniden deneyin."
+
+msgid "The backup window could not be opened."
+msgstr "Yedekleme penceresi açılamadı."
+
+msgid "Import / export..."
+msgstr "İçe / dışa aktar..."
+
+msgid "Import / export"
+msgstr "İçe / dışa aktar"
+
+msgid "Operation"
+msgstr "İşlem"
+
+msgid "Export settings"
+msgstr "Ayarları dışa aktar"
+
+msgid "Import settings"
+msgstr "Ayarları içe aktar"
+
+msgid "Import NVDA settings"
+msgstr "NVDA ayarlarını içe aktar"
+
+msgid "Backup ZIP file"
+msgstr "Yedek ZIP dosyası"
+
+msgid "Browse..."
+msgstr "Gözat..."
+
+msgid "Files in the ZIP replace matching settings and add-on files automatically. NVDA restarts after a successful import. Pending changes in the settings window are discarded."
+msgstr "ZIP içindeki dosyalar, eşleşen ayar ve eklenti dosyalarının üzerine otomatik yazılır. Başarılı içe aktarmadan sonra NVDA yeniden başlar. Ayarlar penceresinde henüz uygulanmamış değişiklikler bırakılır."
+
+msgid "Choose an NVDA backup"
+msgstr "Bir NVDA yedeği seçin"
+
+msgid "ZIP files (*.zip)|*.zip"
+msgstr "ZIP dosyaları (*.zip)|*.zip"
+
+msgid "Choose a backup ZIP file first."
+msgstr "Önce bir yedek ZIP dosyası seçin."
+
+msgid "Importing backup..."
+msgstr "Yedek içe aktarılıyor..."
+
+msgid "Backup imported. NVDA is restarting."
+msgstr "Yedek içe aktarıldı. NVDA yeniden başlatılıyor."
+
+msgid "Import canceled. Previous files were restored."
+msgstr "İçe aktarma iptal edildi. Önceki dosyalar geri yüklendi."
+
+msgid "Import failed. Some files could not be restored. Recovery files are in: {path}"
+msgstr "İçe aktarma başarısız oldu. Bazı dosyalar geri yüklenemedi. Kurtarma dosyalarının konumu: {path}"
+
+msgid "This ZIP is not a supported NVDA backup. No changes were applied."
+msgstr "Bu ZIP, desteklenen bir NVDA yedeği değil. Değişiklik uygulanmadı."
+
+msgid "The backup could not be imported. Previous files were restored. Check file access and try again."
+msgstr "Yedek içe aktarılamadı. Önceki dosyalar geri yüklendi. Dosyalara erişimi denetleyip yeniden deneyin."
+
+msgid "Canceling import..."
+msgstr "İçe aktarma iptal ediliyor..."
